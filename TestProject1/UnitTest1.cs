@@ -11,9 +11,14 @@ public class UnitTest1
     [TestMethod]
     public async Task TestMethod1()
     {
+        // unit test
+
         var class1 = new Class1();
+
         Assert.IsTrue(class1.Method1(true));
         Assert.IsFalse(class1.Method1(false));
+
+        // integration test
 
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
