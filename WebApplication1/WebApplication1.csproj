@@ -10,4 +10,8 @@
     <ProjectReference Include="..\ClassLibrary1\ClassLibrary1.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="TestProject1" />
+  </ItemGroup>
+
 </Project>
