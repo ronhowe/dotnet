@@ -28,13 +28,16 @@ try
 
     if (app.Environment.IsDevelopment())
     {
+        app.Logger.LogDebug("Using Developer Exception Page");
         app.UseDeveloperExceptionPage();
     }
 
+    app.Logger.LogDebug("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
     app.MapGet("/", (bool input) =>
     {
+        app.Logger.LogDebug("Getting MockException Setting");
         if (app.Configuration.GetValue<bool>("MockException", false))
         {
             app.Logger.LogWarning("MockException = true");
@@ -42,7 +45,7 @@ try
         }
         else
         {
-            app.Logger.LogInformation("Calling ClassLibrary1.Class1.Method1");
+            app.Logger.LogDebug("Calling ClassLibrary1.Class1.Method1");
             var class1 = new Class1();
             return class1.Method1(input);
         }
