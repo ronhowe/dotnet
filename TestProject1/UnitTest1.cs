@@ -9,17 +9,8 @@ namespace TestProject1;
 public class UnitTest1
 {
     [TestMethod]
-    public async Task TestMethod1()
+    public async Task IntegrationTestMethod1()
     {
-        // unit test
-
-        var class1 = new Class1();
-
-        Assert.IsTrue(class1.Method1(true));
-        Assert.IsFalse(class1.Method1(false));
-
-        // integration test
-
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
 
@@ -36,5 +27,14 @@ public class UnitTest1
         //TODO - This produces server-side logged exceptions; potential DDOS exploit.
         //response = await client.GetAsync("/");
         //Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [TestMethod]
+    public void UnitTestMethod1()
+    {
+        var class1 = new Class1();
+
+        Assert.IsTrue(class1.Method1(true));
+        Assert.IsFalse(class1.Method1(false));
     }
 }
