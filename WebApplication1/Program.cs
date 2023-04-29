@@ -1,5 +1,4 @@
 using ClassLibrary1;
-
 using Serilog;
 using Serilog.Events;
 
