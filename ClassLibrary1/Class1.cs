@@ -2,8 +2,8 @@
 
 public class Class1 : IInterface1
 {
-    public bool Method1(bool input)
+    public bool Method1(bool? input)
     {
-        return input;
+        return input != null && input.Value;
     }
 }

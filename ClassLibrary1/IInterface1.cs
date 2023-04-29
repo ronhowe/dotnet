@@ -2,5 +2,5 @@
 
 public interface IInterface1
 {
-    public bool Method1(bool input);
+    public bool Method1(bool? input);
 }

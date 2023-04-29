@@ -47,7 +47,7 @@ try
         {
             app.Logger.LogDebug("Calling ClassLibrary1.Class1.Method1");
             var class1 = new Class1();
-            return class1.Method1(input != null && input.Value);
+            return class1.Method1(input);
         }
     });
 

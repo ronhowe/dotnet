@@ -18,6 +18,11 @@ public class UnitTest1
 
         response = await client.GetAsync("/");
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+
+        //response = await client.GetAsync("/?input=");
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
 
         response = await client.GetAsync("/?input=true");
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
