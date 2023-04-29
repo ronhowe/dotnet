@@ -3,7 +3,7 @@ using Serilog;
 using Serilog.Events;
 using System.Net;
 
-const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [PROGRAM TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
+const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [PROGRAM TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -13,7 +13,9 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.Information("Starting Program"); // or Log.ForContext("SourceContext", "TODO: Pick Good Context").Information("Starting");
+Log.Information("Starting Program");
+// or
+Log.ForContext("SourceContext", "CUSTOM CONTEXT").Information("Starting Program");
 
 try
 {
