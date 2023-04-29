@@ -26,6 +26,9 @@ try
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
 
+
+    builder.Services.AddScoped<IInterface1, Class1>();
+
     var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
@@ -37,7 +40,7 @@ try
     app.Logger.LogDebug("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
-    app.MapGet("/", (bool? input) =>
+    app.MapGet("/", (bool? input, IInterface1 application) =>
     {
         app.Logger.LogDebug("Getting MockException Setting");
         if (app.Configuration.GetValue<bool>("MockException", false))
@@ -48,8 +51,7 @@ try
         else
         {
             app.Logger.LogDebug("Calling ClassLibrary1.Class1.Method1");
-            var class1 = new Class1();
-            return class1.Method1(input);
+            return application.Method1(input);
         }
     });
 
