@@ -1,6 +1,7 @@
 using ClassLibrary1;
 using Serilog;
 using Serilog.Events;
+using System.Net;
 
 const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [PROGRAM TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
@@ -34,7 +35,7 @@ try
     app.Logger.LogDebug("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
-    app.MapGet("/", (bool input) =>
+    app.MapGet("/", (bool? input) =>
     {
         app.Logger.LogDebug("Getting MockException Setting");
         if (app.Configuration.GetValue<bool>("MockException", false))
@@ -46,7 +47,7 @@ try
         {
             app.Logger.LogDebug("Calling ClassLibrary1.Class1.Method1");
             var class1 = new Class1();
-            return class1.Method1(input);
+            return class1.Method1(input != null && input.Value);
         }
     });
 

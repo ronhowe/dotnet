@@ -16,6 +16,9 @@ public class UnitTest1
 
         HttpResponseMessage response;
 
+        response = await client.GetAsync("/");
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
         response = await client.GetAsync("/?input=true");
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
@@ -23,10 +26,6 @@ public class UnitTest1
         response = await client.GetAsync("/?input=false");
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
-
-        //TODO - This produces server-side logged exceptions; potential DDOS exploit.
-        //response = await client.GetAsync("/");
-        //Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [TestMethod]
