@@ -2,5 +2,5 @@
 
 public interface IService
 {
-    public bool IO(bool? input);
+    public bool Run(bool? input);
 }

@@ -11,9 +11,10 @@ public class Service : IService
         _logger = logger;
     }
 
-    public bool IO(bool? input)
+    public bool Run(bool? input)
     {
-        _logger.LogDebug("IO");
-        return input != null && input.Value;
+        bool output = input != null && input.Value;
+        _logger.LogDebug("{output}", output);
+        return output;
     }
 }

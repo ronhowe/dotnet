@@ -5,14 +5,14 @@ using Serilog.Events;
 const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [CODE TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
+    .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "CUSTOM CONTEXT").Information("Starting Program");
+Log.ForContext("SourceContext", "CUSTOM CONTEXT").Debug("Starting Program");
 
 try
 {
@@ -38,16 +38,16 @@ try
 
     app.MapGet("/", (bool? input, IService service) =>
     {
-        app.Logger.LogDebug("Getting MockException Setting");
+        app.Logger.LogDebug("Getting Configuration");
         if (app.Configuration.GetValue<bool>("MockException", false))
         {
             app.Logger.LogWarning("Throwing MockException");
-            throw new NotImplementedException("MockException (Suggestion: Set MockException = false in application settings to resolve.)");
+            throw new NotImplementedException("MockException");
         }
         else
         {
             app.Logger.LogDebug("Calling Service");
-            return service.IO(input);
+            return service.Run(input);
         }
     });
 
