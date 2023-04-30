@@ -8,111 +8,191 @@ namespace TestProject1;
 [TestClass]
 public class UnitTest1
 {
+    private const string appName = "app-prod-idso-000";
+
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task AppServiceNull()
+    public async Task AppServiceNullStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "app-prod-idso-000.azurewebsites.net";
-        using var response = await client.GetAsync($"https://{endpoint}/");
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task AppServiceNullContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task AppServiceTrue()
+    public async Task AppServiceTrueStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "app-prod-idso-000.azurewebsites.net";
-        using var response = await client.GetAsync($"https://{endpoint}/?input=true");
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/?input=true");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task AppServiceTrueContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/?input=true");
+
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task AppServiceFalse()
+    public async Task AppServiceFalseStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "app-prod-idso-000.azurewebsites.net";
-        using var response = await client.GetAsync($"https://{endpoint}/?input=false");
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/?input=false");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task AppServiceFalseContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync($"https://{appName}.azurewebsites.net/?input=false");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task KestrelNull()
+    public async Task KestrelNullStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "localhost:444";
-        using var response = await client.GetAsync($"https://{endpoint}/");
+        using var response = await client.GetAsync("https://localhost:444/");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task KestrelNullContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync("https://localhost:444/");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task KestrelTrue()
+    public async Task KestrelTrueStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "localhost:444";
-        using var response = await client.GetAsync($"https://{endpoint}/?input=true");
+        using var response = await client.GetAsync("https://localhost:444/?input=true");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task KestrelTrueContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync("https://localhost:444/?input=true");
+
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public async Task KestrelFalse()
+    public async Task KestrelFalseStatusCode()
     {
         using var client = new HttpClient();
-        var endpoint = "localhost:444";
-        using var response = await client.GetAsync($"https://{endpoint}/?input=false");
+        using var response = await client.GetAsync("https://localhost:444/?input=false");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public async Task KestrelFalseContent()
+    {
+        using var client = new HttpClient();
+        using var response = await client.GetAsync("https://localhost:444/?input=false");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public async Task InProcessNull()
+    public async Task InProcessNullStatusCode()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public async Task InProcessNullContent()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public async Task InProcessTrue()
+    public async Task InProcessTrueStatusCode()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/?input=true");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public async Task InProcessTrueContent()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/?input=true");
+
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public async Task InProcessFalse()
+    public async Task InProcessFalseStatusCode()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/?input=false");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public async Task InProcessFalseContent()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/?input=false");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
