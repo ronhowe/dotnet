@@ -13,7 +13,7 @@ public class Service : IService
 
     public bool IO(bool? input)
     {
-        _logger.LogDebug("Service OK");
+        _logger.LogDebug("POST");
         return input != null && input.Value;
     }
 }
