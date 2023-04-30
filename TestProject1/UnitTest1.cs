@@ -15,7 +15,7 @@ public class UnitTest1
         var service = new Service(loggerMock.Object);
 
         Assert.IsFalse(service.IO(null));
-        loggerMock.VerifyDebugWasCalled("POST");
+        loggerMock.VerifyDebugWasCalled("IO");
     }
 
     [TestMethod]
@@ -25,7 +25,7 @@ public class UnitTest1
         var service = new Service(loggerMock.Object);
 
         Assert.IsTrue(service.IO(true));
-        loggerMock.VerifyDebugWasCalled("POST");
+        loggerMock.VerifyDebugWasCalled("IO");
     }
 
     [TestMethod]
@@ -35,6 +35,6 @@ public class UnitTest1
         var service = new Service(loggerMock.Object);
 
         Assert.IsFalse(service.IO(false));
-        loggerMock.VerifyDebugWasCalled("POST");
+        loggerMock.VerifyDebugWasCalled("IO");
     }
 }
