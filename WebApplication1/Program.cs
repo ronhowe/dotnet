@@ -2,7 +2,7 @@ using ClassLibrary1;
 using Serilog;
 using Serilog.Events;
 
-const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [PROGRAM TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
+const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [CODE TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -12,8 +12,6 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.Information("Starting Program");
-// or
 Log.ForContext("SourceContext", "CUSTOM CONTEXT").Information("Starting Program");
 
 try
@@ -24,7 +22,6 @@ try
     {
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
-
 
     builder.Services.AddScoped<IInterface1, Class1>();
 
@@ -44,12 +41,12 @@ try
         app.Logger.LogDebug("Getting MockException Setting");
         if (app.Configuration.GetValue<bool>("MockException", false))
         {
-            app.Logger.LogWarning("MockException = true");
+            app.Logger.LogWarning("Throwing MockException");
             throw new NotImplementedException("MockException (Suggestion: Set MockException = false in application settings to resolve.)");
         }
         else
         {
-            app.Logger.LogDebug("Calling ClassLibrary1.Class1.Method1");
+            app.Logger.LogDebug("Calling Service");
             return application.Method1(input);
         }
     });
