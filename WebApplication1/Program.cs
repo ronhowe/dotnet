@@ -1,7 +1,6 @@
 using ClassLibrary1;
 using Serilog;
 using Serilog.Events;
-using System.Net;
 
 const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [PROGRAM TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
