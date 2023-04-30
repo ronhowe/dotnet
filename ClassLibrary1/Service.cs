@@ -1,20 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ClassLibrary1;
 
 public class Service : IService
 {
     private readonly ILogger<Service> _logger;
+    private readonly IConfiguration _config;
 
-    public Service(ILogger<Service> logger)
+    public Service(ILogger<Service> logger, IConfiguration config)
     {
         _logger = logger;
+        _config = config;
     }
 
     public bool Run(bool? input)
     {
-        bool output = input != null && input.Value;
-        _logger.LogDebug("{output}", output);
-        return output;
+        _logger.LogInformation("{input}", input);
+
+        var config = _config.GetSection("MockServiceExceptionEnabled").Value;
+
+        if (config != null && Boolean.Parse(config))
+        {
+            throw new NotImplementedException("MockServiceExceptionEnabled");
+        }
+
+        return input != null && input.Value;
     }
 }

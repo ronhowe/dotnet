@@ -13,7 +13,7 @@ internal static class UnitTest1Helpers
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         logger.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Debug),
+                It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => state(v, t)),
                 It.IsAny<Exception>(),

@@ -5,14 +5,14 @@ using Serilog.Events;
 const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [CODE TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "CUSTOM CONTEXT").Debug("Starting Program");
+Log.ForContext("SourceContext", "Program").Information("OK");
 
 try
 {
@@ -29,24 +29,19 @@ try
 
     if (app.Environment.IsDevelopment())
     {
-        app.Logger.LogDebug("Using Developer Exception Page");
         app.UseDeveloperExceptionPage();
     }
 
-    app.Logger.LogDebug("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
     app.MapGet("/", (bool? input, IService service) =>
     {
-        app.Logger.LogDebug("Getting Configuration");
-        if (app.Configuration.GetValue<bool>("MockException", false))
+        if (app.Configuration.GetValue<bool>("MockRouteExceptionEnabled", false))
         {
-            app.Logger.LogWarning("Throwing MockException");
-            throw new NotImplementedException("MockException");
+            throw new NotImplementedException("MockRouteExceptionEnabled");
         }
         else
         {
-            app.Logger.LogDebug("Calling Service");
             return service.Run(input);
         }
     });
