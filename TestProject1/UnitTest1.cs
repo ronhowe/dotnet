@@ -1,5 +1,7 @@
 using ClassLibrary1;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace TestProject1;
 
@@ -9,24 +11,30 @@ public class UnitTest1
     [TestMethod]
     public void UnitTestNull()
     {
-        var class1 = new Class1();
+        var loggerMock = new Mock<ILogger<Service>>();
+        var service = new Service(loggerMock.Object);
 
-        Assert.IsFalse(class1.Method1(null));
+        Assert.IsFalse(service.IO(null));
+        loggerMock.VerifyDebugWasCalled("POST");
     }
 
     [TestMethod]
     public void UnitTestTrue()
     {
-        var class1 = new Class1();
+        var loggerMock = new Mock<ILogger<Service>>();
+        var service = new Service(loggerMock.Object);
 
-        Assert.IsTrue(class1.Method1(true));
+        Assert.IsTrue(service.IO(true));
+        loggerMock.VerifyDebugWasCalled("POST");
     }
 
     [TestMethod]
     public void UnitTestFalse()
     {
-        var class1 = new Class1();
+        var loggerMock = new Mock<ILogger<Service>>();
+        var service = new Service(loggerMock.Object);
 
-        Assert.IsFalse(class1.Method1(false));
+        Assert.IsFalse(service.IO(false));
+        loggerMock.VerifyDebugWasCalled("POST");
     }
 }
