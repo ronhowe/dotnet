@@ -18,11 +18,11 @@ public class Service : IService
     {
         _logger.LogInformation("{input}", input);
 
-        var config = _config.GetSection(MockException.KeyName).Value;
+        var config = _config.GetSection(ChaosException.KeyName).Value;
 
         if (config != null && Boolean.Parse(config))
         {
-            throw new MockException(MockException.KeyName);
+            throw new ChaosException(ChaosException.KeyName);
         }
 
         return input != null && input.Value;

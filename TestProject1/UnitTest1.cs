@@ -9,7 +9,7 @@ namespace TestProject1;
 [TestClass]
 public class UnitTest1
 {
-    private const string _configurationKey = ClassLibrary1.MockException.KeyName;
+    private const string _configurationKey = ChaosException.KeyName;
 
     [TestMethod]
     public void ServiceReturnsFalseFromNullInput()
@@ -46,7 +46,7 @@ public class UnitTest1
     {
         var service = new Service(CreateMockLogger(), CreateMockConfiguration(true));
 
-        Assert.ThrowsException<ClassLibrary1.MockException>(() => service.Run(null));
+        Assert.ThrowsException<ChaosException>(() => service.Run(null));
     }
 
     private static ILogger<Service> CreateMockLogger()
