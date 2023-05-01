@@ -37,7 +37,7 @@ public class UnitTest1
 
         service.Run(false);
 
-        mockLogger.VerifyInformationWasCalled(false.ToString());
+        mockLogger.VerifyDebugWasCalled($"input={false}");
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public class UnitTest1
     private static IFeatureManager CreateMockFeatureManager(bool value)
     {
         var mockFeatureManager = new Mock<IFeatureManager>();
-        mockFeatureManager.Setup(x=>x.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result).Returns(value);
+        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result).Returns(value);
 
         return mockFeatureManager.Object;
     }

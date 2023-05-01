@@ -19,12 +19,15 @@ public class Service : IService
 
     public bool Run(bool? input)
     {
-        _logger.LogInformation("{input}", input);
+        _logger.LogDebug("input={input}", input);
 
         var config = _config.GetSection(nameof(FeatureFlags.MockServiceExceptionEnabled)).Value;
-        var feature = _featureManager.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result;
+        _logger.LogDebug("config={config}", config);
 
-        if (config != null && Boolean.Parse(config) && feature)
+        var feature = _featureManager.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result;
+        _logger.LogDebug("feature={feature}", feature);
+
+        if (feature)
         {
             throw new MockServiceException(nameof(FeatureFlags.MockServiceExceptionEnabled));
         }
