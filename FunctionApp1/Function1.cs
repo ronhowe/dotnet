@@ -11,7 +11,9 @@ namespace FunctionApp1;
 public static class Function1
 {
     [FunctionName("Function1")]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         log.LogInformation("Running");
 
