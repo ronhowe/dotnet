@@ -6,14 +6,14 @@ using Serilog.Events;
 const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [CODE TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "Program").Debug("Starting");
+Log.ForContext("SourceContext", "Program").Information("Starting");
 
 try
 {
@@ -29,11 +29,6 @@ try
     builder.Services.AddScoped<IService, Service>();
 
     var app = builder.Build();
-
-    //if (app.Environment.IsDevelopment())
-    //{
-    //    app.UseDeveloperExceptionPage();
-    //}
 
     app.UseSerilogRequestLogging();
 
