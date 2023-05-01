@@ -9,7 +9,7 @@ namespace TestProject1;
 [TestClass]
 public class UnitTest1
 {
-    private const string _configurationKey = "MockExceptionEnabled";
+    private const string _configurationKey = ClassLibrary1.MockException.KeyName;
 
     [TestMethod]
     public void ServiceReturnsFalseFromNullInput()

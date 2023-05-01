@@ -5,8 +5,6 @@ namespace ClassLibrary1;
 
 public class Service : IService
 {
-    private const string configKey = "MockExceptionEnabled";
-
     private readonly ILogger<Service> _logger;
     private readonly IConfiguration _config;
 
@@ -20,11 +18,11 @@ public class Service : IService
     {
         _logger.LogInformation("{input}", input);
 
-        var config = _config.GetSection(configKey).Value;
+        var config = _config.GetSection(MockException.KeyName).Value;
 
         if (config != null && Boolean.Parse(config))
         {
-            throw new MockException(configKey);
+            throw new MockException(MockException.KeyName);
         }
 
         return input != null && input.Value;
