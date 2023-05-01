@@ -29,7 +29,7 @@ public class UnitTest1
     }
 
     [TestMethod]
-    public void ServiceLogsInformation()
+    public void ServiceLogsDebugMessage()
     {
         var mockLogger = new Mock<ILogger<Service>>();
 
@@ -41,7 +41,7 @@ public class UnitTest1
     }
 
     [TestMethod]
-    public void ServiceThrowsMockException()
+    public void ServiceThrowsMockServiceException()
     {
         var service = new Service(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
