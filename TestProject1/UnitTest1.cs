@@ -9,69 +9,69 @@ namespace TestProject1;
 [TestClass]
 public class UnitTest1
 {
+    private const string _configurationKey = "MockExceptionEnabled";
+
     [TestMethod]
     public void ServiceInputNull()
     {
-        var loggerMock = new Mock<ILogger<Service>>();
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns(false.ToString());
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection("MockServiceExceptionEnabled")).Returns(mockSection.Object);
-        var service = new Service(loggerMock.Object, mockConfig.Object);
-
-        Assert.IsFalse(service.Run(null));
+        Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
     }
 
     [TestMethod]
     public void ServiceInputTrue()
     {
-        var loggerMock = new Mock<ILogger<Service>>();
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns(false.ToString());
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection("MockServiceExceptionEnabled")).Returns(mockSection.Object);
-        var service = new Service(loggerMock.Object, mockConfig.Object);
-
-        Assert.IsTrue(service.Run(true));
+        Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
     }
 
     [TestMethod]
     public void ServiceInputFalse()
     {
-        var loggerMock = new Mock<ILogger<Service>>();
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns(false.ToString());
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection("MockServiceExceptionEnabled")).Returns(mockSection.Object);
-        var service = new Service(loggerMock.Object, mockConfig.Object);
-
-        Assert.IsFalse(service.Run(false));
+        Assert.IsFalse(CreateServiceWithMockDependencies().Run(false));
     }
 
     [TestMethod]
-    public void ServiceLogging()
+    public void Logging()
     {
-        var loggerMock = new Mock<ILogger<Service>>();
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns(false.ToString());
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection("MockServiceExceptionEnabled")).Returns(mockSection.Object);
-        var service = new Service(loggerMock.Object, mockConfig.Object);
+        var mockLogger = new Mock<ILogger<Service>>();
+
+        var service = new Service(mockLogger.Object, CreateMockConfiguration(false));
 
         service.Run(false);
-        loggerMock.VerifyDebugWasCalled(false.ToString());
+
+        mockLogger.VerifyInformationWasCalled(false.ToString());
     }
 
     [TestMethod]
-    public void ServiceConfiguration()
+    public void Configuration()
     {
-        var loggerMock = new Mock<ILogger<Service>>();
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns(true.ToString());
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection("MockServiceExceptionEnabled")).Returns(mockSection.Object);
-        var service = new Service(loggerMock.Object, mockConfig.Object);
+        var service = new Service(CreateMockLogger(), CreateMockConfiguration(true));
 
         Assert.ThrowsException<NotImplementedException>(() => service.Run(null));
     }
+
+    private static ILogger<Service> CreateMockLogger()
+    {
+        var logger = new Mock<ILogger<Service>>();
+
+        return logger.Object;
+    }
+
+    private static IConfiguration CreateMockConfiguration(bool value)
+    {
+        var mockConfigurationSection = new Mock<IConfigurationSection>();
+        mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
+
+        var mockConfiguration = new Mock<IConfiguration>();
+        mockConfiguration.Setup(x => x.GetSection(_configurationKey)).Returns(mockConfigurationSection.Object);
+
+        return mockConfiguration.Object;
+    }
+
+    private static Service CreateServiceWithMockDependencies()
+    {
+        var service = new Service(CreateMockLogger(), CreateMockConfiguration(false));
+
+        return service;
+    }
+
 }

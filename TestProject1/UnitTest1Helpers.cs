@@ -4,7 +4,7 @@ using Moq;
 internal static class UnitTest1Helpers
 {
     //https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
-    public static Mock<ILogger<T>> VerifyDebugWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)
+    public static Mock<ILogger<T>> VerifyInformationWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)
     {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
