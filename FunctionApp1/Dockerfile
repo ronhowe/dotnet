@@ -5,7 +5,7 @@ WORKDIR /home/site/wwwroot
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["FunctionApp1/FunctionApp1.csproj", "FunctionApp1/"]
 RUN dotnet restore "FunctionApp1/FunctionApp1.csproj"
