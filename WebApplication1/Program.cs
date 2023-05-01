@@ -1,4 +1,5 @@
 using ClassLibrary1;
+using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
 
@@ -22,6 +23,8 @@ try
     {
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
+
+    builder.Services.AddFeatureManagement();
 
     builder.Services.AddScoped<IService, Service>();
 

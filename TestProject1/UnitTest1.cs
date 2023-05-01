@@ -1,6 +1,7 @@
 using ClassLibrary1;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -9,8 +10,6 @@ namespace TestProject1;
 [TestClass]
 public class UnitTest1
 {
-    private const string _configurationKey = ChaosException.KeyName;
-
     [TestMethod]
     public void ServiceReturnsFalseFromNullInput()
     {
@@ -34,7 +33,7 @@ public class UnitTest1
     {
         var mockLogger = new Mock<ILogger<Service>>();
 
-        var service = new Service(mockLogger.Object, CreateMockConfiguration(false));
+        var service = new Service(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
 
         service.Run(false);
 
@@ -44,9 +43,9 @@ public class UnitTest1
     [TestMethod]
     public void ServiceThrowsMockException()
     {
-        var service = new Service(CreateMockLogger(), CreateMockConfiguration(true));
+        var service = new Service(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
-        Assert.ThrowsException<ChaosException>(() => service.Run(null));
+        Assert.ThrowsException<MockServiceException>(() => service.Run(null));
     }
 
     private static ILogger<Service> CreateMockLogger()
@@ -62,16 +61,23 @@ public class UnitTest1
         mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
 
         var mockConfiguration = new Mock<IConfiguration>();
-        mockConfiguration.Setup(x => x.GetSection(_configurationKey)).Returns(mockConfigurationSection.Object);
+        mockConfiguration.Setup(x => x.GetSection(nameof(FeatureFlags.MockServiceExceptionEnabled))).Returns(mockConfigurationSection.Object);
 
         return mockConfiguration.Object;
     }
 
     private static Service CreateServiceWithMockDependencies()
     {
-        var service = new Service(CreateMockLogger(), CreateMockConfiguration(false));
+        var service = new Service(CreateMockLogger(), CreateMockConfiguration(false), CreateMockFeatureManager(false));
 
         return service;
     }
 
+    private static IFeatureManager CreateMockFeatureManager(bool value)
+    {
+        var mockFeatureManager = new Mock<IFeatureManager>();
+        mockFeatureManager.Setup(x=>x.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result).Returns(value);
+
+        return mockFeatureManager.Object;
+    }
 }
