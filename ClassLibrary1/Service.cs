@@ -19,6 +19,8 @@ public class Service : IService
 
     public bool Run(bool? input)
     {
+        _logger.LogInformation("Running");
+
         _logger.LogDebug("input={input}", input);
 
         var config = _config.GetSection(nameof(FeatureFlags.MockServiceExceptionEnabled)).Value;

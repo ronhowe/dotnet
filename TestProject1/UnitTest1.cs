@@ -37,7 +37,7 @@ public class UnitTest1
 
         service.Run(false);
 
-        mockLogger.VerifyDebugWasCalled($"input={false}");
+        mockLogger.VerifyDebugWasCalled($"input={Boolean.FalseString}");
     }
 
     [TestMethod]

@@ -46,7 +46,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/?input=true");
+        using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
@@ -57,7 +57,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/?input=false");
+        using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
