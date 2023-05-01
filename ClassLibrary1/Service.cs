@@ -24,7 +24,7 @@ public class Service : IService
 
         if (config != null && Boolean.Parse(config))
         {
-            throw new NotImplementedException(configKey);
+            throw new MockException(configKey);
         }
 
         return input != null && input.Value;

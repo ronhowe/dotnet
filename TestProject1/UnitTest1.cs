@@ -12,25 +12,25 @@ public class UnitTest1
     private const string _configurationKey = "MockExceptionEnabled";
 
     [TestMethod]
-    public void ServiceInputNull()
+    public void ServiceReturnsFalseFromNullInput()
     {
         Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
     }
 
     [TestMethod]
-    public void ServiceInputTrue()
+    public void ServiceReturnsTrueFromTrueInput()
     {
         Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
     }
 
     [TestMethod]
-    public void ServiceInputFalse()
+    public void ServiceReturnsFalseFromFalseInput()
     {
         Assert.IsFalse(CreateServiceWithMockDependencies().Run(false));
     }
 
     [TestMethod]
-    public void Logging()
+    public void ServiceLogsInformation()
     {
         var mockLogger = new Mock<ILogger<Service>>();
 
@@ -42,18 +42,18 @@ public class UnitTest1
     }
 
     [TestMethod]
-    public void Configuration()
+    public void ServiceThrowsMockException()
     {
         var service = new Service(CreateMockLogger(), CreateMockConfiguration(true));
 
-        Assert.ThrowsException<NotImplementedException>(() => service.Run(null));
+        Assert.ThrowsException<ClassLibrary1.MockException>(() => service.Run(null));
     }
 
     private static ILogger<Service> CreateMockLogger()
     {
-        var logger = new Mock<ILogger<Service>>();
+        var mockLogger = new Mock<ILogger<Service>>();
 
-        return logger.Object;
+        return mockLogger.Object;
     }
 
     private static IConfiguration CreateMockConfiguration(bool value)

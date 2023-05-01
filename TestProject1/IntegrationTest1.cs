@@ -8,62 +8,35 @@ namespace TestProject1;
 public class IntegrationTest1
 {
     [TestMethod]
-    public async Task InProcessNullStatusCode()
+    public async Task ApplicationReturnsFalseFromNullInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task InProcessNullContent()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync("/");
-
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
-    public async Task InProcessTrueStatusCode()
+    public async Task ApplicationReturnsTrueFromTrueInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/?input=true");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task InProcessTrueContent()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync("/?input=true");
-
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 
     [TestMethod]
-    public async Task InProcessFalseStatusCode()
+    public async Task ApplicationReturnsFalseFromFalseInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/?input=false");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task InProcessFalseContent()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync("/?input=false");
-
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 }
