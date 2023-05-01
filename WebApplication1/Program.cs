@@ -12,7 +12,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "Program").Information("OK");
+Log.ForContext("SourceContext", "Program").Information("Starting");
 
 try
 {
@@ -36,14 +36,7 @@ try
 
     app.MapGet("/", (bool? input, IService service) =>
     {
-        if (app.Configuration.GetValue<bool>("MockRouteExceptionEnabled", false))
-        {
-            throw new NotImplementedException("MockRouteExceptionEnabled");
-        }
-        else
-        {
-            return service.Run(input);
-        }
+        return service.Run(input);
     });
 
     app.Run();
