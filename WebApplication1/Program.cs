@@ -3,7 +3,8 @@ using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
 
-const string outputTemplate = "[HOST] [{Timestamp:HH:mm:ss.fff zzz}] [CODE TEMPLATE] [{MachineName}] [{Level}] [{SourceContext}]\n    @ {Message}{NewLine}{Exception}";
+// sync with appsettings.json
+const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}]{NewLine}    {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -13,7 +14,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "Program").Information("Starting");
+Log.ForContext("SourceContext", "Program").Information("Started");
 
 try
 {
