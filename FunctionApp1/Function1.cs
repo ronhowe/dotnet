@@ -17,7 +17,7 @@ public static class Function1
     {
         log.LogInformation("Running");
 
-        Boolean.TryParse(req.Query["input"].ToString(), out bool input);
+        _ = Boolean.TryParse(req.Query["input"].ToString(), out bool input);
 
         log.LogDebug($"input={input}");
 
