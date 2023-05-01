@@ -1,28 +1,29 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using System;
-using System.Threading.Tasks;
 
-namespace FunctionApp1;
-
-public static class Function1
+public class Function1
 {
-    [FunctionName("Function1")]
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+    private readonly ILogger<Function1> _logger;
+
+    public Function1(ILogger<Function1> logger)
     {
-        log.LogInformation("Running");
+        _logger = logger;
 
-#pragma warning disable CA1806 // Do not ignore method results
-        Boolean.TryParse(req.Query["input"].ToString(), out bool input);
-#pragma warning restore CA1806 // Do not ignore method results
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateLogger();
+    }
 
-        log.LogDebug($"input={input}");
-
-        return new OkObjectResult(input);
+    [Function("Function1")]
+    public void Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
+    {
+        _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
     }
 }
