@@ -61,7 +61,7 @@ public class UnitTest1
         mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
 
         var mockConfiguration = new Mock<IConfiguration>();
-        mockConfiguration.Setup(x => x.GetSection(nameof(FeatureFlags.MockServiceExceptionEnabled))).Returns(mockConfigurationSection.Object);
+        mockConfiguration.Setup(x => x.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle))).Returns(mockConfigurationSection.Object);
 
         return mockConfiguration.Object;
     }
@@ -76,7 +76,7 @@ public class UnitTest1
     private static IFeatureManager CreateMockFeatureManager(bool value)
     {
         var mockFeatureManager = new Mock<IFeatureManager>();
-        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result).Returns(value);
+        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result).Returns(value);
 
         return mockFeatureManager.Object;
     }

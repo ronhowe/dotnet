@@ -23,15 +23,15 @@ public class Service : IService
 
         _logger.LogDebug("input={input}", input);
 
-        var config = _config.GetSection(nameof(FeatureFlags.MockServiceExceptionEnabled)).Value;
+        var config = _config.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle)).Value;
         _logger.LogDebug("config={config}", config);
 
-        var feature = _featureManager.IsEnabledAsync(nameof(FeatureFlags.MockServiceExceptionEnabled)).Result;
+        var feature = _featureManager.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result;
         _logger.LogDebug("feature={feature}", feature);
 
         if (feature)
         {
-            throw new MockServiceException(nameof(FeatureFlags.MockServiceExceptionEnabled));
+            throw new MockServiceException(nameof(ServiceFeatures.MockServiceExceptionToggle));
         }
 
         return input != null && input.Value;
