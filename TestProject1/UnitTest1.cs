@@ -4,12 +4,19 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Diagnostics;
 
 namespace TestProject1;
 
 [TestClass]
 public class UnitTest1
 {
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        Trace.TraceInformation("Running Unit Tests");
+    }
+
     [TestMethod]
     public void ServiceReturnsFalseFromNullInput()
     {

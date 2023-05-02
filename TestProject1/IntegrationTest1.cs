@@ -10,6 +10,12 @@ namespace TestProject1;
 [TestClass]
 public class IntegrationTest1
 {
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        Trace.TraceInformation("Running Integration Tests");
+    }
+
     [TestMethod]
     public async Task ApplicationThrowsMockServiceException()
     {
