@@ -14,7 +14,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "Program").Information("Started");
+Log.ForContext("SourceContext", "Program").Information("Running Program");
 
 try
 {
@@ -30,6 +30,16 @@ try
     builder.Services.AddScoped<IService1, Service1>();
 
     var app = builder.Build();
+
+    app.Use(async (context, next) =>
+    {
+        //https://code-maze.com/aspnetcore-add-custom-headers/
+        const string headerKey = "x-custom-header";
+        var headerValue = app.Configuration.GetSection(headerKey).Value;
+        app.Logger.LogDebug("Adding Header {headerKey}={headerValue}", headerKey, headerValue);
+        context.Response.Headers.Add(headerKey, headerValue);
+        await next();
+    });
 
     app.UseSerilogRequestLogging();
 
