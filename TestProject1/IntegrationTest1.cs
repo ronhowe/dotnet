@@ -2,6 +2,7 @@ using ClassLibrary1;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 using System.Net;
 
 namespace TestProject1;
@@ -10,7 +11,7 @@ namespace TestProject1;
 public class IntegrationTest1
 {
     [TestMethod]
-    public async Task ApplicationThrowsMockException()
+    public async Task ApplicationThrowsMockServiceException()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -31,14 +32,62 @@ public class IntegrationTest1
     }
 
     [TestMethod]
-    public async Task ApplicationReturnsFalseFromNullInput()
+    public async Task ApplicationRespondsOKFromNullInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task ApplicationReturnsFalseFromNullInput()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/");
+
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+    }
+
+    [TestMethod]
+    public async Task ApplicationHeaderExists()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/");
+
+        Assert.IsTrue(response.Headers.Contains("x-custom-header"));
+    }
+
+    [TestMethod]
+    public async Task ApplicationHeaderIsCorrect()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/");
+
+        foreach (var header in response.Headers)
+        {
+            // debugging
+            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+        }
+
+        if (response.Headers.TryGetValues("x-custom-header", out var values))
+        {
+            Assert.AreEqual<string>("webapplication1", values.First());
+        }
+    }
+
+    [TestMethod]
+    public async Task ApplicationRespondsOKFromTrueInput()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }
 
     [TestMethod]
@@ -48,8 +97,17 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+    }
+
+    [TestMethod]
+    public async Task ApplicationRespondsOKFromFalseInput()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }
 
     [TestMethod]
@@ -59,7 +117,6 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
     }
 }
