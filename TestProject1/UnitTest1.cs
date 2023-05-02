@@ -31,9 +31,9 @@ public class UnitTest1
     [TestMethod]
     public void ServiceLogsDebugMessage()
     {
-        var mockLogger = new Mock<ILogger<Service>>();
+        var mockLogger = new Mock<ILogger<Service1>>();
 
-        var service = new Service(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
+        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
 
         service.Run(false);
 
@@ -43,14 +43,14 @@ public class UnitTest1
     [TestMethod]
     public void ServiceThrowsMockServiceException()
     {
-        var service = new Service(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
+        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
         Assert.ThrowsException<MockServiceException>(() => service.Run(null));
     }
 
-    private static ILogger<Service> CreateMockLogger()
+    private static ILogger<Service1> CreateMockLogger()
     {
-        var mockLogger = new Mock<ILogger<Service>>();
+        var mockLogger = new Mock<ILogger<Service1>>();
 
         return mockLogger.Object;
     }
@@ -66,9 +66,9 @@ public class UnitTest1
         return mockConfiguration.Object;
     }
 
-    private static Service CreateServiceWithMockDependencies()
+    private static Service1 CreateServiceWithMockDependencies()
     {
-        var service = new Service(CreateMockLogger(), CreateMockConfiguration(false), CreateMockFeatureManager(false));
+        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(false), CreateMockFeatureManager(false));
 
         return service;
     }

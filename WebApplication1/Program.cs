@@ -27,13 +27,13 @@ try
 
     builder.Services.AddFeatureManagement();
 
-    builder.Services.AddScoped<IService, Service>();
+    builder.Services.AddScoped<IService1, Service1>();
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
 
-    app.MapGet("/", (bool? input, IService service) =>
+    app.MapGet("/", (bool? input, IService1 service) =>
     {
         return service.Run(input);
     });

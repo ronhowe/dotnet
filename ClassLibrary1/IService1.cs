@@ -1,6 +1,6 @@
 ﻿namespace ClassLibrary1;
 
-public interface IService
+public interface IService1
 {
     public bool Run(bool? input);
 }

@@ -4,13 +4,13 @@ using Microsoft.FeatureManagement;
 
 namespace ClassLibrary1;
 
-public class Service : IService
+public class Service1 : IService1
 {
-    private readonly ILogger<Service> _logger;
+    private readonly ILogger<Service1> _logger;
     private readonly IConfiguration _config;
     private readonly IFeatureManager _featureManager;
 
-    public Service(ILogger<Service> logger, IConfiguration config, IFeatureManager featureManager)
+    public Service1(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager)
     {
         _logger = logger;
         _config = config;
