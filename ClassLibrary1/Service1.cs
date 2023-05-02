@@ -19,7 +19,7 @@ public class Service1 : IService1
 
     public bool Run(bool? input)
     {
-        _logger.LogInformation("Running");
+        _logger.LogInformation("Running Service");
 
         _logger.LogDebug("input={input}", input);
 
