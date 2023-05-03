@@ -34,7 +34,7 @@ try
     app.Use(async (context, next) =>
     {
         //https://code-maze.com/aspnetcore-add-custom-headers/
-        const string headerKey = "x-custom-header";
+        const string headerKey = "CustomHeader";
         var headerValue = app.Configuration.GetSection(headerKey).Value;
         app.Logger.LogDebug("Adding Header {headerKey}={headerValue}", headerKey, headerValue);
         context.Response.Headers.Add(headerKey, headerValue);

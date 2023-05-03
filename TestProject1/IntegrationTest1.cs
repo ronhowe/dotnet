@@ -64,7 +64,7 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
-        Assert.IsTrue(response.Headers.Contains("x-custom-header"));
+        Assert.IsTrue(response.Headers.Contains("CustomHeader"));
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class IntegrationTest1
 
         if (response.Headers.TryGetValues("x-custom-header", out var values))
         {
-            Assert.AreEqual<string>("webapplication1", values.First());
+            Assert.AreEqual<string>("default", values.First());
         }
     }
 
