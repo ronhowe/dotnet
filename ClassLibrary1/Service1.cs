@@ -31,6 +31,7 @@ public class Service1 : IService1
 
         if (feature)
         {
+            _logger.LogWarning("Throwing MockServiceException");
             throw new MockServiceException(nameof(ServiceFeatures.MockServiceExceptionToggle));
         }
 
