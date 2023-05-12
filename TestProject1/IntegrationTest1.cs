@@ -1,7 +1,9 @@
 using ClassLibrary1;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Diagnostics;
 using System.Net;
 
@@ -21,7 +23,20 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("Integration");
+            builder.UseEnvironment("Staging");
+            //builder.ConfigureAppConfiguration((context, configBuilder) =>
+            //{
+            //    //configBuilder.AddInMemoryCollection(
+            //    //    new Dictionary<string, string?>
+            //    //    {
+            //    //        ["MockServiceExceptionToggle"] = "true"
+            //    //    });
+
+            //    configBuilder.Sources.Clear();
+            //    Trace.WriteLine("hi there");
+            //    configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
+
+            //});
         });
 
         using var client = application.CreateClient();

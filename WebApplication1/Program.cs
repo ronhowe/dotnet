@@ -29,9 +29,39 @@ try
 
     builder.Services.AddFeatureManagement();
 
+    if (!builder.Environment.IsStaging())
+    {
+
+        builder.Services.AddAzureAppConfiguration();
+
+        var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
+
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
+            options
+                .Connect(connectionString)
+                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
+                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
+                .ConfigureRefresh(refresh =>
+                {
+                    refresh.Register("sentinel", refreshAll: true)
+                    .SetCacheExpiration(new TimeSpan(0, 0, 3));
+                })
+                .UseFeatureFlags(featureFlagOptions =>
+                {
+                    featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 0, 3);
+                });
+        });
+    }
+
     builder.Services.AddScoped<IService1, Service1>();
 
     var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment() && !app.Environment.IsStaging())
+    {
+        app.UseAzureAppConfiguration();
+    }
 
     app.Use(async (context, next) =>
     {
