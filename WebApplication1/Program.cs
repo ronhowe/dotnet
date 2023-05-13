@@ -1,10 +1,12 @@
+// TODO - Use global Usings.cs.
 using ClassLibrary1;
+using Microsoft.AspNetCore.Http;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
 
-// sync with appsettings.json
-const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}]{NewLine}    {Message}{NewLine}{Exception}";
+// TODO - Optionally sync with appsettings.json for consistency in log message styling.
+const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -18,38 +20,139 @@ Log.ForContext("SourceContext", "Program").Information("Running Program");
 
 try
 {
+    Log.ForContext("SourceContext", "Program").Information("Building Logger");
     var builder = WebApplication.CreateBuilder(args);
 
+    Log.ForContext("SourceContext", "Program").Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
     {
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
 
+    Log.ForContext("SourceContext", "Program").Information("Adding Application Insights");
     builder.Services.AddApplicationInsightsTelemetry();
 
+    Log.ForContext("SourceContext", "Program").Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
+    Log.ForContext("SourceContext", "Program").Warning("TODO - Add Authorization");
+    //builder.Services.AddAuthorization();
+
+    Log.ForContext("SourceContext", "Program").Warning("TODO - Add Health Checks");
+    //builder.Services.AddHealthChecks();
+
+    if (builder.Environment.IsProduction())
+    {
+        Log.ForContext("SourceContext", "Program").Information("Adding Azure App Configuration");
+        builder.Services.AddAzureAppConfiguration();
+
+        Log.ForContext("SourceContext", "Program").Information("Getting Azure App Configuration Connection String");
+        var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
+
+        Log.ForContext("SourceContext", "Program").Information("Configuring Azure App Configuration");
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
+            options
+            // TODO - Confirm all of these work as expected and/or retire connectionString.
+                .Connect(connectionString)
+                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
+                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
+                .ConfigureRefresh(refresh =>
+                {
+                    refresh.Register("sentinel", refreshAll: true)
+                    .SetCacheExpiration(new TimeSpan(0, 0, 3));
+                })
+                .UseFeatureFlags(featureFlagOptions =>
+                {
+                    featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 0, 3);
+                });
+        });
+    }
+    else
+    {
+        Log.ForContext("SourceContext", "Program").Information("Skipping Azure App Configuration");
+    }
+
+    Log.ForContext("SourceContext", "Program").Information("Adding IService");
     builder.Services.AddScoped<IService1, Service1>();
 
+    Log.ForContext("SourceContext", "Program").Information("Building Application");
     var app = builder.Build();
 
+    app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
+    app.Logger.LogWarning("TODO - Log Pertinent Configuration Values?");
+
+    // TODO - Reimplement.  This is a hack.
+    if (app.Environment.IsProduction())
+    {
+        app.Logger.LogInformation("Using Azure App Configuration");
+        app.UseAzureAppConfiguration();
+    }
+    else
+    {
+        app.Logger.LogInformation("Not Using Azure App Configuration");
+    }
+
+    // TODO - Refactor to ICustomHeader.
+    app.Logger.LogInformation("Using Custom Header Lamda");
     app.Use(async (context, next) =>
     {
         //https://code-maze.com/aspnetcore-add-custom-headers/
         const string headerKey = "CustomHeader";
         var headerValue = app.Configuration.GetSection(headerKey).Value;
-        app.Logger.LogDebug("Adding Header {headerKey}={headerValue}", headerKey, headerValue);
+        app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
         context.Response.Headers.Add(headerKey, headerValue);
         await next();
     });
 
+    app.Logger.LogInformation("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
+    app.Logger.LogWarning("TODO - Implement HTTPS Redirection");
+    //app.UseHttpsRedirection();
+
+    app.Logger.LogWarning("TODO - Review Environment vs Feature Requirements");
+    if (!app.Environment.IsDevelopment())
+    {
+        app.Logger.LogWarning("TODO - Implement Exception Handler");
+        //app.UseExceptionHandler("/Error");
+
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.Logger.LogWarning("TODO - Implement HSTS");
+        //app.UseHsts();
+    }
+    else
+    {
+        app.Logger.LogWarning("TODO - Implement Else Condition");
+    }
+
+    app.Logger.LogWarning("TODO - Implement Health Checks");
+    //app.UseHealthChecks(ApplicationEndpoint.PowerOnSelfTest);
+
+    app.Logger.LogWarning("TODO - Implement Authentication");
+    //app.UseAuthentication();
+
+    app.Logger.LogWarning("TODO - Implement Authorization");
+    //app.UseAuthorization();
+
+    app.Logger.LogInformation("Mapping Get");
+    app.Logger.LogWarning("TODO - Implement Endpoint Constants");
     app.MapGet("/", (bool? input, IService1 service) =>
     {
+        app.Logger.LogWarning("TODO - Implement Identity And Claims Services");
+        // TODO - Example Code And Comments
+        //httpContext.ValidateAppRole(ApplicationRole.CanRead);
+        //public static class ApplicationRole
+        //{
+        //    public const string CanRead = "DaemonAppRole"; // TODO Line up with ARM Deployment
+        //    public const string CanWrite = "DataWriterRole"; // TODO Line up with ARM Deployment
+        //}
         return service.Run(input);
     });
+    app.Logger.LogDebug("TODO - Implement Authorization");
+    //.RequireAuthorization();
 
+    app.Logger.LogInformation("Running Application");
     app.Run();
 }
 catch (Exception ex)

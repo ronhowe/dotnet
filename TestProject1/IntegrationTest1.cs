@@ -21,7 +21,19 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("Integration");
+            builder.UseEnvironment("Staging");
+
+            Trace.TraceWarning("TODO - Mock Configuration In Integration Tests");
+            // TODO - Example Code And Comments
+            //builder.ConfigureAppConfiguration((context, configBuilder) =>
+            //{
+            //    //configBuilder.AddInMemoryCollection(
+            //    //    new Dictionary<string, string?>
+            //    //    {
+            //    //        ["MockServiceExceptionToggle"] = "true"
+            //    //    });
+            //    //configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
+            //});
         });
 
         using var client = application.CreateClient();
@@ -64,6 +76,12 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
+        // debugging
+        foreach (var header in response.Headers)
+        {
+            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+        }
+
         Assert.IsTrue(response.Headers.Contains("CustomHeader"));
     }
 
@@ -74,13 +92,13 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
+        // debugging
         foreach (var header in response.Headers)
         {
-            // debugging
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
         }
 
-        if (response.Headers.TryGetValues("x-custom-header", out var values))
+        if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
             Assert.AreEqual<string>("default", values.First());
         }
