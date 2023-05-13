@@ -1,9 +1,7 @@
 using ClassLibrary1;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Diagnostics;
 using System.Net;
 
@@ -24,6 +22,9 @@ public class IntegrationTest1
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Staging");
+
+            Trace.TraceWarning("TODO - Mock Configuration In Integration Tests");
+            // TODO - Example Code And Comments
             //builder.ConfigureAppConfiguration((context, configBuilder) =>
             //{
             //    //configBuilder.AddInMemoryCollection(
@@ -31,11 +32,7 @@ public class IntegrationTest1
             //    //    {
             //    //        ["MockServiceExceptionToggle"] = "true"
             //    //    });
-
-            //    configBuilder.Sources.Clear();
-            //    Trace.WriteLine("hi there");
-            //    configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
-
+            //    //configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
             //});
         });
 
@@ -79,6 +76,12 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
+        // debugging
+        foreach (var header in response.Headers)
+        {
+            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+        }
+
         Assert.IsTrue(response.Headers.Contains("CustomHeader"));
     }
 
@@ -89,13 +92,13 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
+        // debugging
         foreach (var header in response.Headers)
         {
-            // debugging
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
         }
 
-        if (response.Headers.TryGetValues("x-custom-header", out var values))
+        if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
             Assert.AreEqual<string>("default", values.First());
         }
