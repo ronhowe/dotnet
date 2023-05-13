@@ -48,7 +48,29 @@ public class IntegrationTest1
         //{
         //    Assert.IsInstanceOfType<MockServiceException>(ex);
         //}
-        await client.Invoking(async y => await client.GetAsync("/")).Should().ThrowAsync<MockServiceException>().WithMessage("MockServiceExceptionToggle");
+        await client.Invoking(async y => await client.GetAsync("/Service1/")).Should().ThrowAsync<MockServiceException>().WithMessage("MockServiceExceptionToggle");
+    }
+
+    [TestMethod]
+    public async Task HealthCheckRespondsOK()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/health");
+
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+    }
+
+    [TestMethod]
+    public async Task HealthCheckReturnsHealthy()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("/health");
+
+        //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
     }
 
     [TestMethod]
@@ -56,7 +78,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/Service1/");
 
         //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -67,7 +89,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/Service1/");
 
         //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
@@ -78,7 +100,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/Service1/");
 
         // debugging
         foreach (var header in response.Headers)
@@ -95,7 +117,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/Service1/");
 
         // debugging
         foreach (var header in response.Headers)
@@ -115,7 +137,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
+        using var response = await client.GetAsync($"/Service1/?input={Boolean.TrueString}");
 
         //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -126,7 +148,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
+        using var response = await client.GetAsync($"/Service1/?input={Boolean.TrueString}");
 
         //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeTrue();
@@ -137,7 +159,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
+        using var response = await client.GetAsync($"/Service1/?input={Boolean.FalseString}");
 
         //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -148,7 +170,7 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
+        using var response = await client.GetAsync($"/Service1/?input={Boolean.FalseString}");
 
         //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();

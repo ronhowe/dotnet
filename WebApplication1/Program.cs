@@ -2,6 +2,7 @@ using ClassLibrary1;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
+using WebApplication1;
 
 // TODO - Optionally sync with appsettings.json for consistency in log message styling.
 const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
@@ -36,8 +37,9 @@ try
     Log.ForContext("SourceContext", "Program").Warning("TODO - Add Authorization");
     //builder.Services.AddAuthorization();
 
-    Log.ForContext("SourceContext", "Program").Warning("TODO - Add Health Checks");
-    //builder.Services.AddHealthChecks();
+    Log.ForContext("SourceContext", "Program").Warning("TODO - Inject Configuration And Logging to Health Check");
+    //https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
+    builder.Services.AddHealthChecks().AddCheck<SampleHealthCheck>("Sample");
 
     if (builder.Environment.IsProduction())
     {
@@ -113,7 +115,7 @@ try
     if (!app.Environment.IsDevelopment())
     {
         app.Logger.LogWarning("TODO - Implement Exception Handler");
-        //app.UseExceptionHandler("/Error");
+        //app.UseExceptionHandler("/error");
 
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.Logger.LogWarning("TODO - Implement HSTS");
@@ -126,6 +128,7 @@ try
 
     app.Logger.LogWarning("TODO - Implement Health Checks");
     //app.UseHealthChecks(ApplicationEndpoint.PowerOnSelfTest);
+    app.UseHealthChecks("/health");
 
     app.Logger.LogWarning("TODO - Implement Authentication");
     //app.UseAuthentication();
@@ -135,7 +138,7 @@ try
 
     app.Logger.LogInformation("Mapping Get");
     app.Logger.LogWarning("TODO - Implement Endpoint Constants");
-    app.MapGet("/", (bool? input, IService1 service) =>
+    app.MapGet("/Service1", (bool? input, IService1 service) =>
     {
         app.Logger.LogWarning("TODO - Implement Identity And Claims Services");
         // TODO - Example Code And Comments
