@@ -60,11 +60,13 @@ try
                 .ConfigureRefresh(refresh =>
                 {
                     refresh.Register("sentinel", refreshAll: true)
-                    .SetCacheExpiration(new TimeSpan(0, 0, 3));
+                    //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                    .SetCacheExpiration(new TimeSpan(0, 1, 0));
                 })
                 .UseFeatureFlags(featureFlagOptions =>
                 {
-                    featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 0, 3);
+                    //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                    featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 1, 0);
                 });
         });
     }
