@@ -21,21 +21,21 @@ public class UnitTest1
     [TestMethod]
     public void ServiceReturnsFalseFromNullInput()
     {
-        //Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
+        Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
         CreateServiceWithMockDependencies().Run(null).Should().BeFalse();
     }
 
     [TestMethod]
     public void ServiceReturnsTrueFromTrueInput()
     {
-        //Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
+        Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
         CreateServiceWithMockDependencies().Run(true).Should().BeTrue();
     }
 
     [TestMethod]
     public void ServiceReturnsFalseFromFalseInput()
     {
-        //Assert.IsFalse(CreateServiceWithMockDependencies().Run(false));
+        Assert.IsFalse(CreateServiceWithMockDependencies().Run(false));
         CreateServiceWithMockDependencies().Run(false).Should().BeFalse();
     }
 
@@ -56,7 +56,7 @@ public class UnitTest1
     {
         var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
-        //Assert.ThrowsException<MockServiceException>(() => service.Run(null));
+        Assert.ThrowsException<MockServiceException>(() => service.Run(null));
         service.Invoking(y => y.Run(null)).Should().Throw<MockServiceException>().WithMessage("MockServiceExceptionToggle");
     }
 

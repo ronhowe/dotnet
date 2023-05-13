@@ -128,7 +128,7 @@ try
 
     app.Logger.LogWarning("TODO - Implement Health Checks");
     //app.UseHealthChecks(ApplicationEndpoint.PowerOnSelfTest);
-    app.UseHealthChecks("/health");
+    app.UseHealthChecks(ApplicationEndpoint.HealthCheck);
 
     app.Logger.LogWarning("TODO - Implement Authentication");
     //app.UseAuthentication();
@@ -138,7 +138,7 @@ try
 
     app.Logger.LogInformation("Mapping Get");
     app.Logger.LogWarning("TODO - Implement Endpoint Constants");
-    app.MapGet("/Service1", (bool? input, IService1 service) =>
+    app.MapGet(ApplicationEndpoint.Service1, (bool? input, IService1 service) =>
     {
         app.Logger.LogWarning("TODO - Implement Identity And Claims Services");
         // TODO - Example Code And Comments
