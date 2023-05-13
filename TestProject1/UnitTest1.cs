@@ -19,6 +19,18 @@ public class UnitTest1
     }
 
     [TestMethod]
+    public void ServiceLogsDebugMessage()
+    {
+        var mockLogger = new Mock<ILogger<Service1>>();
+
+        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
+
+        service.Run(false);
+
+        mockLogger.VerifyDebugWasCalled($"input={Boolean.FalseString}");
+    }
+
+    [TestMethod]
     public void ServiceReturnsFalseFromNullInput()
     {
         Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
@@ -37,18 +49,6 @@ public class UnitTest1
     {
         Assert.IsFalse(CreateServiceWithMockDependencies().Run(false));
         CreateServiceWithMockDependencies().Run(false).Should().BeFalse();
-    }
-
-    [TestMethod]
-    public void ServiceLogsDebugMessage()
-    {
-        var mockLogger = new Mock<ILogger<Service1>>();
-
-        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
-
-        service.Run(false);
-
-        mockLogger.VerifyDebugWasCalled($"input={Boolean.FalseString}");
     }
 
     [TestMethod]

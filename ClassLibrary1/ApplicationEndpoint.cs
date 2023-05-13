@@ -3,5 +3,5 @@
 public static class ApplicationEndpoint
 {
     public const string HealthCheck = "/health";
-    public const string Service1 = "/Service1";
+    public const string Service1 = "/service1";
 }
