@@ -14,7 +14,7 @@ public static class Function1
     {
         log.LogInformation("Running Function");
 
-        log.LogWarning("todo - replace with IService");
+        log.LogWarning("TODO - Inject IConfiguration And IService");
         _ = Boolean.TryParse(req.Query["input"].ToString(), out bool input);
         log.LogDebug($"input={input}");
 
