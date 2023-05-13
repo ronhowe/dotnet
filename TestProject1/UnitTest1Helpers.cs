@@ -6,10 +6,12 @@ internal static class UnitTest1Helpers
     //https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
     public static Mock<ILogger<T>> VerifyDebugWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)
     {
+        //TODO - Refactor And Remove Pragma
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
+        //TODO - Refactor And Remove Pragma
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         logger.Verify(
             x => x.Log(

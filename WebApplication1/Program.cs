@@ -1,6 +1,4 @@
-// TODO - Use global Usings.cs.
 using ClassLibrary1;
-using Microsoft.AspNetCore.Http;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
@@ -53,7 +51,7 @@ try
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
-            // TODO - Confirm all of these work as expected and/or retire connectionString.
+                // TODO - Confirm all of these work as expected and/or retire connectionString.
                 .Connect(connectionString)
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
@@ -82,7 +80,7 @@ try
     app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
     app.Logger.LogWarning("TODO - Log Pertinent Configuration Values?");
 
-    // TODO - Reimplement.  This is a hack.
+    // TODO - Reimplement For Non-Production Environment(s)
     if (app.Environment.IsProduction())
     {
         app.Logger.LogInformation("Using Azure App Configuration");
@@ -111,7 +109,7 @@ try
     app.Logger.LogWarning("TODO - Implement HTTPS Redirection");
     //app.UseHttpsRedirection();
 
-    app.Logger.LogWarning("TODO - Review Environment vs Feature Requirements");
+    app.Logger.LogWarning("TODO - Review Feature Requirements Per Environment");
     if (!app.Environment.IsDevelopment())
     {
         app.Logger.LogWarning("TODO - Implement Exception Handler");
@@ -157,7 +155,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Fatal Error");
+    Log.Fatal(ex, "Program Exception");
 }
 finally
 {

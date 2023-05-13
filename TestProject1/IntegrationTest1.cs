@@ -1,4 +1,5 @@
 using ClassLibrary1;
+using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -38,15 +39,16 @@ public class IntegrationTest1
 
         using var client = application.CreateClient();
 
-        try
-        {
-            using var response = await client.GetAsync("/");
-            throw new Exception();
-        }
-        catch (Exception ex)
-        {
-            Assert.IsInstanceOfType<MockServiceException>(ex);
-        }
+        //try
+        //{
+        //    using var response = await client.GetAsync("/");
+        //    throw new Exception();
+        //}
+        //catch (Exception ex)
+        //{
+        //    Assert.IsInstanceOfType<MockServiceException>(ex);
+        //}
+        await client.Invoking(async y => await client.GetAsync("/")).Should().ThrowAsync<MockServiceException>().WithMessage("MockServiceExceptionToggle");
     }
 
     [TestMethod]
@@ -56,7 +58,8 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
@@ -66,7 +69,8 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync("/");
 
-        Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
     }
 
     [TestMethod]
@@ -82,7 +86,8 @@ public class IntegrationTest1
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
         }
 
-        Assert.IsTrue(response.Headers.Contains("CustomHeader"));
+        //Assert.IsTrue(response.Headers.Contains("CustomHeader"));
+        response.Headers.Contains("CustomHeader").Should().BeTrue();
     }
 
     [TestMethod]
@@ -100,7 +105,8 @@ public class IntegrationTest1
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            Assert.AreEqual<string>("default", values.First());
+            //Assert.AreEqual<string>("default", values.First());
+            values.First().Should<string>().Be("default");
         }
     }
 
@@ -111,7 +117,8 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
@@ -121,7 +128,8 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.TrueString}");
 
-        Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeTrue();
     }
 
     [TestMethod]
@@ -131,7 +139,8 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
@@ -141,6 +150,7 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"/?input={Boolean.FalseString}");
 
-        Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
     }
 }
