@@ -25,7 +25,7 @@ Log.ForContext("SourceContext", contextValue).Information("Running Program");
 
 try
 {
-    Log.ForContext("SourceContext", contextValue).Information("Initializing Builder");
+    Log.ForContext("SourceContext", contextValue).Information("Creating Builder");
     var builder = WebApplication.CreateBuilder(args);
 
     //help - https://www.youtube.com/watch?v=pYl_jnqlXu8
