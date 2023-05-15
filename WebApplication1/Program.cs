@@ -95,7 +95,10 @@ try
 
     if (app.Environment.IsDevelopment())
     {
+        app.Logger.LogInformation("Using Swagger");
         app.UseSwagger();
+
+        app.Logger.LogInformation("Using Swagger UI");
         app.UseSwaggerUI();
     }
 
@@ -152,7 +155,6 @@ try
     //app.UseAuthorization();
 
     app.Logger.LogInformation("Mapping Get");
-    //todo - implement endpoint constants
     app.MapGet(ApplicationEndpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
     {
         //todo - implement identity and claims services

@@ -23,6 +23,11 @@ public class Service1 : IService1
 
         _logger.LogDebug("input={input}", input);
 
+        //note - example of reading boolean from config via iconfiguration
+        var config = _config.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle)).Value;
+        _logger.LogDebug("config={config}", config);
+
+        //note - example of reading boolean from config via ifeaturemanager
         var feature = _featureManager.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result;
         _logger.LogDebug("feature={feature}", feature);
 

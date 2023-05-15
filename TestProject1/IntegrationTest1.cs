@@ -1,7 +1,7 @@
 using ClassLibrary1;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Net;
@@ -24,7 +24,6 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync(ApplicationEndpoint.Service1);
 
-        //debugging
         foreach (var header in response.Headers)
         {
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
@@ -41,7 +40,6 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync(ApplicationEndpoint.Service1);
 
-        //debugging
         foreach (var header in response.Headers)
         {
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
@@ -125,33 +123,17 @@ public class IntegrationTest1
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("Staging");
-
-            Trace.TraceWarning("TODO - Mock Configuration In Integration Tests");
-            //todo - example code and comments
-            //builder.ConfigureAppConfiguration((context, configBuilder) =>
-            //{
-            //    //configBuilder.AddInMemoryCollection(
-            //    //    new Dictionary<string, string?>
-            //    //    {
-            //    //        ["MockServiceExceptionToggle"] = "true"
-            //    //    });
-            //    //configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
-            //});
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
+            });
         });
 
         using var client = application.CreateClient();
+        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
 
-        try
-        {
-            using var response = await client.GetAsync(ApplicationEndpoint.Service1);
-            throw new Exception();
-        }
-        catch (Exception ex)
-        {
-            Assert.IsInstanceOfType<MockServiceException>(ex);
-        }
-        await client.Invoking(async y => await client.GetAsync(ApplicationEndpoint.Service1)).Should().ThrowAsync<MockServiceException>().WithMessage("MockServiceExceptionToggle");
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
 
     [TestMethod]
