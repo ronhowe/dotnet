@@ -8,7 +8,9 @@ using WebApplication1;
 const string contextValue = "Program";
 
 //todo - optionally sync with appsettings.json for consistency in log message styling
-const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
+//todo - choose a style that is easy to understand in development and production
+//const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
+const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
