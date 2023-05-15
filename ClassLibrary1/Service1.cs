@@ -35,41 +35,43 @@ public class Service1 : IService1
             throw new MockServiceException(nameof(ServiceFeatures.MockServiceExceptionToggle));
         }
 
-         //todo - mock resource throttling
-        //void MockCpuThrottle()
-        //{
-        //    int iterations = Int32.Parse(_configuration["iterations"]);
+        //todo - mock resource throttling
+        /*
+        void MockCpuThrottle()
+        {
+            int iterations = Int32.Parse(_configuration["iterations"]);
 
-        //    logger.LogDebug("iterations = " + iterations);
+            logger.LogDebug("iterations = " + iterations);
 
-        //    if (iterations > 20000)
-        //    {
-        //        iterations = 20000;
-        //    }
+            if (iterations > 20000)
+            {
+                iterations = 20000;
+            }
 
-        //    List<int> primes = new List<int>();
+            List<int> primes = new List<int>();
 
-        //    bool isPrime = true;
+            bool isPrime = true;
 
-        //    for (int i = 2; i <= iterations; i++)
-        //    {
-        //        for (int j = 2; j <= iterations; j++)
-        //        {
-        //            if (i != j && i % j == 0)
-        //            {
-        //                isPrime = false;
-        //                break;
-        //            }
-        //        }
+            for (int i = 2; i <= iterations; i++)
+            {
+                for (int j = 2; j <= iterations; j++)
+                {
+                    if (i != j && i % j == 0)
+                    {
+                        isPrime = false;
+                        break;
+                    }
+                }
 
-        //        if (isPrime)
-        //        {
-        //            primes.Add(i);
-        //        }
+                if (isPrime)
+                {
+                    primes.Add(i);
+                }
 
-        //        isPrime = true;
-        //    }
-        //}
+                isPrime = true;
+            }
+        }
+       */
 
         return input != null && input.Value;
     }

@@ -128,7 +128,7 @@ public class IntegrationTest1
             builder.UseEnvironment("Staging");
 
             Trace.TraceWarning("TODO - Mock Configuration In Integration Tests");
-             //todo - example code and comments
+            //todo - example code and comments
             //builder.ConfigureAppConfiguration((context, configBuilder) =>
             //{
             //    //configBuilder.AddInMemoryCollection(

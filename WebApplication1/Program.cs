@@ -20,7 +20,7 @@ Log.ForContext("SourceContext", "Program").Information("Running Program");
 
 try
 {
-    Log.ForContext("SourceContext", "Program").Information("Building Logger");
+    Log.ForContext("SourceContext", "Program").Information("Initializing Builder");
     var builder = WebApplication.CreateBuilder(args);
 
     Log.ForContext("SourceContext", "Program").Information("Using Serilog");
@@ -54,7 +54,7 @@ try
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
-                // todo - confirm all of these work as expected and/or retire connectionstring
+                //todo - confirm all of these work as expected and/or retire connectionstring
                 .Connect(connectionString)
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
@@ -85,8 +85,8 @@ try
     Log.ForContext("SourceContext", "Program").Information("Building Application");
     var app = builder.Build();
 
-    app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
     //todo - log pertinent configuration values
+    app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
 
     if (app.Environment.IsDevelopment())
     {
@@ -129,13 +129,13 @@ try
         //todo - implement exception handler
         //app.UseExceptionHandler("/error");
 
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         //todo - implement hsts
+        //help - https://aka.ms/aspnetcore-hsts.
         //app.UseHsts();
     }
     else
     {
-        app.Logger.LogWarning("TODO - Implement Else Condition");
+        //todo - implement else condition
     }
 
     app.UseHealthChecks(ApplicationEndpoint.HealthCheck);
@@ -151,15 +151,17 @@ try
     app.MapGet(ApplicationEndpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
     {
         //todo - implement identity and claims services
-        //httpContext.ValidateAppRole(ApplicationRole.CanRead);
-        //public static class ApplicationRole
-        //{
-        //    public const string CanRead = "DaemonAppRole"; // TODO Line up with ARM Deployment
-        //    public const string CanWrite = "DataWriterRole"; // TODO Line up with ARM Deployment
-        //}
+        /*
+        httpContext.ValidateAppRole(ApplicationRole.CanRead);
+        public static class ApplicationRole
+        {
+            public const string CanRead = "DaemonAppRole";
+            public const string CanWrite = "DataWriterRole";
+        }
+        */
         return service.Run(input);
     });
-    app.Logger.LogDebug("TODO - Implement Authorization");
+    //todo - implement authorization
     //.RequireAuthorization();
 
     app.Logger.LogInformation("Running Application");
