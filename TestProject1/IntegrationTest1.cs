@@ -157,4 +157,39 @@ public class IntegrationTest1
         Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
         response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
     }
+
+    [TestMethod]
+    public async Task HealthCheckHeaderExists()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+
+        foreach (var header in response.Headers)
+        {
+            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+        }
+
+        Assert.IsTrue(response.Headers.Contains("CustomHeader"));
+        response.Headers.Contains("CustomHeader").Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task HealthCheckHeaderIsCorrect()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+
+        foreach (var header in response.Headers)
+        {
+            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+        }
+
+        if (response.Headers.TryGetValues("CustomHeader", out var values))
+        {
+            Assert.AreEqual<string>("default", values.First());
+            values.First().Should<string>().Be("default");
+        }
+    }
 }

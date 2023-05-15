@@ -28,6 +28,9 @@ try
     Log.ForContext("SourceContext", contextValue).Information("Initializing Builder");
     var builder = WebApplication.CreateBuilder(args);
 
+    //help - https://www.youtube.com/watch?v=pYl_jnqlXu8
+    //note - configure services (order doesn't matter unless you materialize dependencies)
+
     Log.ForContext("SourceContext", contextValue).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
     {
@@ -86,6 +89,8 @@ try
 
     Log.ForContext("SourceContext", contextValue).Information("Adding IService");
     builder.Services.AddScoped<IService1, Service1>();
+
+    //note - configure (order matters, e.g. add swagger before auth)
 
     Log.ForContext("SourceContext", contextValue).Information("Building Application");
     var app = builder.Build();
