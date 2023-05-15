@@ -24,7 +24,7 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync(ApplicationEndpoint.Service1);
 
-        // debugging
+        //debugging
         foreach (var header in response.Headers)
         {
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
@@ -41,7 +41,7 @@ public class IntegrationTest1
         using var client = application.CreateClient();
         using var response = await client.GetAsync(ApplicationEndpoint.Service1);
 
-        // debugging
+        //debugging
         foreach (var header in response.Headers)
         {
             Trace.TraceInformation($"{header.Key}={header.Value.First()}");
@@ -128,7 +128,7 @@ public class IntegrationTest1
             builder.UseEnvironment("Staging");
 
             Trace.TraceWarning("TODO - Mock Configuration In Integration Tests");
-            // TODO - Example Code And Comments
+             //todo - example code and comments
             //builder.ConfigureAppConfiguration((context, configBuilder) =>
             //{
             //    //configBuilder.AddInMemoryCollection(

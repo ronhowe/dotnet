@@ -9,8 +9,8 @@ public class SampleHealthCheck : IHealthCheck
     {
         var isHealthy = true;
 
-        // TODO - Implement Robust Health Check Logic
-        // TODO - Inject Configuration And Logging Dependencies
+        // todo - implement robust health check logic
+        // todo - inject configuration and logging dependencies
 
         if (isHealthy)
         {

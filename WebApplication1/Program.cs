@@ -5,7 +5,7 @@ using Serilog;
 using Serilog.Events;
 using WebApplication1;
 
-// TODO - Optionally sync with appsettings.json for consistency in log message styling.
+//todo - optionally sync with appsettings.json for consistency in log message styling
 const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
@@ -35,11 +35,11 @@ try
     Log.ForContext("SourceContext", "Program").Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
-    Log.ForContext("SourceContext", "Program").Warning("TODO - Add Authorization");
+    //todo - add authorization
     //builder.Services.AddAuthorization();
 
-    Log.ForContext("SourceContext", "Program").Warning("TODO - Inject Configuration And Logging to Health Check");
-    //https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
+    //todo - inject configuration and logging to health check
+    //help - https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
     builder.Services.AddHealthChecks().AddCheck<SampleHealthCheck>("Sample");
 
     if (builder.Environment.IsProduction())
@@ -54,19 +54,19 @@ try
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
-                // TODO - Confirm all of these work as expected and/or retire connectionString.
+                // todo - confirm all of these work as expected and/or retire connectionstring
                 .Connect(connectionString)
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
                 //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
                 .ConfigureRefresh(refresh =>
                 {
                     refresh.Register("sentinel", refreshAll: true)
-                    //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                    //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
                     .SetCacheExpiration(new TimeSpan(0, 1, 0));
                 })
                 .UseFeatureFlags(featureFlagOptions =>
                 {
-                    //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                    //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
                     featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 1, 0);
                 });
         });
@@ -86,7 +86,7 @@ try
     var app = builder.Build();
 
     app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
-    app.Logger.LogWarning("TODO - Log Pertinent Configuration Values?");
+    //todo - log pertinent configuration values
 
     if (app.Environment.IsDevelopment())
     {
@@ -94,7 +94,7 @@ try
         app.UseSwaggerUI();
     }
 
-    // TODO - Reimplement For Non-Production Environment(s)
+    //todo - reimplement for non-production environment(s)
     if (app.Environment.IsProduction())
     {
         app.Logger.LogInformation("Using Azure App Configuration");
@@ -105,11 +105,11 @@ try
         app.Logger.LogInformation("Not Using Azure App Configuration");
     }
 
-    // TODO - Refactor to ICustomHeader.
+    //todo - refactor to icustomheader
     app.Logger.LogInformation("Using Custom Header Lamda");
     app.Use(async (context, next) =>
     {
-        //https://code-maze.com/aspnetcore-add-custom-headers/
+        //help - https://code-maze.com/aspnetcore-add-custom-headers/
         const string headerKey = "CustomHeader";
         var headerValue = app.Configuration.GetSection(headerKey).Value;
         app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
@@ -120,17 +120,17 @@ try
     app.Logger.LogInformation("Using Serilog Request Logging");
     app.UseSerilogRequestLogging();
 
-    app.Logger.LogWarning("TODO - Implement HTTPS Redirection");
+    //todo - implement https redirection
     //app.UseHttpsRedirection();
 
-    app.Logger.LogWarning("TODO - Review Feature Requirements Per Environment");
+    //todo - review feature requirements per environment
     if (!app.Environment.IsDevelopment())
     {
-        app.Logger.LogWarning("TODO - Implement Exception Handler");
+        //todo - implement exception handler
         //app.UseExceptionHandler("/error");
 
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.Logger.LogWarning("TODO - Implement HSTS");
+        //todo - implement hsts
         //app.UseHsts();
     }
     else
@@ -138,22 +138,19 @@ try
         app.Logger.LogWarning("TODO - Implement Else Condition");
     }
 
-    app.Logger.LogWarning("TODO - Implement Health Checks");
-    //app.UseHealthChecks(ApplicationEndpoint.PowerOnSelfTest);
     app.UseHealthChecks(ApplicationEndpoint.HealthCheck);
 
-    app.Logger.LogWarning("TODO - Implement Authentication");
+    //todo - implement authentication
     //app.UseAuthentication();
 
-    app.Logger.LogWarning("TODO - Implement Authorization");
+    //todo - implement authorization
     //app.UseAuthorization();
 
     app.Logger.LogInformation("Mapping Get");
-    app.Logger.LogWarning("TODO - Implement Endpoint Constants");
+    //todo - implement endpoint constants
     app.MapGet(ApplicationEndpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
     {
-        app.Logger.LogWarning("TODO - Implement Identity And Claims Services");
-        // TODO - Example Code And Comments
+        //todo - implement identity and claims services
         //httpContext.ValidateAppRole(ApplicationRole.CanRead);
         //public static class ApplicationRole
         //{

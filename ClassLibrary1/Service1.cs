@@ -35,7 +35,7 @@ public class Service1 : IService1
             throw new MockServiceException(nameof(ServiceFeatures.MockServiceExceptionToggle));
         }
 
-        // TODO - Mock Resource Throttling
+         //todo - mock resource throttling
         //void MockCpuThrottle()
         //{
         //    int iterations = Int32.Parse(_configuration["iterations"]);
