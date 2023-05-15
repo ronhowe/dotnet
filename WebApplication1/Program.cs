@@ -1,4 +1,5 @@
 using ClassLibrary1;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
@@ -75,6 +76,9 @@ try
         Log.ForContext("SourceContext", "Program").Information("Skipping Azure App Configuration");
     }
 
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
     Log.ForContext("SourceContext", "Program").Information("Adding IService");
     builder.Services.AddScoped<IService1, Service1>();
 
@@ -83,6 +87,12 @@ try
 
     app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
     app.Logger.LogWarning("TODO - Log Pertinent Configuration Values?");
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
     // TODO - Reimplement For Non-Production Environment(s)
     if (app.Environment.IsProduction())
@@ -140,7 +150,7 @@ try
 
     app.Logger.LogInformation("Mapping Get");
     app.Logger.LogWarning("TODO - Implement Endpoint Constants");
-    app.MapGet(ApplicationEndpoint.Service1, (bool? input, IService1 service) =>
+    app.MapGet(ApplicationEndpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
     {
         app.Logger.LogWarning("TODO - Implement Identity And Claims Services");
         // TODO - Example Code And Comments
