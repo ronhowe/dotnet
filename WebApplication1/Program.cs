@@ -5,6 +5,8 @@ using Serilog;
 using Serilog.Events;
 using WebApplication1;
 
+const string contextValue = "Program";
+
 //todo - optionally sync with appsettings.json for consistency in log message styling
 const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
@@ -16,23 +18,23 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", "Program").Information("Running Program");
+Log.ForContext("SourceContext", contextValue).Information("Running Program");
 
 try
 {
-    Log.ForContext("SourceContext", "Program").Information("Initializing Builder");
+    Log.ForContext("SourceContext", contextValue).Information("Initializing Builder");
     var builder = WebApplication.CreateBuilder(args);
 
-    Log.ForContext("SourceContext", "Program").Information("Using Serilog");
+    Log.ForContext("SourceContext", contextValue).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
     {
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
 
-    Log.ForContext("SourceContext", "Program").Information("Adding Application Insights");
+    Log.ForContext("SourceContext", contextValue).Information("Adding Application Insights");
     builder.Services.AddApplicationInsightsTelemetry();
 
-    Log.ForContext("SourceContext", "Program").Information("Adding Feature Management");
+    Log.ForContext("SourceContext", contextValue).Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
     //todo - add authorization
@@ -44,13 +46,13 @@ try
 
     if (builder.Environment.IsProduction())
     {
-        Log.ForContext("SourceContext", "Program").Information("Adding Azure App Configuration");
+        Log.ForContext("SourceContext", contextValue).Information("Adding Azure App Configuration");
         builder.Services.AddAzureAppConfiguration();
 
-        Log.ForContext("SourceContext", "Program").Information("Getting Azure App Configuration Connection String");
+        Log.ForContext("SourceContext", contextValue).Information("Getting Azure App Configuration Connection String");
         var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
 
-        Log.ForContext("SourceContext", "Program").Information("Configuring Azure App Configuration");
+        Log.ForContext("SourceContext", contextValue).Information("Configuring Azure App Configuration");
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
@@ -73,16 +75,16 @@ try
     }
     else
     {
-        Log.ForContext("SourceContext", "Program").Information("Skipping Azure App Configuration");
+        Log.ForContext("SourceContext", contextValue).Information("Skipping Azure App Configuration");
     }
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    Log.ForContext("SourceContext", "Program").Information("Adding IService");
+    Log.ForContext("SourceContext", contextValue).Information("Adding IService");
     builder.Services.AddScoped<IService1, Service1>();
 
-    Log.ForContext("SourceContext", "Program").Information("Building Application");
+    Log.ForContext("SourceContext", contextValue).Information("Building Application");
     var app = builder.Build();
 
     //todo - log pertinent configuration values
