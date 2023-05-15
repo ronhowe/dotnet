@@ -23,9 +23,6 @@ public class Service1 : IService1
 
         _logger.LogDebug("input={input}", input);
 
-        var config = _config.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle)).Value;
-        _logger.LogDebug("config={config}", config);
-
         var feature = _featureManager.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result;
         _logger.LogDebug("feature={feature}", feature);
 
