@@ -35,6 +35,9 @@ class Program
 
         builder.ConfigureServices(s =>
         {
+            //todo - i guess this isn't needed as serilog is working
+            //s.AddSingleton<ILogger>(Log.Logger);
+
             Log.ForContext("SourceContext", contextValue).Information("Adding Feature Management");
             s.AddFeatureManagement();
 
