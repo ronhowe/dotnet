@@ -6,10 +6,6 @@
         "isEnabled": true,
         "excludedTypes": "Request"
       }
-    },
-    "LogLevel": {
-      "Default": "Debug",
-      "Microsoft.AspNetCore": "Warning"
     }
   }
 }

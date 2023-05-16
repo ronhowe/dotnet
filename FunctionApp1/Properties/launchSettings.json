@@ -1,7 +1,9 @@
 {
   "profiles": {
     "FunctionApp1": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--port 83",
+      "launchBrowser": false
     },
     "Docker": {
       "commandName": "Docker",

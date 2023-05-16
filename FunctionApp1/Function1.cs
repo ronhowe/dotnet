@@ -1,38 +1,36 @@
 using ClassLibrary1;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Net.Http;
+using System.Net;
 
-namespace FunctionApp1;
-
-public class Function1
+namespace FunctionApp1
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly HttpClient _client;
-#pragma warning restore IDE0052 // Remove unread private members
-    private readonly IService1 _service;
-
-    public Function1(IHttpClientFactory httpClientFactory, IService1 service)
+    public class Function1
     {
-        //help - https://www.youtube.com/watch?v=ffnJTvJujaM
-        _client = httpClientFactory.CreateClient();
-        _service = service;
-    }
+        private readonly ILogger _logger;
+        private readonly IService1 _service;
 
-    [FunctionName("Function1")]
-    public IActionResult Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = ApplicationEndpoint.Service1)] HttpRequest req,
-        ILogger log
-    )
-    {
-        log.LogInformation("Running Function");
+        public Function1(ILoggerFactory loggerFactory, IService1 service)
+        {
+            _logger = loggerFactory.CreateLogger<Function1>();
+            _service = service;
+        }
 
-        _service.Run(Boolean.TryParse(req.Query["input"], out bool output));
+        [Function("Function1")]
+        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "service1")] HttpRequestData req)
+        {
+            _logger.LogInformation("Running Function");
 
-        return new OkObjectResult(output);
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("CustomHeader", "default");
+
+            _service.Run(Boolean.TryParse(req.Query["input"], out bool output));
+
+            response.WriteString(output.ToString());
+
+            return response;
+        }
     }
 }
