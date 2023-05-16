@@ -5,10 +5,10 @@
     },
     "Docker": {
       "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/Function1/?input=true",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/?input=true",
       "launchBrowser": false,
       "publishAllPorts": true,
-      "httpPort": 83,
+      "httpPort": 84,
       "useSSL": true
     }
   }

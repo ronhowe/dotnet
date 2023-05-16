@@ -10,7 +10,7 @@ namespace FunctionApp1;
 public static class Function1
 {
     [FunctionName("Function1")]
-    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log)
+    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Service1")] HttpRequest req, ILogger log)
     {
         log.LogInformation("Running Function");
 
