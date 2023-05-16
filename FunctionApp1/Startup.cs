@@ -9,7 +9,7 @@ public class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
     {
-        //builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient();
         builder.Services.AddScoped<IService1, Service1>();
         //builder.Services.AddSingleton<IService1>((s) =>
         //{
