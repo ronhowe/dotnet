@@ -87,7 +87,7 @@ try
     builder.Services.AddSwaggerGen();
 
     Log.ForContext("SourceContext", contextValue).Information("Adding IService");
-    builder.Services.AddScoped<IService1, Service1>();
+    builder.Services.AddSingleton<IService1, Service1>();
 
     //note - configure (order matters, e.g. add swagger before auth)
 
