@@ -27,6 +27,7 @@ class Program
 
         Log.ForContext("SourceContext", contextValue).Information("Running Program");
 
+        //help - https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide
         var host = new HostBuilder()
             .ConfigureFunctionsWorkerDefaults(builder =>
             {
