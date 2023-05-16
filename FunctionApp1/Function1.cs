@@ -25,7 +25,7 @@ public class Function1
 
     [FunctionName("Function1")]
     public IActionResult Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = ApplicationEndpoint.Service1)] HttpRequest req,
         ILogger log
     )
     {
