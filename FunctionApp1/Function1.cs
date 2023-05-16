@@ -1,23 +1,36 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using ClassLibrary1;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Net;
 
-namespace FunctionApp1;
-
-public static class Function1
+namespace FunctionApp1
 {
-    [FunctionName("Function1")]
-    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Service1")] HttpRequest req, ILogger log)
+    public class Function1
     {
-        log.LogInformation("Running Function");
+        private readonly ILogger _logger;
+        private readonly IService1 _service;
 
-        log.LogWarning("TODO - Inject IConfiguration And IService");
-        _ = Boolean.TryParse(req.Query["input"].ToString(), out bool input);
-        log.LogDebug($"input={input}");
+        public Function1(ILoggerFactory loggerFactory, IService1 service)
+        {
+            _logger = loggerFactory.CreateLogger<Function1>();
+            _service = service;
+        }
 
-        return new OkObjectResult(input);
+        [Function("Function1")]
+        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "service1")] HttpRequestData req)
+        {
+            _logger.LogInformation("Running Function");
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("CustomHeader", "default");
+
+            _service.Run(Boolean.TryParse(req.Query["input"], out bool output));
+
+            response.WriteString(output.ToString());
+
+            return response;
+        }
     }
 }
