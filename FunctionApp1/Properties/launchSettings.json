@@ -6,7 +6,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/Function1/?input=true",
-      "launchBrowser": false,
+      "launchBrowser": true,
       "publishAllPorts": true,
       "httpPort": 83,
       "useSSL": true

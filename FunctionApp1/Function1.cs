@@ -1,3 +1,4 @@
+using ClassLibrary1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -10,12 +11,12 @@ namespace FunctionApp1;
 public static class Function1
 {
     [FunctionName("Function1")]
-    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log)
+    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log, IService1 service)
     {
         log.LogInformation("Running Function");
 
         log.LogWarning("TODO - Inject IConfiguration And IService");
-        _ = Boolean.TryParse(req.Query["input"].ToString(), out bool input);
+        service.Run(Boolean.TryParse(req.Query["input"].ToString(), out bool input));
         log.LogDebug($"input={input}");
 
         return new OkObjectResult(input);
