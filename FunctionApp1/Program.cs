@@ -15,6 +15,8 @@ class Program
     {
         const string contextValue = "Program";
 
+        //todo - choose a style that is easy to understand in development and production
+        //const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
         const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
@@ -28,17 +30,22 @@ class Program
         Log.ForContext("SourceContext", contextValue).Information("Running Program");
 
         //help - https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide
-        var host = new HostBuilder()
-            .ConfigureFunctionsWorkerDefaults(builder =>
-            {
-                builder.Services.AddFeatureManagement();
-            })
-            .ConfigureServices(s =>
-            {
-                s.AddSingleton<IService1, Service1>();
-            })
-            .Build();
+        Log.ForContext("SourceContext", contextValue).Information("Creating Builder");
+        var builder = new HostBuilder().ConfigureFunctionsWorkerDefaults();
 
-        await host.RunAsync();
+        builder.ConfigureServices(s =>
+        {
+            Log.ForContext("SourceContext", contextValue).Information("Adding Feature Management");
+            s.AddFeatureManagement();
+
+            Log.ForContext("SourceContext", contextValue).Information("Adding IService");
+            s.AddSingleton<IService1, Service1>();
+        });
+
+        Log.ForContext("SourceContext", contextValue).Information("Building Application");
+        var app = builder.Build();
+
+        //app.Logger.LogInformation("Running Application");
+        await app.RunAsync();
     }
 }
