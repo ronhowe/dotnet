@@ -69,7 +69,7 @@ public class UnitTest1
 
     private static IConfiguration CreateMockConfiguration(bool value)
     {
-        //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
+        //link - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
         var mockConfigurationSection = new Mock<IConfigurationSection>();
         mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
 

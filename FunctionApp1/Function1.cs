@@ -1,5 +1,4 @@
 using ClassLibrary1;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +28,7 @@ namespace FunctionApp1
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            //help - https://code-maze.com/aspnetcore-add-custom-headers/
+            //link - https://code-maze.com/aspnetcore-add-custom-headers/
             const string headerKey = "CustomHeader";
             var headerValue = _configuration.GetSection(headerKey).Value;
             _logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);

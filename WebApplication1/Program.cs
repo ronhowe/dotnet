@@ -12,7 +12,7 @@ class Program
     {
         const string contextValue = "Program";
 
-        //todo - optionally sync with appsettings.json for consistency in log message styling
+        //help - optionally sync with appsettings.json for consistency in log message styling
         //todo - choose a style that is easy to understand in development and production
         //const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
         const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
@@ -32,8 +32,15 @@ class Program
             Log.ForContext("SourceContext", contextValue).Information("Creating Builder");
             var builder = WebApplication.CreateBuilder(args);
 
-            //help - https://www.youtube.com/watch?v=pYl_jnqlXu8
-            //note - configure services (order doesn't matter unless you materialize dependencies)
+            //                      __  _                                                       _
+            //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___     ___   ___  _ __ __   __(_)  ___   ___  ___
+            // / __| / _ \ | '_ \ | |_ | | / _` || | | || '__| / _ \   / __| / _ \| '__|\ \ / /| | / __| / _ \/ __|
+            //| (__ | (_) || | | ||  _|| || (_| || |_| || |   |  __/   \__ \|  __/| |    \ V / | || (__ |  __/\__ \
+            // \___| \___/ |_| |_||_|  |_| \__, | \__,_||_|    \___|   |___/ \___||_|     \_/  |_| \___| \___||___/
+            //                             |___/
+            //help - configure services (order doesn't matter unless you "materialize dependencies")
+            //todo - learn what that means
+            //link - https://www.youtube.com/watch?v=pYl_jnqlXu8
 
             Log.ForContext("SourceContext", contextValue).Information("Using Serilog");
             builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
@@ -51,7 +58,7 @@ class Program
             //builder.Services.AddAuthorization();
 
             //todo - inject configuration and logging to health check
-            //help - https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
+            //link - https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
             builder.Services.AddHealthChecks().AddCheck<SampleHealthCheck>("Sample");
 
             if (builder.Environment.IsProduction())
@@ -94,12 +101,20 @@ class Program
             Log.ForContext("SourceContext", contextValue).Information("Adding IService");
             builder.Services.AddSingleton<IService1, Service1>();
 
-            //note - configure (order matters, e.g. add swagger before auth)
+            //                      __  _
+            //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___
+            // / __| / _ \ | '_ \ | |_ | | / _` || | | || '__| / _ \
+            //| (__ | (_) || | | ||  _|| || (_| || |_| || |   |  __/
+            // \___| \___/ |_| |_||_|  |_| \__, | \__,_||_|    \___|
+            //                             |___/
+
+            //help - order matters (e.g. add swagger before auth)
 
             Log.ForContext("SourceContext", contextValue).Information("Building Application");
             var app = builder.Build();
 
             //todo - log pertinent configuration values
+            //Log.ForContext("SourceContext", contextValue).Information("Environment = {EnvironmentName}", app.Environment.EnvironmentName); 
             app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
 
             if (app.Environment.IsDevelopment())
@@ -126,11 +141,7 @@ class Program
             app.Logger.LogInformation("Using Custom Header Lamda");
             app.Use(async (context, next) =>
             {
-                //help - https://code-maze.com/aspnetcore-add-custom-headers/
-                const string headerKey = "CustomHeader";
-                var headerValue = app.Configuration.GetSection(headerKey).Value;
-                app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
-                context.Response.Headers.Add(headerKey, headerValue);
+                AddCustomHeader(context, app);
                 await next();
             });
 
@@ -147,7 +158,7 @@ class Program
                 //app.UseExceptionHandler("/error");
 
                 //todo - implement hsts
-                //help - https://aka.ms/aspnetcore-hsts.
+                //link - https://aka.ms/aspnetcore-hsts
                 //app.UseHsts();
             }
             else
@@ -191,5 +202,14 @@ class Program
         {
             Log.CloseAndFlush();
         }
+    }
+
+    private static void AddCustomHeader(HttpContext context, WebApplication app)
+    {
+        //link - https://code-maze.com/aspnetcore-add-custom-headers/
+        const string headerKey = "CustomHeader";
+        var headerValue = app.Configuration.GetSection(headerKey).Value;
+        app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
+        context.Response.Headers.Add(headerKey, headerValue);
     }
 }
