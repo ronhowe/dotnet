@@ -3,19 +3,31 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
+using Serilog;
+using Serilog.Events;
 using System.Net;
-using WebApplication1;
 
 namespace TestProject1;
 
 [TestClass]
 public class IntegrationTest1
 {
+    private const string contextValue = nameof(IntegrationTest1);
+
     [TestInitialize]
     public void TestInitialize()
     {
-        Trace.TraceInformation("Running Integration Tests");
+        const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Console(outputTemplate: outputTemplate)
+            .CreateLogger();
+
+        Log.ForContext("SourceContext", contextValue).Information("Running Integration Test");
     }
 
     [TestMethod]
@@ -27,7 +39,7 @@ public class IntegrationTest1
 
         foreach (var header in response.Headers)
         {
-            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
         }
 
         Assert.IsTrue(response.Headers.Contains("CustomHeader"));
@@ -43,7 +55,7 @@ public class IntegrationTest1
 
         foreach (var header in response.Headers)
         {
-            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
         }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
@@ -168,7 +180,7 @@ public class IntegrationTest1
 
         foreach (var header in response.Headers)
         {
-            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
         }
 
         Assert.IsTrue(response.Headers.Contains("CustomHeader"));
@@ -184,7 +196,7 @@ public class IntegrationTest1
 
         foreach (var header in response.Headers)
         {
-            Trace.TraceInformation($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
         }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))

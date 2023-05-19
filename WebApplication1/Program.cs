@@ -5,7 +5,7 @@ using Serilog;
 using Serilog.Events;
 using WebApplication1;
 
-const string contextValue = "Program";
+const string contextValue = nameof(Program);
 
 //help - optionally sync with appsettings.json for consistency in log message styling
 //todo - choose a style that is easy to understand in development and production

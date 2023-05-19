@@ -5,17 +5,30 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Diagnostics;
+using Serilog;
+using Serilog.Events;
 
 namespace TestProject1;
 
 [TestClass]
 public class UnitTest1
 {
+    private const string contextValue = nameof(UnitTest1);
+
     [TestInitialize]
     public void TestInitialize()
     {
-        Trace.TraceInformation("Running Unit Tests");
+        const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Console(outputTemplate: outputTemplate)
+            .CreateLogger();
+
+        Log.ForContext("SourceContext", contextValue).Information("Running Unit Test");
     }
 
     [TestMethod]
