@@ -5,8 +5,6 @@ using Serilog;
 using Serilog.Events;
 using WebApplication1;
 
-const string contextValue = nameof(Program);
-
 //help - optionally sync with appsettings.json for consistency in log message styling
 //todo - choose a style that is easy to understand in development and production
 //const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
@@ -20,12 +18,31 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", contextValue).Information("Running Program");
+Log.ForContext("SourceContext", nameof(Program)).Information("Running Program");
 
 try
 {
-    Log.ForContext("SourceContext", contextValue).Information("Creating Builder");
+    Log.ForContext("SourceContext", nameof(Program)).Information("Initializing Builder");
     var builder = WebApplication.CreateBuilder(args);
+
+    #region logging
+
+    // _                       _
+    //| |  ___    __ _   __ _ (_) _ __    __ _
+    //| | / _ \  / _` | / _` || || '_ \  / _` |
+    //| || (_) || (_| || (_| || || | | || (_| |
+    //|_| \___/  \__, | \__, ||_||_| |_| \__, |
+    //           |___/  |___/            |___/
+
+    Log.ForContext("SourceContext", nameof(Program)).Information("Using Serilog");
+    builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
+    {
+        LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
+    });
+
+    #endregion logging
+
+    #region configure services
 
     //                      __  _                                                       _
     //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___     ___   ___  _ __ __   __(_)  ___   ___  ___
@@ -38,16 +55,10 @@ try
     //todo - learn what that means
     //link - https://www.youtube.com/watch?v=pYl_jnqlXu8
 
-    Log.ForContext("SourceContext", contextValue).Information("Using Serilog");
-    builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
-    {
-        LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
-    });
-
-    Log.ForContext("SourceContext", contextValue).Information("Adding Application Insights");
+    Log.ForContext("SourceContext", nameof(Program)).Information("Adding Application Insights");
     builder.Services.AddApplicationInsightsTelemetry();
 
-    Log.ForContext("SourceContext", contextValue).Information("Adding Feature Management");
+    Log.ForContext("SourceContext", nameof(Program)).Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
     //todo - add authorization
@@ -59,13 +70,13 @@ try
 
     if (builder.Environment.IsProduction())
     {
-        Log.ForContext("SourceContext", contextValue).Information("Adding Azure App Configuration");
+        Log.ForContext("SourceContext", nameof(Program)).Information("Adding Azure App Configuration");
         builder.Services.AddAzureAppConfiguration();
 
-        Log.ForContext("SourceContext", contextValue).Information("Getting Azure App Configuration Connection String");
+        Log.ForContext("SourceContext", nameof(Program)).Information("Getting Azure App Configuration Connection String");
         var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
 
-        Log.ForContext("SourceContext", contextValue).Information("Configuring Azure App Configuration");
+        Log.ForContext("SourceContext", nameof(Program)).Information("Configuring Azure App Configuration");
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
@@ -88,14 +99,21 @@ try
     }
     else
     {
-        Log.ForContext("SourceContext", contextValue).Information("Skipping Azure App Configuration");
+        Log.ForContext("SourceContext", nameof(Program)).Information("Skipping Azure App Configuration");
     }
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    Log.ForContext("SourceContext", contextValue).Information("Adding IService");
+    Log.ForContext("SourceContext", nameof(Program)).Information("Adding IService");
     builder.Services.AddSingleton<IService1, Service1>();
+
+    #endregion configure services
+
+    Log.ForContext("SourceContext", nameof(Program)).Information("Initializing Application");
+    var app = builder.Build();
+
+    #region configure
 
     //                      __  _
     //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___
@@ -106,11 +124,7 @@ try
 
     //help - order matters (e.g. add swagger before auth)
 
-    Log.ForContext("SourceContext", contextValue).Information("Building Application");
-    var app = builder.Build();
-
     //todo - log pertinent configuration values
-    //Log.ForContext("SourceContext", contextValue).Information("Environment = {EnvironmentName}", app.Environment.EnvironmentName); 
     app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
 
     if (app.Environment.IsDevelopment())
@@ -162,6 +176,7 @@ try
         //todo - implement else condition
     }
 
+    app.Logger.LogInformation("Using HealthCheck");
     app.UseHealthChecks(ApplicationEndpoint.HealthCheck);
 
     //todo - implement authentication
@@ -187,6 +202,8 @@ try
     //todo - implement authorization
     //.RequireAuthorization();
 
+    #endregion configure
+
     app.Logger.LogInformation("Running Application");
     await app.RunAsync();
 }
@@ -199,6 +216,7 @@ finally
     Log.CloseAndFlush();
 }
 
+#region helpers
 static void AddCustomHeader(HttpContext context, WebApplication app)
 {
     //link - https://code-maze.com/aspnetcore-add-custom-headers/
@@ -207,3 +225,4 @@ static void AddCustomHeader(HttpContext context, WebApplication app)
     app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
     context.Response.Headers.Add(headerKey, headerValue);
 }
+#endregion helpers
