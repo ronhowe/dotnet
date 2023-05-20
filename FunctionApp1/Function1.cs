@@ -21,7 +21,7 @@ namespace FunctionApp1
         }
 
         [Function("Function1")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "service1")] HttpRequestData req)
+        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "service1")] HttpRequestData req)
         {
             _logger.LogInformation("Running Function");
 
