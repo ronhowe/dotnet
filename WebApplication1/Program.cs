@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
-using WebApplication1;
 
 //help - optionally sync with appsettings.json for consistency in log message styling
 //todo - choose a style that is easy to understand in development and production

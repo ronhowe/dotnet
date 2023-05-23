@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace WebApplication1;
+namespace ClassLibrary1;
 
 public class SampleHealthCheck : IHealthCheck
 {
