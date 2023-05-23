@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 
-internal static class UnitTest1Helpers
+internal static class TestHelpers
 {
     //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
     public static Mock<ILogger<T>> VerifyDebugWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)

@@ -10,9 +10,9 @@ using System.Net;
 namespace TestProject1;
 
 [TestClass]
-public class IntegrationTest1
+public class WebApplication1Tests
 {
-    private const string contextValue = nameof(IntegrationTest1);
+    private const string contextValue = nameof(WebApplication1Tests);
 
     [TestInitialize]
     public void TestInitialize()

@@ -11,9 +11,9 @@ using Serilog.Events;
 namespace TestProject1;
 
 [TestClass]
-public class UnitTest1
+public class ClassLibrary1Tests
 {
-    private const string contextValue = nameof(UnitTest1);
+    private const string contextValue = nameof(ClassLibrary1Tests);
 
     [TestInitialize]
     public void TestInitialize()
