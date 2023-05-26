@@ -69,8 +69,8 @@ public class ClassLibrary1Tests
     {
         var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
-        Assert.ThrowsException<MockServiceException>(() => service.Run(null));
-        service.Invoking(y => y.Run(null)).Should().Throw<MockServiceException>().WithMessage("MockServiceExceptionToggle");
+        Assert.ThrowsException<MockService1Exception>(() => service.Run(null));
+        service.Invoking(y => y.Run(null)).Should().Throw<MockService1Exception>().WithMessage("MockService1ExceptionToggle");
     }
 
     private static ILogger<Service1> CreateMockLogger()
@@ -87,7 +87,7 @@ public class ClassLibrary1Tests
         mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
 
         var mockConfiguration = new Mock<IConfiguration>();
-        mockConfiguration.Setup(x => x.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle))).Returns(mockConfigurationSection.Object);
+        mockConfiguration.Setup(x => x.GetSection(nameof(Service1Feature.MockService1ExceptionToggle))).Returns(mockConfigurationSection.Object);
 
         return mockConfiguration.Object;
     }
@@ -102,8 +102,33 @@ public class ClassLibrary1Tests
     private static IFeatureManager CreateMockFeatureManager(bool value)
     {
         var mockFeatureManager = new Mock<IFeatureManager>();
-        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result).Returns(value);
+        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result).Returns(value);
 
         return mockFeatureManager.Object;
+    }
+}
+
+internal static class TestHelpers
+{
+    public static Mock<ILogger<T>> VerifyDebugWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)
+    {
+        //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
+        //todo - refactor and remove pragma
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+        //todo - refactor and remove pragma
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        logger.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Debug),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => state(v, t)),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)));
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        return logger;
     }
 }

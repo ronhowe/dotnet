@@ -24,17 +24,17 @@ public class Service1 : IService1
         _logger.LogDebug("input={input}", input);
 
         //help - example of reading boolean from config via iconfiguration
-        var config = _config.GetSection(nameof(ServiceFeatures.MockServiceExceptionToggle)).Value;
+        var config = _config.GetSection(nameof(Service1Feature.MockService1ExceptionToggle)).Value;
         _logger.LogDebug("config={config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
-        var feature = _featureManager.IsEnabledAsync(nameof(ServiceFeatures.MockServiceExceptionToggle)).Result;
+        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result;
         _logger.LogDebug("feature={feature}", feature);
 
         if (feature)
         {
             _logger.LogWarning("Throwing MockServiceException");
-            throw new MockServiceException(nameof(ServiceFeatures.MockServiceExceptionToggle));
+            throw new MockService1Exception(nameof(Service1Feature.MockService1ExceptionToggle));
         }
 
         //todo - mock resource throttling
@@ -77,4 +77,9 @@ public class Service1 : IService1
 
         return input != null && input.Value;
     }
+}
+
+public interface IService1
+{
+    public bool Run(bool? input);
 }

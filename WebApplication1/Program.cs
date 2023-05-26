@@ -65,7 +65,7 @@ try
 
     //todo - inject configuration and logging to health check
     //link - https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
-    builder.Services.AddHealthChecks().AddCheck<SampleHealthCheck>("Sample");
+    builder.Services.AddHealthChecks().AddCheck<Service1HealthCheck>("Sample");
 
     if (builder.Environment.IsProduction())
     {
@@ -176,7 +176,7 @@ try
     }
 
     app.Logger.LogInformation("Using HealthCheck");
-    app.UseHealthChecks(ApplicationEndpoint.HealthCheck);
+    app.UseHealthChecks(Service1Endpoint.HealthCheck);
 
     //todo - implement authentication
     //app.UseAuthentication();
@@ -185,7 +185,7 @@ try
     //app.UseAuthorization();
 
     app.Logger.LogInformation("Mapping Get");
-    app.MapGet(ApplicationEndpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
+    app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
     {
         //todo - implement identity and claims services
         /*

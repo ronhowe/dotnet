@@ -35,7 +35,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
+        using var response = await client.GetAsync(Service1Endpoint.Service1);
 
         foreach (var header in response.Headers)
         {
@@ -51,7 +51,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
+        using var response = await client.GetAsync(Service1Endpoint.Service1);
 
         foreach (var header in response.Headers)
         {
@@ -70,7 +70,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
+        using var response = await client.GetAsync(Service1Endpoint.Service1);
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -81,7 +81,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
+        using var response = await client.GetAsync(Service1Endpoint.Service1);
 
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
@@ -92,7 +92,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{ApplicationEndpoint.Service1}?input={Boolean.TrueString}");
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -103,7 +103,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{ApplicationEndpoint.Service1}?input={Boolean.TrueString}");
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
         Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeTrue();
@@ -114,7 +114,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{ApplicationEndpoint.Service1}?input={Boolean.FalseString}");
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -125,7 +125,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{ApplicationEndpoint.Service1}?input={Boolean.FalseString}");
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
         Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
@@ -138,12 +138,12 @@ public class WebApplication1Tests
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockServiceExceptionToggle", "true" } });
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1ExceptionToggle", "true" } });
             });
         });
 
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.Service1);
+        using var response = await client.GetAsync(Service1Endpoint.Service1);
 
         Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
@@ -154,7 +154,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
@@ -165,7 +165,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
         Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
         response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
@@ -176,7 +176,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
         foreach (var header in response.Headers)
         {
@@ -192,7 +192,7 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(ApplicationEndpoint.HealthCheck);
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
         foreach (var header in response.Headers)
         {
