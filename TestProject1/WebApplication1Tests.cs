@@ -31,23 +31,7 @@ public class WebApplication1Tests
     }
 
     [TestMethod]
-    public async Task ApplicationHeaderExists()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.Service1);
-
-        foreach (var header in response.Headers)
-        {
-            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
-        }
-
-        Assert.IsTrue(response.Headers.Contains("CustomHeader"));
-        response.Headers.Contains("CustomHeader").Should().BeTrue();
-    }
-
-    [TestMethod]
-    public async Task ApplicationHeaderIsCorrect()
+    public async Task ApplicationHeaderIsValid()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
@@ -172,23 +156,7 @@ public class WebApplication1Tests
     }
 
     [TestMethod]
-    public async Task HealthCheckHeaderExists()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
-
-        foreach (var header in response.Headers)
-        {
-            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
-        }
-
-        Assert.IsTrue(response.Headers.Contains("CustomHeader"));
-        response.Headers.Contains("CustomHeader").Should().BeTrue();
-    }
-
-    [TestMethod]
-    public async Task HealthCheckHeaderIsCorrect()
+    public async Task HealthCheckHeaderIsValid()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
