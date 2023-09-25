@@ -17,7 +17,7 @@ public class Service1 : IService1
         _featureManager = featureManager;
     }
 
-    public bool Run(bool? input)
+    public bool Run(bool input)
     {
         _logger.LogInformation("Running Service");
 
@@ -75,11 +75,11 @@ public class Service1 : IService1
         }
        */
 
-        return input != null && input.Value;
+        return input;
     }
 }
 
 public interface IService1
 {
-    public bool Run(bool? input);
+    public bool Run(bool input);
 }

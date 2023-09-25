@@ -185,7 +185,7 @@ try
     //app.UseAuthorization();
 
     app.Logger.LogInformation("Mapping Get");
-    app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool? input, [FromServices] IService1 service) =>
+    app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool input, [FromServices] IService1 service) =>
     {
         //todo - implement identity and claims services
         /*

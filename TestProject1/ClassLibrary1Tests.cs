@@ -44,13 +44,6 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void ServiceReturnsFalseFromNullInput()
-    {
-        Assert.IsFalse(CreateServiceWithMockDependencies().Run(null));
-        CreateServiceWithMockDependencies().Run(null).Should().BeFalse();
-    }
-
-    [TestMethod]
     public void ServiceReturnsTrueFromTrueInput()
     {
         Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
@@ -69,8 +62,8 @@ public class ClassLibrary1Tests
     {
         var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
-        Assert.ThrowsException<MockService1Exception>(() => service.Run(null));
-        service.Invoking(y => y.Run(null)).Should().Throw<MockService1Exception>().WithMessage("MockService1ExceptionToggle");
+        Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
+        service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1ExceptionToggle");
     }
 
     private static ILogger<Service1> CreateMockLogger()
@@ -118,7 +111,7 @@ internal static class TestHelpers
         Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-        //todo - refactor and remove pragma
+        //todo - refactor and remove pragma, i have no idea what it means =)
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         logger.Verify(
             x => x.Log(

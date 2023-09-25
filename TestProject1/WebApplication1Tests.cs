@@ -50,25 +50,14 @@ public class WebApplication1Tests
     }
 
     [TestMethod]
-    public async Task ApplicationRespondsOKFromNullInput()
+    public async Task ApplicationThrowsFromNullInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.Service1);
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
-    }
-
-    [TestMethod]
-    public async Task ApplicationReturnsFalseFromNullInput()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.Service1);
-
-        Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
-        Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.BadRequest);
     }
 
     [TestMethod]
@@ -127,7 +116,7 @@ public class WebApplication1Tests
         });
 
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.Service1);
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
         Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
