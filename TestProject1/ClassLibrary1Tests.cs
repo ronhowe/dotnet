@@ -18,17 +18,17 @@ public class ClassLibrary1Tests
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+        const string outputTemplate = "[{Level}] {SourceContext} @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
+            .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
             .WriteTo.Console(outputTemplate: outputTemplate)
             .CreateLogger();
 
-        Log.ForContext("SourceContext", contextValue).Information("Running Unit Test");
+        Log.ForContext("SourceContext", contextValue).Debug("Running Unit Test");
     }
 
     [TestMethod]

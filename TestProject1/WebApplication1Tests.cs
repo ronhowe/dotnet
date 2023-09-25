@@ -17,17 +17,21 @@ public class WebApplication1Tests
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+        //todo - choose a style (simple or complex) that is easy to understand in development and production
+        // simple
+        //const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
+        // complex
+        const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level}] [{MachineName}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
+            .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
             .WriteTo.Console(outputTemplate: outputTemplate)
             .CreateLogger();
 
-        Log.ForContext("SourceContext", contextValue).Information("Running Integration Test");
+        Log.ForContext("SourceContext", contextValue).Debug("Running Integration Test");
     }
 
     [TestMethod]
@@ -35,11 +39,11 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.Service1);
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
         foreach (var header in response.Headers)
         {
-            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Debug($"{header.Key}={header.Value.First()}");
         }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
@@ -153,7 +157,7 @@ public class WebApplication1Tests
 
         foreach (var header in response.Headers)
         {
-            Log.ForContext("SourceContext", contextValue).Information($"{header.Key}={header.Value.First()}");
+            Log.ForContext("SourceContext", contextValue).Debug($"{header.Key}={header.Value.First()}");
         }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))

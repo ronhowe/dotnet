@@ -3,19 +3,43 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
+//using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 //help - optionally sync with appsettings.json for consistency in log message styling
-//todo - choose a style that is easy to understand in development and production
-//const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
-const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+//todo - choose a style (simple or complex) that is easy to understand in development and production
+// simple
+//const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
+// complex
+const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level}] [{MachineName}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
+    .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .WriteTo.Console(outputTemplate: outputTemplate)
     .CreateLogger();
+
+#region post
+
+/******************************************************************************
+
+                    _
+ _ __    ___   ___ | |_
+| '_ \  / _ \ / __|| __|
+| |_) || (_) |\__ \| |_
+| .__/  \___/ |___/ \__|
+|_|
+
+******************************************************************************/
+
+Log.ForContext("SourceContext", nameof(Program)).Debug("POWER ON SELF TEST (1 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Information("POWER ON SELF TEST (2 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Warning("POWER ON SELF TEST (3 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Error("POWER ON SELF TEST (4 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Fatal("POWER ON SELF TEST (5 of 5)");
+
+#endregion post
 
 Log.ForContext("SourceContext", nameof(Program)).Information("Running Program");
 
@@ -26,12 +50,16 @@ try
 
     #region logging
 
-    // _                       _
-    //| |  ___    __ _   __ _ (_) _ __    __ _
-    //| | / _ \  / _` | / _` || || '_ \  / _` |
-    //| || (_) || (_| || (_| || || | | || (_| |
-    //|_| \___/  \__, | \__, ||_||_| |_| \__, |
-    //           |___/  |___/            |___/
+    /******************************************************************************
+
+     _                       _
+    | |  ___    __ _   __ _ (_) _ __    __ _
+    | | / _ \  / _` | / _` || || '_ \  / _` |
+    | || (_) || (_| || (_| || || | | || (_| |
+    |_| \___/  \__, | \__, ||_||_| |_| \__, |
+               |___/  |___/            |___/
+
+    ******************************************************************************/
 
     Log.ForContext("SourceContext", nameof(Program)).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
@@ -41,14 +69,17 @@ try
 
     #endregion logging
 
-    #region configure services
+    #region services
 
-    //                      __  _                                                       _
-    //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___     ___   ___  _ __ __   __(_)  ___   ___  ___
-    // / __| / _ \ | '_ \ | |_ | | / _` || | | || '__| / _ \   / __| / _ \| '__|\ \ / /| | / __| / _ \/ __|
-    //| (__ | (_) || | | ||  _|| || (_| || |_| || |   |  __/   \__ \|  __/| |    \ V / | || (__ |  __/\__ \
-    // \___| \___/ |_| |_||_|  |_| \__, | \__,_||_|    \___|   |___/ \___||_|     \_/  |_| \___| \___||___/
-    //                             |___/
+    /******************************************************************************
+
+                             _
+     ___   ___  _ __ __   __(_)  ___   ___  ___
+    / __| / _ \| '__|\ \ / /| | / __| / _ \/ __|
+    \__ \|  __/| |    \ V / | || (__ |  __/\__ \
+    |___/ \___||_|     \_/  |_| \___| \___||___/
+
+     ******************************************************************************/
 
     //help - configure services (order doesn't matter unless you "materialize dependencies")
     //todo - learn what that means
@@ -107,19 +138,44 @@ try
     Log.ForContext("SourceContext", nameof(Program)).Information("Adding IService");
     builder.Services.AddSingleton<IService1, Service1>();
 
-    #endregion configure services
+    #endregion services
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Initializing Application");
+    #region build
+
+    /******************************************************************************
+
+     _             _  _      _
+    | |__   _   _ (_)| |  __| |
+    | '_ \ | | | || || | / _` |
+    | |_) || |_| || || || (_| |
+    |_.__/  \__,_||_||_| \__,_|
+
+     ******************************************************************************/
+
+    Log.ForContext("SourceContext", nameof(Program)).Information("Building Web Application");
     var app = builder.Build();
 
-    #region configure
+    // The value Trace is not a valid Serilog level.
+    app.Logger.LogDebug("POWER ON SELF TEST (1 of 5)");
+    app.Logger.LogInformation("POWER ON SELF TEST (2 of 5)");
+    app.Logger.LogWarning("POWER ON SELF TEST (3 of 5)");
+    app.Logger.LogError("POWER ON SELF TEST (4 of 5)");
+    app.Logger.LogCritical("POWER ON SELF TEST (5 of 5)");
 
-    //                      __  _
-    //  ___   ___   _ __   / _|(_)  __ _  _   _  _ __   ___
-    // / __| / _ \ | '_ \ | |_ | | / _` || | | || '__| / _ \
-    //| (__ | (_) || | | ||  _|| || (_| || |_| || |   |  __/
-    // \___| \___/ |_| |_||_|  |_| \__, | \__,_||_|    \___|
-    //                             |___/
+    #endregion build
+
+    #region configuration
+
+    /******************************************************************************
+
+                          __  _                             _    _
+      ___   ___   _ __   / _|(_)  __ _  _   _  _ __   __ _ | |_ (_)  ___   _ __
+     / __| / _ \ | '_ \ | |_ | | / _` || | | || '__| / _` || __|| | / _ \ | '_ \
+    | (__ | (_) || | | ||  _|| || (_| || |_| || |   | (_| || |_ | || (_) || | | |
+     \___| \___/ |_| |_||_|  |_| \__, | \__,_||_|    \__,_| \__||_| \___/ |_| |_|
+                                 |___/
+
+     ******************************************************************************/
 
     //help - order matters (e.g. add swagger before auth)
 
@@ -184,6 +240,16 @@ try
     //todo - implement authorization
     //app.UseAuthorization();
 
+    /*
+
+                         _
+     _ __   ___   _   _ | |_   ___  ___
+    | '__| / _ \ | | | || __| / _ \/ __|
+    | |   | (_) || |_| || |_ |  __/\__ \
+    |_|    \___/  \__,_| \__| \___||___/
+
+     */
+
     app.Logger.LogInformation("Mapping Get");
     app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool input, [FromServices] IService1 service) =>
     {
@@ -201,7 +267,7 @@ try
     //todo - implement authorization
     //.RequireAuthorization();
 
-    #endregion configure
+    #endregion configuration
 
     app.Logger.LogInformation("Running Application");
     await app.RunAsync();
@@ -216,6 +282,7 @@ finally
 }
 
 #region helpers
+
 static void AddCustomHeader(HttpContext context, WebApplication app)
 {
     //link - https://code-maze.com/aspnetcore-add-custom-headers/
@@ -224,4 +291,5 @@ static void AddCustomHeader(HttpContext context, WebApplication app)
     app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
     context.Response.Headers.Add(headerKey, headerValue);
 }
+
 #endregion helpers
