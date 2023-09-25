@@ -19,22 +19,29 @@ public class Service1 : IService1
 
     public bool Run(bool input)
     {
-        _logger.LogInformation("Running Service");
+        _logger.LogInformation("Entering {name}", nameof(Service1));
 
-        _logger.LogDebug("input={input}", input);
+        _logger.LogDebug("Logging Input Parameter(s) and Value(s)");
+        _logger.LogDebug("input = {input}", input);
 
         //help - example of reading boolean from config via iconfiguration
+        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Configuration");
         var config = _config.GetSection(nameof(Service1Feature.MockService1ExceptionToggle)).Value;
-        _logger.LogDebug("config={config}", config);
+        _logger.LogDebug("config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
+        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Feature Manager");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result;
-        _logger.LogDebug("feature={feature}", feature);
+        _logger.LogDebug("feature = {feature}", feature);
 
         if (feature)
         {
-            _logger.LogWarning("Throwing MockServiceException");
+            _logger.LogWarning("Throwing Mock Service Exception");
             throw new MockService1Exception(nameof(Service1Feature.MockService1ExceptionToggle));
+        }
+        else
+        {
+            _logger.LogDebug("Skipping Mock Service Exception");
         }
 
         //todo - mock resource throttling
@@ -75,11 +82,8 @@ public class Service1 : IService1
         }
        */
 
+        _logger.LogInformation("Exiting {name}", nameof(Service1));
+
         return input;
     }
-}
-
-public interface IService1
-{
-    public bool Run(bool input);
 }

@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
+using WebApplication1;
 //using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
-//help - optionally sync with appsettings.json for consistency in log message styling
-//todo - choose a style (simple or complex) that is easy to understand in development and production
-// simple
-//const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
-// complex
-const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
+
+const string sourceContext = nameof(Program);
+const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -33,27 +31,19 @@ Log.Logger = new LoggerConfiguration()
 
 ******************************************************************************/
 
-Log.ForContext("SourceContext", nameof(Program)).Debug("HELLO THERE");
-
-
-Log.ForContext("SourceContext", nameof(Program)).Debug("Power On Self Test (1 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Debug("OK");
-Log.ForContext("SourceContext", nameof(Program)).Information("Power On Self Test (2 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Information("OK");
-Log.ForContext("SourceContext", nameof(Program)).Warning("Power On Self Test (3 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Warning("OK");
-Log.ForContext("SourceContext", nameof(Program)).Error("Power On Self Test (4 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Error("OK");
-Log.ForContext("SourceContext", nameof(Program)).Fatal("Power On Self Test (5 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Fatal("OK");
+Log.ForContext("SourceContext", sourceContext).Debug("Power On Self Test (1 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Information("Power On Self Test (2 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Warning("Power On Self Test (3 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Error("Power On Self Test (4 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Fatal("Power On Self Test (5 of 5)... OK");
 
 #endregion post
 
-Log.ForContext("SourceContext", nameof(Program)).Information("Running Program");
+Log.ForContext("SourceContext", sourceContext).Information("Program Running");
 
 try
 {
-    Log.ForContext("SourceContext", nameof(Program)).Information("Initializing Builder");
+    Log.ForContext("SourceContext", sourceContext).Information("Creating Web Application Builder");
     var builder = WebApplication.CreateBuilder(args);
 
     #region logging
@@ -69,7 +59,7 @@ try
 
     ******************************************************************************/
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Using Serilog");
+    Log.ForContext("SourceContext", sourceContext).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
     {
         LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
@@ -93,10 +83,10 @@ try
     //todo - learn what that means
     //link - https://www.youtube.com/watch?v=pYl_jnqlXu8
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Adding Application Insights");
+    Log.ForContext("SourceContext", sourceContext).Information("Adding Application Insights");
     builder.Services.AddApplicationInsightsTelemetry();
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Adding Feature Management");
+    Log.ForContext("SourceContext", sourceContext).Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
     //todo - add authorization
@@ -108,13 +98,13 @@ try
 
     if (builder.Environment.IsProduction())
     {
-        Log.ForContext("SourceContext", nameof(Program)).Information("Adding Azure App Configuration");
+        Log.ForContext("SourceContext", sourceContext).Information("Adding Azure App Configuration");
         builder.Services.AddAzureAppConfiguration();
 
-        Log.ForContext("SourceContext", nameof(Program)).Information("Getting Azure App Configuration Connection String");
+        Log.ForContext("SourceContext", sourceContext).Information("Getting Azure App Configuration Connection String");
         var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
 
-        Log.ForContext("SourceContext", nameof(Program)).Information("Configuring Azure App Configuration");
+        Log.ForContext("SourceContext", sourceContext).Information("Configuring Azure App Configuration");
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
@@ -137,13 +127,13 @@ try
     }
     else
     {
-        Log.ForContext("SourceContext", nameof(Program)).Information("Skipping Azure App Configuration");
+        Log.ForContext("SourceContext", sourceContext).Information("Skipping Azure App Configuration");
     }
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Adding IService");
+    Log.ForContext("SourceContext", sourceContext).Information("Adding {0}", nameof(Service1));
     builder.Services.AddSingleton<IService1, Service1>();
 
     #endregion services
@@ -160,20 +150,16 @@ try
 
      ******************************************************************************/
 
-    Log.ForContext("SourceContext", nameof(Program)).Information("Building Web Application");
+    Log.ForContext("SourceContext", sourceContext).Information("Building Web Application");
     var app = builder.Build();
 
-    // The value Trace is not a valid Serilog level.
-    app.Logger.LogDebug("Power On Self Test (1 of 5)");
-    app.Logger.LogDebug("OK");
-    app.Logger.LogInformation("Power On Self Test (2 of 5)");
-    app.Logger.LogInformation("OK");
-    app.Logger.LogWarning("Power On Self Test (3 of 5)");
-    app.Logger.LogWarning("OK");
-    app.Logger.LogError("Power On Self Test (4 of 5)");
-    app.Logger.LogError("OK");
-    app.Logger.LogCritical("Power On Self Test (5 of 5)");
-    app.Logger.LogCritical("OK");
+    app.Logger.LogDebug("Power On Self Test (1 of 5)... OK");
+    app.Logger.LogInformation("Power On Self Test (2 of 5)... OK");
+    app.Logger.LogWarning("Power On Self Test (3 of 5)... OK");
+    app.Logger.LogError("Power On Self Test (4 of 5)... OK");
+    app.Logger.LogCritical("Power On Self Test (5 of 5)... OK");
+
+    app.Logger.LogInformation("Web Application Running");
 
     #endregion build
 
@@ -192,6 +178,9 @@ try
 
     //help - order matters (e.g. add swagger before auth)
 
+    app.Logger.LogInformation("Using Request Logging Middleware");
+    app.UseMiddleware<RequestLoggingMiddleware>();
+
     //todo - log pertinent configuration values
     app.Logger.LogInformation("Environment = {EnvironmentName}", app.Environment.EnvironmentName);
 
@@ -199,7 +188,19 @@ try
     {
         app.Logger.LogInformation("Using Swagger");
         app.UseSwagger();
+    }
+    else
+    {
+        app.Logger.LogInformation("Skipping Swagger");
+    }
 
+    if (app.Environment.IsDevelopment())
+    {
+        app.Logger.LogInformation("Using Swagger UI");
+        app.UseSwagger();
+    }
+    else
+    {
         app.Logger.LogInformation("Using Swagger UI");
         app.UseSwaggerUI();
     }
@@ -212,11 +213,12 @@ try
     }
     else
     {
-        app.Logger.LogInformation("Not Using Azure App Configuration");
+        app.Logger.LogInformation("Skipping Azure App Configuration");
     }
 
+
     //todo - refactor to icustomheader
-    app.Logger.LogInformation("Using Custom Header Lamda");
+    app.Logger.LogInformation("Using Custom Header");
     app.Use(async (context, next) =>
     {
         AddCustomHeader(context, app);
@@ -263,7 +265,7 @@ try
 
      */
 
-    app.Logger.LogInformation("Mapping Get");
+    app.Logger.LogInformation("Mapping Routes");
     app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool input, [FromServices] IService1 service) =>
     {
         //todo - implement identity and claims services
@@ -275,6 +277,7 @@ try
             public const string CanWrite = "DataWriterRole";
         }
         */
+        //app.Logger.LogInformation("Routing Request to Service");
         return service.Run(input);
     });
     //todo - implement authorization
@@ -282,7 +285,7 @@ try
 
     #endregion configuration
 
-    app.Logger.LogInformation("Running Application");
+    app.Logger.LogInformation("Awaiting Web Application");
     await app.RunAsync();
 }
 catch (Exception ex)
@@ -301,7 +304,8 @@ static void AddCustomHeader(HttpContext context, WebApplication app)
     //link - https://code-maze.com/aspnetcore-add-custom-headers/
     const string headerKey = "CustomHeader";
     var headerValue = app.Configuration.GetSection(headerKey).Value;
-    app.Logger.LogDebug("Adding Custom Header {headerKey}={headerValue}", headerKey, headerValue);
+    app.Logger.LogDebug("Logging Custom Header");
+    app.Logger.LogDebug("KEY = {headerKey} ; VALUE = {headerValue}", headerKey, headerValue);
     context.Response.Headers.Add(headerKey, headerValue);
 }
 

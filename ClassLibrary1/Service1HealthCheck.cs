@@ -21,28 +21,36 @@ public class Service1HealthCheck : IHealthCheck
     public Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Running Health Check");
+        _logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
 
+        //help - example of reading boolean from config via iconfiguration
+        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Configuration");
         var config = _config.GetSection(nameof(Service1Feature.MockService1ExceptionToggle)).Value;
-        _logger.LogDebug("config={config}", config);
+        _logger.LogDebug("config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
+        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Feature Manager");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result;
-        _logger.LogDebug("feature={feature}", feature);
+        _logger.LogDebug("feature = {feature}", feature);
+
+        HealthCheckResult result;
 
         if (feature)
         {
-            _logger.LogWarning("Throwing MockServiceException");
-
             //todo - implement robust health check logic
             //todo - inject configuration and logging dependencies
 
-            return Task.FromResult(
-            new HealthCheckResult(
-                context.Registration.FailureStatus, "UNHEALTHY"));
+            _logger.LogWarning("Throwing Mock Service Exception");
+            result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
+        }
+        else
+        {
+            _logger.LogWarning("Skipping Mock Service Exception");
+            result = HealthCheckResult.Healthy("HEALTHY");
         }
 
-        return Task.FromResult(
-            HealthCheckResult.Healthy("HEALTHY"));
+        _logger.LogInformation("Exiting {name}", nameof(Service1HealthCheck));
+
+        return Task.FromResult(result);
     }
 }

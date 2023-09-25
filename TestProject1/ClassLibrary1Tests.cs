@@ -13,12 +13,12 @@ namespace TestProject1;
 [TestClass]
 public class ClassLibrary1Tests
 {
-    private const string contextValue = nameof(ClassLibrary1Tests);
+    private const string sourceContext = nameof(ClassLibrary1Tests);
 
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "[{Level}] {SourceContext} @ {Message}{NewLine}{Exception}";
+        const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -28,11 +28,11 @@ public class ClassLibrary1Tests
             .WriteTo.Console(outputTemplate: outputTemplate)
             .CreateLogger();
 
-        Log.ForContext("SourceContext", contextValue).Debug("Running Unit Test");
+        Log.ForContext("SourceContext", sourceContext).Debug("Initializing Test");
     }
 
     [TestMethod]
-    public void ServiceLogsDebugMessage()
+    public void ServiceLogsInputParameters()
     {
         var mockLogger = new Mock<ILogger<Service1>>();
 
@@ -40,7 +40,31 @@ public class ClassLibrary1Tests
 
         service.Run(false);
 
-        mockLogger.VerifyDebugWasCalled($"input={Boolean.FalseString}");
+        mockLogger.VerifyLogDebug($"input = {Boolean.FalseString}");
+    }
+
+    [TestMethod]
+    public void ServiceLogsEntryMessage()
+    {
+        var mockLogger = new Mock<ILogger<Service1>>();
+
+        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
+
+        service.Run(false);
+
+        mockLogger.VerifyLogInformation($"Entering {nameof(Service1)}");
+    }
+
+    [TestMethod]
+    public void ServiceLogsExitMessage()
+    {
+        var mockLogger = new Mock<ILogger<Service1>>();
+
+        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(false));
+
+        service.Run(false);
+
+        mockLogger.VerifyLogInformation($"Exiting {nameof(Service1)}");
     }
 
     [TestMethod]
@@ -66,13 +90,6 @@ public class ClassLibrary1Tests
         service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1ExceptionToggle");
     }
 
-    private static ILogger<Service1> CreateMockLogger()
-    {
-        var mockLogger = new Mock<ILogger<Service1>>();
-
-        return mockLogger.Object;
-    }
-
     private static IConfiguration CreateMockConfiguration(bool value)
     {
         //link - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
@@ -85,13 +102,6 @@ public class ClassLibrary1Tests
         return mockConfiguration.Object;
     }
 
-    private static Service1 CreateServiceWithMockDependencies()
-    {
-        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(false), CreateMockFeatureManager(false));
-
-        return service;
-    }
-
     private static IFeatureManager CreateMockFeatureManager(bool value)
     {
         var mockFeatureManager = new Mock<IFeatureManager>();
@@ -99,11 +109,25 @@ public class ClassLibrary1Tests
 
         return mockFeatureManager.Object;
     }
+
+    private static ILogger<Service1> CreateMockLogger()
+    {
+        var mockLogger = new Mock<ILogger<Service1>>();
+
+        return mockLogger.Object;
+    }
+
+    private static Service1 CreateServiceWithMockDependencies()
+    {
+        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(false), CreateMockFeatureManager(false));
+
+        return service;
+    }
 }
 
 internal static class TestHelpers
 {
-    public static Mock<ILogger<T>> VerifyDebugWasCalled<T>(this Mock<ILogger<T>> logger, string expectedMessage)
+    public static Mock<ILogger<T>> VerifyLogDebug<T>(this Mock<ILogger<T>> logger, string expectedMessage)
     {
         //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
         //todo - refactor and remove pragma
@@ -116,6 +140,28 @@ internal static class TestHelpers
         logger.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Debug),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => state(v, t)),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)));
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        return logger;
+    }
+
+    public static Mock<ILogger<T>> VerifyLogInformation<T>(this Mock<ILogger<T>> logger, string expectedMessage)
+    {
+        //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
+        //todo - refactor and remove pragma
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+        //todo - refactor and remove pragma, i have no idea what it means =)
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        logger.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => state(v, t)),
                 It.IsAny<Exception>(),

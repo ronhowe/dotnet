@@ -12,16 +12,12 @@ namespace TestProject1;
 [TestClass]
 public class WebApplication1Tests
 {
-    private const string contextValue = nameof(WebApplication1Tests);
+    private const string sourceContext = nameof(WebApplication1Tests);
 
     [TestInitialize]
     public void TestInitialize()
     {
-        //todo - choose a style (simple or complex) that is easy to understand in development and production
-        // simple
-        //const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
-        // complex
-        const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
+        const string outputTemplate = "[CLIENT] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -31,7 +27,7 @@ public class WebApplication1Tests
             .WriteTo.Console(outputTemplate: outputTemplate)
             .CreateLogger();
 
-        Log.ForContext("SourceContext", contextValue).Debug("Running Integration Test");
+        Log.ForContext("SourceContext", sourceContext).Debug("Initializing Test");
     }
 
     [TestMethod]
@@ -40,11 +36,6 @@ public class WebApplication1Tests
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
-
-        foreach (var header in response.Headers)
-        {
-            Log.ForContext("SourceContext", contextValue).Debug($"{header.Key}={header.Value.First()}");
-        }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
@@ -154,11 +145,6 @@ public class WebApplication1Tests
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
-
-        foreach (var header in response.Headers)
-        {
-            Log.ForContext("SourceContext", contextValue).Debug($"{header.Key}={header.Value.First()}");
-        }
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
