@@ -10,7 +10,7 @@ using Serilog.Events;
 // simple
 //const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
 // complex
-const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level}] [{MachineName}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
+const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -33,11 +33,19 @@ Log.Logger = new LoggerConfiguration()
 
 ******************************************************************************/
 
-Log.ForContext("SourceContext", nameof(Program)).Debug("POWER ON SELF TEST (1 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Information("POWER ON SELF TEST (2 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Warning("POWER ON SELF TEST (3 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Error("POWER ON SELF TEST (4 of 5)");
-Log.ForContext("SourceContext", nameof(Program)).Fatal("POWER ON SELF TEST (5 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Debug("HELLO THERE");
+
+
+Log.ForContext("SourceContext", nameof(Program)).Debug("Power On Self Test (1 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Debug("OK");
+Log.ForContext("SourceContext", nameof(Program)).Information("Power On Self Test (2 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Information("OK");
+Log.ForContext("SourceContext", nameof(Program)).Warning("Power On Self Test (3 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Warning("OK");
+Log.ForContext("SourceContext", nameof(Program)).Error("Power On Self Test (4 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Error("OK");
+Log.ForContext("SourceContext", nameof(Program)).Fatal("Power On Self Test (5 of 5)");
+Log.ForContext("SourceContext", nameof(Program)).Fatal("OK");
 
 #endregion post
 
@@ -156,11 +164,16 @@ try
     var app = builder.Build();
 
     // The value Trace is not a valid Serilog level.
-    app.Logger.LogDebug("POWER ON SELF TEST (1 of 5)");
-    app.Logger.LogInformation("POWER ON SELF TEST (2 of 5)");
-    app.Logger.LogWarning("POWER ON SELF TEST (3 of 5)");
-    app.Logger.LogError("POWER ON SELF TEST (4 of 5)");
-    app.Logger.LogCritical("POWER ON SELF TEST (5 of 5)");
+    app.Logger.LogDebug("Power On Self Test (1 of 5)");
+    app.Logger.LogDebug("OK");
+    app.Logger.LogInformation("Power On Self Test (2 of 5)");
+    app.Logger.LogInformation("OK");
+    app.Logger.LogWarning("Power On Self Test (3 of 5)");
+    app.Logger.LogWarning("OK");
+    app.Logger.LogError("Power On Self Test (4 of 5)");
+    app.Logger.LogError("OK");
+    app.Logger.LogCritical("Power On Self Test (5 of 5)");
+    app.Logger.LogCritical("OK");
 
     #endregion build
 

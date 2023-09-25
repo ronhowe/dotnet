@@ -21,7 +21,7 @@ public class WebApplication1Tests
         // simple
         //const string outputTemplate = "[{Level}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
         // complex
-        const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level}] [{MachineName}] [{SourceContext}] @ {Message}{NewLine}{Exception}";
+        const string outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
