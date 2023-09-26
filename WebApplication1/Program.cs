@@ -8,7 +8,7 @@ using WebApplication1;
 
 
 const string sourceContext = nameof(Program);
-const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] @ {SourceContext} => {Message}{NewLine}{Exception}";
+const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] [{SourceContext}] [{Message}]{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
