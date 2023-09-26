@@ -40,7 +40,7 @@ public class ClassLibrary1Tests
 
         service.Run(false);
 
-        mockLogger.VerifyLogDebug($"input = {Boolean.FalseString}");
+        mockLogger.VerifyLogDebug($"$input = {Boolean.FalseString}");
     }
 
     [TestMethod]

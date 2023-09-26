@@ -301,12 +301,17 @@ finally
 
 static void AddCustomHeader(HttpContext context, WebApplication app)
 {
+    app.Logger.LogInformation("Adding Custom Header");
+
     //link - https://code-maze.com/aspnetcore-add-custom-headers/
     const string headerKey = "CustomHeader";
     var headerValue = app.Configuration.GetSection(headerKey).Value;
+
     app.Logger.LogDebug("Logging Custom Header");
-    app.Logger.LogDebug("KEY = {headerKey} ; VALUE = {headerValue}", headerKey, headerValue);
+    app.Logger.LogDebug("$headerKey = {headerKey} ; $headerValue = {headerValue}", headerKey, headerValue);
+
     context.Response.Headers.Add(headerKey, headerValue);
+
 }
 
 #endregion helpers
