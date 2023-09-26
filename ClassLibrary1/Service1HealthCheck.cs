@@ -45,7 +45,7 @@ public class Service1HealthCheck : IHealthCheck
         }
         else
         {
-            _logger.LogWarning("Skipping Mock Service Exception");
+            _logger.LogDebug("Skipping Mock Service Exception");
             result = HealthCheckResult.Healthy("HEALTHY");
         }
 
