@@ -17,7 +17,7 @@ public class WebApplication1Tests
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "[CLIENT] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
+        const string outputTemplate = "[CLIENT] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] @ {SourceContext} => {Message}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()

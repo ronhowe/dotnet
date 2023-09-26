@@ -8,7 +8,7 @@ using WebApplication1;
 
 
 const string sourceContext = nameof(Program);
-const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}] [{MachineName}] [{Level}] @ {Message}{NewLine}{Exception}";
+const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] @ {SourceContext} => {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -31,11 +31,11 @@ Log.Logger = new LoggerConfiguration()
 
 ******************************************************************************/
 
-Log.ForContext("SourceContext", sourceContext).Debug("Power On Self Test (1 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Information("Power On Self Test (2 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Warning("Power On Self Test (3 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Error("Power On Self Test (4 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Fatal("Power On Self Test (5 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Debug("Power-On Self-Test (1 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Information("Power-On Self-Test (2 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Warning("Power-On Self-Test (3 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Error("Power-On Self-Test (4 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Fatal("Power-On Self-Test (5 of 5)... OK");
 
 #endregion post
 
@@ -153,11 +153,11 @@ try
     Log.ForContext("SourceContext", sourceContext).Information("Building Web Application");
     var app = builder.Build();
 
-    app.Logger.LogDebug("Power On Self Test (1 of 5)... OK");
-    app.Logger.LogInformation("Power On Self Test (2 of 5)... OK");
-    app.Logger.LogWarning("Power On Self Test (3 of 5)... OK");
-    app.Logger.LogError("Power On Self Test (4 of 5)... OK");
-    app.Logger.LogCritical("Power On Self Test (5 of 5)... OK");
+    app.Logger.LogDebug("Power-On Self-Test (1 of 5)... OK");
+    app.Logger.LogInformation("Power-On Self-Test (2 of 5)... OK");
+    app.Logger.LogWarning("Power-On Self-Test (3 of 5)... OK");
+    app.Logger.LogError("Power-On Self-Test (4 of 5)... OK");
+    app.Logger.LogCritical("Power-On Self-Test (5 of 5)... OK");
 
     app.Logger.LogInformation("Web Application Running");
 
