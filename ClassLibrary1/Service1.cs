@@ -25,19 +25,42 @@ public class Service1 : IService1
         _logger.LogDebug("$input = {input}", input);
 
         //help - example of reading boolean from config via iconfiguration
-        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Configuration");
-        var config = _config.GetSection(nameof(Service1Feature.MockService1ExceptionToggle)).Value;
-        _logger.LogDebug("$config = {config}", config);
+        //_logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value from Configuration");
+        //var config = _config.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Value;
+        //_logger.LogDebug("$config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
         _logger.LogDebug("Logging Mock Service Exception Toggle Value from Feature Manager");
-        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result;
+        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("$feature = {feature}", feature);
 
         if (feature)
         {
-            _logger.LogWarning("Throwing Mock Service Exception");
-            throw new MockService1Exception(nameof(Service1Feature.MockService1ExceptionToggle));
+            _logger.LogError("Throwing Mock Service Permanent Exception");
+            throw new MockService1Exception(nameof(Service1Feature.MockService1PermanentExceptionToggle));
+        }
+        else
+        {
+            _logger.LogInformation("Skipping Mock Service Exception");
+        }
+
+        _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value from Feature Manager");
+        feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
+        _logger.LogDebug("$feature = {feature}", feature);
+
+        if (feature)
+        {
+            _logger.LogWarning("Considering Throwing Mock Service Transient Exception");
+
+            if (DateTime.Now.Ticks % 2 == 1)
+            {
+                _logger.LogError("Throwing Mock Service Transient Exception");
+                throw new MockService1Exception(nameof(Service1Feature.MockService1TransientExceptionToggle));
+            }
+            else
+            {
+                _logger.LogWarning("Avoiding Mock Service Exception");
+            }
         }
         else
         {

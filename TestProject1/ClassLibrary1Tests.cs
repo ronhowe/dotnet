@@ -87,7 +87,7 @@ public class ClassLibrary1Tests
         var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(true));
 
         Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
-        service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1ExceptionToggle");
+        service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1PermanentExceptionToggle");
     }
 
     private static IConfiguration CreateMockConfiguration(bool value)
@@ -97,7 +97,7 @@ public class ClassLibrary1Tests
         mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
 
         var mockConfiguration = new Mock<IConfiguration>();
-        mockConfiguration.Setup(x => x.GetSection(nameof(Service1Feature.MockService1ExceptionToggle))).Returns(mockConfigurationSection.Object);
+        mockConfiguration.Setup(x => x.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle))).Returns(mockConfigurationSection.Object);
 
         return mockConfiguration.Object;
     }
@@ -105,7 +105,7 @@ public class ClassLibrary1Tests
     private static IFeatureManager CreateMockFeatureManager(bool value)
     {
         var mockFeatureManager = new Mock<IFeatureManager>();
-        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result).Returns(value);
+        mockFeatureManager.Setup(x => x.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result).Returns(value);
 
         return mockFeatureManager.Object;
     }

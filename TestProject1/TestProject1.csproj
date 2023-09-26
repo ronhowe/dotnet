@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ResilientHttpClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="TestProject1.v3.ncrunchproject" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ResilientHttpClient.cs" />
   </ItemGroup>
 
   <ItemGroup>

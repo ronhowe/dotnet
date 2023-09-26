@@ -2,5 +2,6 @@
 
 public enum Service1Feature
 {
-    MockService1ExceptionToggle
+    MockService1PermanentExceptionToggle,
+    MockService1TransientExceptionToggle
 }

@@ -18,19 +18,18 @@ public class Service1HealthCheck : IHealthCheck
         _featureManager = featureManager;
     }
 
-    public Task<HealthCheckResult> CheckHealthAsync(
-        HealthCheckContext context, CancellationToken cancellationToken = default)
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
 
         //help - example of reading boolean from config via iconfiguration
-        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Configuration");
-        var config = _config.GetSection(nameof(Service1Feature.MockService1ExceptionToggle)).Value;
+        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value from Configuration");
+        var config = _config.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Value;
         _logger.LogDebug("config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
-        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Feature Manager");
-        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1ExceptionToggle)).Result;
+        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value from Feature Manager");
+        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("feature = {feature}", feature);
 
         HealthCheckResult result;
@@ -40,12 +39,12 @@ public class Service1HealthCheck : IHealthCheck
             //todo - implement robust health check logic
             //todo - inject configuration and logging dependencies
 
-            _logger.LogWarning("Throwing Mock Service Exception");
+            _logger.LogWarning("Throwing Mock Service Permanent Exception");
             result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
         }
         else
         {
-            _logger.LogInformation("Skipping Mock Service Exception");
+            _logger.LogInformation("Skipping Mock Service Permanent Exception");
             result = HealthCheckResult.Healthy("HEALTHY");
         }
 

@@ -31,6 +31,25 @@ public class WebApplication1Tests
     }
 
     [TestMethod]
+    public async Task ClientRetries()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
+            });
+        });
+
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+        Assert.Inconclusive("todo - implement retry policy at which point expect 100% success");
+    }
+
+    [TestMethod]
     public async Task ApplicationHeaderIsValid()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
@@ -106,7 +125,7 @@ public class WebApplication1Tests
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1ExceptionToggle", "true" } });
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1PermanentExceptionToggle", "true" } });
             });
         });
 
