@@ -34,6 +34,8 @@ public class UnitTest1
     {
         var retryPolicy = Policy
             .Handle<HttpRequestException>()
+            .Or<NotImplementedException>()
+            .Or<IOException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
                 Debug.WriteLine(_asterisk);
@@ -77,7 +79,8 @@ public class UnitTest1
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
 
         var retryPolicy = Policy
-            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode || r.StatusCode == HttpStatusCode.InternalServerError)
+            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+            .OrResult(r => r.StatusCode == HttpStatusCode.InternalServerError)
             .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
             {
                 Debug.WriteLine(_asterisk);
