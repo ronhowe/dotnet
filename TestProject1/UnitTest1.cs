@@ -34,8 +34,6 @@ public class UnitTest1
     {
         var retryPolicy = Policy
             .Handle<HttpRequestException>()
-            .Or<NotImplementedException>()
-            .Or<IOException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
                 Debug.WriteLine(_asterisk);
