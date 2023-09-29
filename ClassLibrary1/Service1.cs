@@ -32,13 +32,13 @@ public class Service1 : IService1
         //_logger.LogDebug("$config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
-        _logger.LogDebug("Logging Mock Service Exception Toggle Value from Feature Manager");
+        _logger.LogDebug("Logging Mock Service Exception Toggle Value");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("$feature = {feature}", feature);
 
         if (feature)
         {
-            _logger.LogError("Throwing Mock Service Permanent Exception");
+            _logger.LogWarning("Throwing Mock Service Permanent Exception");
             throw new MockService1Exception(nameof(Service1Feature.MockService1PermanentExceptionToggle));
         }
         else
@@ -46,22 +46,22 @@ public class Service1 : IService1
             _logger.LogInformation("Skipping Mock Service Exception");
         }
 
-        _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value from Feature Manager");
+        _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
         feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
         _logger.LogDebug("$feature = {feature}", feature);
 
         if (feature)
         {
-            _logger.LogWarning("Considering Throwing Mock Service Transient Exception");
+            _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
 
             if (DateTime.Now.Ticks % 2 == 1)
             {
-                _logger.LogError("Throwing Mock Service Transient Exception");
+                _logger.LogWarning("Throwing Mock Service Transient Exception");
                 throw new MockService1Exception(nameof(Service1Feature.MockService1TransientExceptionToggle));
             }
             else
             {
-                _logger.LogWarning("Avoiding Mock Service Exception");
+                _logger.LogInformation("Avoiding Mock Service Exception");
             }
         }
         else

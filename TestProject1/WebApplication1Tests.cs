@@ -15,7 +15,8 @@ namespace TestProject1;
 [TestClass]
 public class WebApplication1Tests
 {
-    private readonly string separator = new('*', 160);
+    private readonly string _enter = new('>', 160);
+    private readonly string _exit = new('<', 160);
 
     [TestInitialize]
     public void TestInitialize()
@@ -26,7 +27,7 @@ public class WebApplication1Tests
     [TestMethod]
     public void ClientRetries()
     {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
 
         var retryPolicy = Policy
             .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode || r.StatusCode == HttpStatusCode.InternalServerError)
@@ -47,11 +48,11 @@ public class WebApplication1Tests
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Debug.WriteLine(separator);
+            Debug.WriteLine(_enter);
             return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
         }).Result;
 
-        Debug.WriteLine(separator);
+        Debug.WriteLine(_exit);
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
@@ -63,7 +64,12 @@ public class WebApplication1Tests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        Debug.WriteLine(_enter);
+
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+
+        Debug.WriteLine(_exit);
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {

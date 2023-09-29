@@ -25,12 +25,12 @@ public class Service1HealthCheck : IHealthCheck
         _logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
 
         //help - example of reading boolean from config via iconfiguration
-        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value from Configuration");
-        var config = _config.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Value;
-        _logger.LogDebug("config = {config}", config);
+        //_logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
+        //var config = _config.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Value;
+        //_logger.LogDebug("config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
-        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value from Feature Manager");
+        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("feature = {feature}", feature);
 
