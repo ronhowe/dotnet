@@ -1,4 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////80
+/*******************************************************************************
+https://github.com/ronhowe/dotnet
+*******************************************************************************/
 
 using ClassLibrary1;
 using FluentAssertions;
@@ -15,13 +17,16 @@ namespace TestProject1;
 [TestClass]
 public class WebApplication1Tests
 {
-    private readonly string _enter = new('>', 160);
-    private readonly string _exit = new('<', 160);
+    private readonly string _asterisk = new('*', 80);
+    private readonly string _enter = new('>', 80);
+    private readonly string _exit = new('<', 80);
 
     [TestInitialize]
     public void TestInitialize()
     {
+        Debug.WriteLine(_asterisk);
         Debug.WriteLine("Initializing Test");
+        Debug.WriteLine(_asterisk);
     }
 
     [TestMethod]
@@ -33,7 +38,9 @@ public class WebApplication1Tests
             .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode || r.StatusCode == HttpStatusCode.InternalServerError)
             .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
              {
+                 Debug.WriteLine(_asterisk);
                  Debug.WriteLine($"RETRY ATTEMPT # {retryCount} AFTER {timeSpan} SECONDS");
+                 Debug.WriteLine(_asterisk);
              });
 
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -44,14 +51,23 @@ public class WebApplication1Tests
             });
         });
 
+        Debug.WriteLine(_asterisk);
+        Debug.WriteLine("Starting Web Application");
+        Debug.WriteLine(_asterisk);
+
         using var client = application.CreateClient();
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
             Debug.WriteLine(_enter);
+            Debug.WriteLine("Starting HTTP Request");
+            Debug.WriteLine(_enter);
+
             return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
         }).Result;
 
+        Debug.WriteLine(_exit);
+        Debug.WriteLine("Ending HTTP Request");
         Debug.WriteLine(_exit);
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -63,12 +79,21 @@ public class WebApplication1Tests
     public async Task ApplicationHeaderIsValid()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+
+        Debug.WriteLine(_asterisk);
+        Debug.WriteLine("Starting Web Application");
+        Debug.WriteLine(_asterisk);
+
         using var client = application.CreateClient();
 
+        Debug.WriteLine(_enter);
+        Debug.WriteLine("Starting HTTP Request");
         Debug.WriteLine(_enter);
 
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
+        Debug.WriteLine(_exit);
+        Debug.WriteLine("Ending HTTP Request");
         Debug.WriteLine(_exit);
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))

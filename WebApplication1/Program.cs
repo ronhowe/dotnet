@@ -1,4 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////80
+/*******************************************************************************
+https://github.com/ronhowe/dotnet
+*******************************************************************************/
 
 using ClassLibrary1;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +12,8 @@ using WebApplication1;
 
 
 const string sourceContext = nameof(Program);
-const string outputTemplate = "[SERVER] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] [{SourceContext}] [{Message}]{NewLine}{Exception}";
+//const string outputTemplate = "{Message} [{Level:u3}] [{MachineName}] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}]{NewLine}{Exception}";
+const string outputTemplate = "{Message}{NewLine}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
