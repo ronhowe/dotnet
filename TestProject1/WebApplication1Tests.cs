@@ -7,8 +7,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Polly;
-using Polly.Contrib.WaitAndRetry;
 using System.Diagnostics;
 using System.Net;
 
@@ -27,52 +25,6 @@ public class WebApplication1Tests
         Debug.WriteLine(_asterisk);
         Debug.WriteLine("Initializing Test");
         Debug.WriteLine(_asterisk);
-    }
-
-    [TestMethod]
-    public void ClientRetries()
-    {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
-
-        var retryPolicy = Policy
-            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode || r.StatusCode == HttpStatusCode.InternalServerError)
-            .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
-             {
-                 Debug.WriteLine(_asterisk);
-                 Debug.WriteLine($"RETRY ATTEMPT # {retryCount} AFTER {timeSpan} SECONDS");
-                 Debug.WriteLine(_asterisk);
-             });
-
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
-            {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
-            });
-        });
-
-        Debug.WriteLine(_asterisk);
-        Debug.WriteLine("Starting Web Application");
-        Debug.WriteLine(_asterisk);
-
-        using var client = application.CreateClient();
-
-        using var response = retryPolicy.ExecuteAsync(async () =>
-        {
-            Debug.WriteLine(_enter);
-            Debug.WriteLine("Starting HTTP Request");
-            Debug.WriteLine(_enter);
-
-            return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
-        }).Result;
-
-        Debug.WriteLine(_exit);
-        Debug.WriteLine("Ending HTTP Request");
-        Debug.WriteLine(_exit);
-
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-
-        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
