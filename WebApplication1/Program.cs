@@ -36,11 +36,11 @@ Log.Logger = new LoggerConfiguration()
 
 ******************************************************************************/
 
-Log.ForContext("SourceContext", sourceContext).Debug("Power-On Self-Test (1 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Information("Power-On Self-Test (2 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Warning("Power-On Self-Test (3 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Error("Power-On Self-Test (4 of 5)... OK");
-Log.ForContext("SourceContext", sourceContext).Fatal("Power-On Self-Test (5 of 5)... OK");
+Log.ForContext("SourceContext", sourceContext).Debug("Power-On Self-Test (1 of 5) => Logging Debug OK");
+Log.ForContext("SourceContext", sourceContext).Information("Power-On Self-Test (2 of 5) => Logging Information OK");
+Log.ForContext("SourceContext", sourceContext).Warning("Power-On Self-Test (3 of 5) => Logging Warning OK");
+Log.ForContext("SourceContext", sourceContext).Error("Power-On Self-Test (4 of 5) => Logging Error OK");
+Log.ForContext("SourceContext", sourceContext).Fatal("Power-On Self-Test (5 of 5) => Logging Fatal OK");
 
 #endregion post
 
@@ -158,11 +158,11 @@ try
     Log.ForContext("SourceContext", sourceContext).Information("Building Web Application");
     var app = builder.Build();
 
-    app.Logger.LogDebug("Power-On Self-Test (1 of 5)... OK");
-    app.Logger.LogInformation("Power-On Self-Test (2 of 5)... OK");
-    app.Logger.LogWarning("Power-On Self-Test (3 of 5)... OK");
-    app.Logger.LogError("Power-On Self-Test (4 of 5)... OK");
-    app.Logger.LogCritical("Power-On Self-Test (5 of 5)... OK");
+    app.Logger.LogDebug("Power-On Self-Test (1 of 5) => Logging Debug OK");
+    app.Logger.LogInformation("Power-On Self-Test (2 of 5) => Logging Information OK");
+    app.Logger.LogWarning("Power-On Self-Test (3 of 5) => Logging Warning OK");
+    app.Logger.LogError("Power-On Self-Test (4 of 5) => Logging Error OK");
+    app.Logger.LogCritical("Power-On Self-Test (5 of 5) => Logging Critical OK");
 
     app.Logger.LogInformation("Web Application Running");
 
