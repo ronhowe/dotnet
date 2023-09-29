@@ -1,4 +1,6 @@
-﻿namespace WebApplication1;
+﻿/////////////////////////////////////////////////////////////////////////////80
+
+namespace WebApplication1;
 
 public class RequestLoggingMiddleware
 {

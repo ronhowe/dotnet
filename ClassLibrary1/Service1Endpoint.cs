@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary1;
+﻿/////////////////////////////////////////////////////////////////////////////80
+
+namespace ClassLibrary1;
 
 public static class Service1Endpoint
 {

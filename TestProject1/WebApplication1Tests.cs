@@ -1,10 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////80
+
 using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Serilog;
-using Serilog.Events;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using System.Diagnostics;
 using System.Net;
 
 namespace TestProject1;
@@ -12,27 +15,26 @@ namespace TestProject1;
 [TestClass]
 public class WebApplication1Tests
 {
-    private const string sourceContext = nameof(WebApplication1Tests);
+    private readonly string separator = new('*', 160);
 
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "[CLIENT] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] [{SourceContext}] [{Message}]{NewLine}{Exception}";
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
-            .WriteTo.Console(outputTemplate: outputTemplate)
-            .CreateLogger();
-
-        Log.ForContext("SourceContext", sourceContext).Information("Initializing Test");
+        Debug.WriteLine("Initializing Test");
     }
 
     [TestMethod]
-    public async Task ClientRetries()
+    public void ClientRetries()
     {
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
+
+        var retryPolicy = Policy
+            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode || r.StatusCode == HttpStatusCode.InternalServerError)
+            .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
+             {
+                 Debug.WriteLine($"RETRY ATTEMPT # {retryCount} AFTER {timeSpan} SECONDS");
+             });
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
@@ -42,11 +44,18 @@ public class WebApplication1Tests
         });
 
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Debug.WriteLine(separator);
+            return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+        }).Result;
+
+        Debug.WriteLine(separator);
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
-        Assert.Inconclusive("todo - implement retry policy at which point expect 100% success");
     }
 
     [TestMethod]
@@ -170,5 +179,23 @@ public class WebApplication1Tests
             Assert.AreEqual<string>("default", values.First());
             values.First().Should<string>().Be("default");
         }
+    }
+
+    [TestMethod]
+    public async Task HealthCheckThrowsMockServiceException()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1PermanentExceptionToggle", "true" } });
+            });
+        });
+
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
+
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
     }
 }

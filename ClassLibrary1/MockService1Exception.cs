@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary1;
+﻿/////////////////////////////////////////////////////////////////////////////80
+
+namespace ClassLibrary1;
 
 public class MockService1Exception : Exception
 {

@@ -1,3 +1,5 @@
+/////////////////////////////////////////////////////////////////////////////80
+
 using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -5,30 +7,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Serilog;
-using Serilog.Events;
+using System.Diagnostics;
 
 namespace TestProject1;
 
 [TestClass]
 public class ClassLibrary1Tests
 {
-    private const string sourceContext = nameof(ClassLibrary1Tests);
-
     [TestInitialize]
     public void TestInitialize()
     {
-        const string outputTemplate = "[CLIENT] [{Timestamp:HH:mm:ss.fff zzz}] [{MachineName}] [{Level:u3}] [{SourceContext}] [{Message}]{NewLine}{Exception}";
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
-            .WriteTo.Console(outputTemplate: outputTemplate)
-            .CreateLogger();
-
-        Log.ForContext("SourceContext", sourceContext).Information("Initializing Test");
+        Debug.WriteLine("Initializing Test");
     }
 
     [TestMethod]
@@ -125,17 +114,16 @@ public class ClassLibrary1Tests
     }
 }
 
+//todo - refactor
+//todo - remove pragmas, i have no idea what it means =)
 internal static class TestHelpers
 {
     public static Mock<ILogger<T>> VerifyLogDebug<T>(this Mock<ILogger<T>> logger, string expectedMessage)
     {
-        //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
-        //todo - refactor and remove pragma
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-        //todo - refactor and remove pragma, i have no idea what it means =)
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         logger.Verify(
             x => x.Log(
@@ -151,13 +139,10 @@ internal static class TestHelpers
 
     public static Mock<ILogger<T>> VerifyLogInformation<T>(this Mock<ILogger<T>> logger, string expectedMessage)
     {
-        //help - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
-        //todo - refactor and remove pragma
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-        //todo - refactor and remove pragma, i have no idea what it means =)
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         logger.Verify(
             x => x.Log(
