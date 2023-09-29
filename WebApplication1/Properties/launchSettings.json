@@ -2,25 +2,17 @@
   "profiles": {
     "https": {
       "commandName": "Project",
-      "launchUrl": "?input=true",
+      "launchBrowser": true,
+      "launchUrl": "health",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:444"
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "launchUrl": "https://localhost:444/?input=true",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:444"
-      },
-      "distributionName": ""
+      "applicationUrl": "https://localhost:444/"
     },
     "Docker": {
       "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/?input=true",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/health",
       "environmentVariables": {
         "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
