@@ -138,6 +138,9 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+    Log.ForContext("SourceContext", sourceContext).Information("Adding {0}", nameof(DateTimeService));
+    builder.Services.AddSingleton<IDateTimeService, DateTimeService>();
+
     Log.ForContext("SourceContext", sourceContext).Information("Adding {0}", nameof(Service1));
     builder.Services.AddSingleton<IService1, Service1>();
 

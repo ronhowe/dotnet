@@ -5,6 +5,7 @@ https://github.com/ronhowe/dotnet
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using System;
 
 namespace ClassLibrary1;
 
@@ -13,12 +14,14 @@ public class Service1 : IService1
     private readonly ILogger<Service1> _logger;
     private readonly IConfiguration _config;
     private readonly IFeatureManager _featureManager;
+    private readonly IDateTimeService _dateTime;
 
-    public Service1(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager)
+    public Service1(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager, IDateTimeService dateTime)
     {
         _logger = logger;
         _config = config;
         _featureManager = featureManager;
+        _dateTime = dateTime;
     }
 
     public bool Run(bool input)
@@ -38,6 +41,8 @@ public class Service1 : IService1
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("$feature = {feature}", feature);
 
+        bool result = input;
+
         if (feature)
         {
             _logger.LogWarning("Throwing Mock Service Permanent Exception");
@@ -46,29 +51,29 @@ public class Service1 : IService1
         else
         {
             _logger.LogInformation("Skipping Mock Service Exception");
-        }
 
-        _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
-        feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
-        _logger.LogDebug("$feature = {feature}", feature);
+            _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
+            feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
+            _logger.LogDebug("$feature = {feature}", feature);
 
-        if (feature)
-        {
-            _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
-
-            if (DateTime.Now.Ticks % 2 == 1)
+            if (feature)
             {
-                _logger.LogWarning("Throwing Mock Service Transient Exception");
-                throw new MockService1Exception(nameof(Service1Feature.MockService1TransientExceptionToggle));
+                _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
+
+                if (_dateTime.Now.Ticks % 2 != 0) // odd ticks
+                {
+                    _logger.LogWarning("Throwing Mock Service Transient Exception");
+                    throw new MockService1Exception(nameof(Service1Feature.MockService1TransientExceptionToggle));
+                }
+                else
+                {
+                    _logger.LogInformation("Avoiding Mock Service Exception");
+                }
             }
             else
             {
-                _logger.LogInformation("Avoiding Mock Service Exception");
+                _logger.LogInformation("Skipping Mock Service Exception");
             }
-        }
-        else
-        {
-            _logger.LogInformation("Skipping Mock Service Exception");
         }
 
         //todo - mock resource throttling
@@ -111,6 +116,6 @@ public class Service1 : IService1
 
         _logger.LogInformation("Exiting {name}", nameof(Service1));
 
-        return input;
+        return result;
     }
 }
