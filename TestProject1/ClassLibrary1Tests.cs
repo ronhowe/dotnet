@@ -5,6 +5,7 @@ https://github.com/ronhowe/dotnet
 using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,18 +21,6 @@ public class ClassLibrary1Tests
     public void TestInitialize()
     {
         Debug.WriteLine("Initializing Test");
-    }
-
-    [TestMethod]
-    public void Service1LogsInputParameters()
-    {
-        var mockLogger = new Mock<ILogger<Service1>>();
-
-        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false), CreateMockDateTimeService(true));
-
-        service.Run(false);
-
-        mockLogger.VerifyLogDebug($"$input = {Boolean.FalseString}");
     }
 
     [TestMethod]
@@ -59,10 +48,15 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1ReturnsTrueFromTrueInput()
+    public void Service1LogsInputParameters()
     {
-        Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
-        CreateServiceWithMockDependencies().Run(true).Should().BeTrue();
+        var mockLogger = new Mock<ILogger<Service1>>();
+
+        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false), CreateMockDateTimeService(true));
+
+        service.Run(false);
+
+        mockLogger.VerifyLogDebug($"$input = {Boolean.FalseString}");
     }
 
     [TestMethod]
@@ -73,21 +67,68 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
+    public void Service1ReturnsTrueFromTrueInput()
+    {
+        Assert.IsTrue(CreateServiceWithMockDependencies().Run(true));
+        CreateServiceWithMockDependencies().Run(true).Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Service1ThrowsMockPermanentServiceException()
     {
-        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true), CreateMockDateTimeService(true));
+        var mockExceptionEnabled = true;
+        var service = new Service1(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), mockExceptionEnabled), CreateMockDateTimeService(true));
 
         Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
         service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1PermanentExceptionToggle");
     }
 
     [TestMethod]
-    [Ignore]
+    public void Service1HealthCheckReturnsHealthy()
+    {
+        var mockExceptionEnabled = false;
+
+        var registration = new HealthCheckRegistration(
+            name: "MyHealthCheck",
+            instance: CreateMockHealthCheck(),
+            failureStatus: null,
+            tags: new[] { "mytag" }
+        );
+
+        var context = new HealthCheckContext
+        {
+            Registration = registration
+        };
+
+        var service = new Service1HealthCheck(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), mockExceptionEnabled), CreateMockDateTimeService(true));
+        var result = service.CheckHealthAsync(context).Result;
+
+        Assert.AreEqual<HealthStatus>(HealthStatus.Healthy, result.Status);
+        result.Status.Should<HealthStatus>().Be(HealthStatus.Healthy);
+    }
+
+    [TestMethod]
     public void Service1HealthCheckThrowsMockServiceException()
     {
-        var service = new Service1HealthCheck(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true), CreateMockDateTimeService(true));
+        var mockExceptionEnabled = true;
 
-        Assert.Inconclusive("todo");
+        var registration = new HealthCheckRegistration(
+            name: "MyHealthCheck",
+            instance: CreateMockHealthCheck(),
+            failureStatus: null,
+            tags: new[] { "mytag" }
+        );
+
+        var context = new HealthCheckContext
+        {
+            Registration = registration
+        };
+
+        var service = new Service1HealthCheck(CreateMockLogger(), CreateMockConfiguration(true), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), mockExceptionEnabled), CreateMockDateTimeService(true));
+        var result = service.CheckHealthAsync(context).Result;
+
+        Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
+        result.Status.Should<HealthStatus>().Be(HealthStatus.Unhealthy);
     }
 
     private static IConfiguration CreateMockConfiguration(bool value)
@@ -111,6 +152,14 @@ public class ClassLibrary1Tests
         mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
 
         return mockDateTimeService.Object;
+    }
+
+    private static IHealthCheck CreateMockHealthCheck()
+    {
+        var mockHealthCheck = new Mock<IHealthCheck>();
+        //mockHealthCheck.Setup(x => x.Now).Returns(dateTime);
+
+        return mockHealthCheck.Object;
     }
 
     private static IFeatureManager CreateMockFeatureManager(string name, bool value)
