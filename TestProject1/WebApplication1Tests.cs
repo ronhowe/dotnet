@@ -142,7 +142,7 @@ public class WebApplication1Tests
             });
 
             builder.ConfigureTestServices(services => {
-                services.AddSingleton(CreateMockDateTimeService(false));
+                services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(false));
             });
         });
 
@@ -164,7 +164,7 @@ public class WebApplication1Tests
             });
 
             builder.ConfigureTestServices(services => {
-                services.AddSingleton(CreateMockDateTimeService(true));
+                services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(true));
             });
         });
 
@@ -227,16 +227,5 @@ public class WebApplication1Tests
 
         Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-    }
-
-    private static IDateTimeService CreateMockDateTimeService(bool even)
-    {
-        long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
-        DateTime dateTime = new(ticks);
-
-        var mockDateTimeService = new Mock<IDateTimeService>();
-        mockDateTimeService.Setup(x => x.UtcNow).Returns(dateTime);
-
-        return mockDateTimeService.Object;
     }
 }

@@ -17,21 +17,20 @@ internal class MockDateTimeService : IDateTimeService
         get
         {
             long ticks = _even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
-
             DateTime dateTime = new(ticks);
 
             return dateTime;
         }
-    } 
+    }
 
-    //public static IDateTimeService CreateMockDateTimeService(bool even)
-    //{
-    //    long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
-    //    DateTime dateTime = new(ticks);
+    public static IDateTimeService CreateMockDateTimeService(bool even)
+    {
+        long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
+        DateTime dateTime = new(ticks);
 
-    //    var mockDateTimeService = new Mock<IDateTimeService>();
-    //    mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
+        var mockDateTimeService = new Mock<IDateTimeService>();
+        mockDateTimeService.Setup(x => x.UtcNow).Returns(dateTime);
 
-    //    return mockDateTimeService.Object;
-    //}
+        return mockDateTimeService.Object;
+    }
 }
