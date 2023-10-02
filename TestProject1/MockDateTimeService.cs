@@ -11,11 +11,13 @@ internal class MockDateTimeService : IDateTimeService
     {
         _even = even;
     }
+
     public DateTime UtcNow
     {
         get
         {
             long ticks = _even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
+
             DateTime dateTime = new(ticks);
 
             return dateTime;
