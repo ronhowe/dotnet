@@ -78,7 +78,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1ThrowsWhenMockPermanentService1ExceptionToggleIsTrue()
+    public void Service1ThrowsWhenMockService1PermanentExceptionToggleIsTrue()
     {
         var service = new Service1(
             CreateMockLogger(),
@@ -92,7 +92,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1ReturnsWhenMockServiceTransientExceptionToggleIsTrueOnEvenTicks()
+    public void Service1ReturnsWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
     {
         var service = new Service1(
             CreateMockLogger(),
@@ -106,7 +106,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1ThrowsWhenMockServiceTransientExceptionToggleIsTrueOnOddTicks()
+    public void Service1ThrowsWhenMockService1TransientExceptionToggleIsTrueOnOddTicks()
     {
         var service = new Service1(
             CreateMockLogger(),
@@ -148,7 +148,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1HealthCheckReturnsUnhealthyWhenMockServicePermanentExceptionToggleIsTrue()
+    public void Service1HealthCheckReturnsUnhealthyWhenMockService1PermanentExceptionToggleIsTrue()
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
@@ -176,7 +176,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1HealthCheckReturnsHealthyWhenMockServiceTransientExceptionToggleIsTrueOnEvenTicks()
+    public void Service1HealthCheckReturnsHealthyWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
@@ -204,7 +204,7 @@ public class ClassLibrary1Tests
     }
 
     [TestMethod]
-    public void Service1HealthCheckReturnsUnhealthyWhenMockServiceTransientExceptionIsTrueOnOddTicks()
+    public void Service1HealthCheckReturnsUnhealthyWhenMockService1TransientExceptionToggleIsTrueOnOddTicks()
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
@@ -231,6 +231,7 @@ public class ClassLibrary1Tests
         result.Status.Should<HealthStatus>().Be(HealthStatus.Unhealthy);
     }
 
+    #region Mocks
     private static IConfiguration CreateMockConfiguration(bool value)
     {
         //link - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
@@ -288,6 +289,7 @@ public class ClassLibrary1Tests
 
         return service;
     }
+    #endregion Mocks
 }
 
 //todo - refactor

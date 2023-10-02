@@ -5,8 +5,11 @@ https://github.com/ronhowe/dotnet
 using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Diagnostics;
 using System.Net;
 
@@ -111,7 +114,7 @@ public class WebApplication1Tests
     }
 
     [TestMethod]
-    public async Task ApplicationThrowsMockServiceException()
+    public async Task ApplicationThrowsWhenMockService1PermanentExceptionToggleIsTrue()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -126,6 +129,50 @@ public class WebApplication1Tests
 
         Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+
+    [TestMethod]
+    public async Task ApplicationThrowsWhenMockService1TransientExceptionToggleIsTrueOnOddTicks()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
+            });
+
+            builder.ConfigureTestServices(services => {
+                services.AddSingleton(CreateMockDateTimeService(false));
+            });
+        });
+
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+
+    [TestMethod]
+    public async Task ApplicationRespondsOKWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
+            });
+
+            builder.ConfigureTestServices(services => {
+                services.AddSingleton(CreateMockDateTimeService(true));
+            });
+        });
+
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
@@ -180,5 +227,16 @@ public class WebApplication1Tests
 
         Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+    }
+
+    private static IDateTimeService CreateMockDateTimeService(bool even)
+    {
+        long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
+        DateTime dateTime = new(ticks);
+
+        var mockDateTimeService = new Mock<IDateTimeService>();
+        mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
+
+        return mockDateTimeService.Object;
     }
 }
