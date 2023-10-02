@@ -60,7 +60,7 @@ public class Service1 : IService1
             {
                 _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
 
-                if (_dateTime.Now.Ticks % 2 != 0) // odd ticks
+                if (_dateTime.UtcNow.Ticks % 2 != 0) // odd ticks
                 {
                     _logger.LogWarning("Throwing Mock Service Transient Exception");
                     throw new MockService1Exception(nameof(Service1Feature.MockService1TransientExceptionToggle));

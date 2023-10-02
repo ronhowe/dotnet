@@ -28,7 +28,12 @@ public class ClassLibrary1Tests
     {
         var mockLogger = new Mock<ILogger<Service1>>();
 
-        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false), CreateMockDateTimeService(true));
+        var service = new Service1(
+            mockLogger.Object,
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            new MockDateTimeService(true)
+        );
 
         service.Run(false);
 
@@ -40,7 +45,12 @@ public class ClassLibrary1Tests
     {
         var mockLogger = new Mock<ILogger<Service1>>();
 
-        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false), CreateMockDateTimeService(true));
+        var service = new Service1(
+            mockLogger.Object,
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            new MockDateTimeService(true)
+        );
 
         service.Run(false);
 
@@ -52,7 +62,12 @@ public class ClassLibrary1Tests
     {
         var mockLogger = new Mock<ILogger<Service1>>();
 
-        var service = new Service1(mockLogger.Object, CreateMockConfiguration(false), CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false), CreateMockDateTimeService(true));
+        var service = new Service1(
+            mockLogger.Object,
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            new MockDateTimeService(true)
+        );
 
         service.Run(false);
 
@@ -82,9 +97,9 @@ public class ClassLibrary1Tests
     {
         var service = new Service1(
             CreateMockLogger(),
-            CreateMockConfiguration(false)
-            , CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true)
-            , CreateMockDateTimeService(false)
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true),
+            new MockDateTimeService(false)
         );
 
         Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
@@ -95,10 +110,10 @@ public class ClassLibrary1Tests
     public void Service1ReturnsWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
     {
         var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false)
-            , CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
-            , CreateMockDateTimeService(true)
+            CreateMockLogger()
+            ,CreateMockConfiguration(false)
+            ,CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
+            ,new MockDateTimeService(true)
         );
 
         Assert.IsFalse(service.Run(false));
@@ -110,9 +125,9 @@ public class ClassLibrary1Tests
     {
         var service = new Service1(
             CreateMockLogger(),
-            CreateMockConfiguration(false)
-            , CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
-            , CreateMockDateTimeService(false)
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
+            new MockDateTimeService(false)
         );
 
         Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
@@ -138,7 +153,7 @@ public class ClassLibrary1Tests
             CreateMockLogger(),
             CreateMockConfiguration(false),
             CreateMockFeatureManager(string.Empty, false),
-            CreateMockDateTimeService(false)
+            new MockDateTimeService(false)
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -166,7 +181,7 @@ public class ClassLibrary1Tests
             CreateMockLogger(),
             CreateMockConfiguration(true),
             CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true),
-            CreateMockDateTimeService(true)
+            new MockDateTimeService(true)
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -194,7 +209,7 @@ public class ClassLibrary1Tests
             CreateMockLogger(),
             CreateMockConfiguration(false),
             CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            CreateMockDateTimeService(true) // even ticks
+            new MockDateTimeService(true) // even ticks
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -222,7 +237,7 @@ public class ClassLibrary1Tests
             CreateMockLogger(),
             CreateMockConfiguration(false),
             CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            CreateMockDateTimeService(false) // odd ticks
+            new MockDateTimeService(false) // odd ticks
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -245,16 +260,16 @@ public class ClassLibrary1Tests
         return mockConfiguration.Object;
     }
 
-    private static IDateTimeService CreateMockDateTimeService(bool even)
-    {
-        long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
-        DateTime dateTime = new(ticks);
+    //private static IDateTimeService CreateMockDateTimeService(bool even)
+    //{
+    //    long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
+    //    DateTime dateTime = new(ticks);
 
-        var mockDateTimeService = new Mock<IDateTimeService>();
-        mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
+    //    var mockDateTimeService = new Mock<IDateTimeService>();
+    //    mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
 
-        return mockDateTimeService.Object;
-    }
+    //    return mockDateTimeService.Object;
+    //}
 
     private static IHealthCheck CreateMockHealthCheck()
     {
@@ -284,7 +299,7 @@ public class ClassLibrary1Tests
             CreateMockLogger(),
             CreateMockConfiguration(false),
             CreateMockFeatureManager(string.Empty, false),
-            CreateMockDateTimeService(false)
+            new MockDateTimeService(false)
         );
 
         return service;

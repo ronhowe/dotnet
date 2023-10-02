@@ -235,7 +235,7 @@ public class WebApplication1Tests
         DateTime dateTime = new(ticks);
 
         var mockDateTimeService = new Mock<IDateTimeService>();
-        mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
+        mockDateTimeService.Setup(x => x.UtcNow).Returns(dateTime);
 
         return mockDateTimeService.Object;
     }
