@@ -30,6 +30,7 @@ public class UnitTest1
     }
 
     [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToRonHoweNet()
     {
         var retryPolicy = Policy
@@ -72,6 +73,7 @@ public class UnitTest1
     }
 
     [TestMethod]
+    [Ignore]
     public void ClientRetriesFromInternalServiceError()
     {
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);

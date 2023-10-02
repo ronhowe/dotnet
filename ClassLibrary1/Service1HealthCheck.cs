@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using System;
 
 namespace ClassLibrary1;
 
@@ -14,12 +15,14 @@ public class Service1HealthCheck : IHealthCheck
     private readonly ILogger<Service1> _logger;
     private readonly IConfiguration _config;
     private readonly IFeatureManager _featureManager;
+    private readonly IDateTimeService _dateTime;
 
-    public Service1HealthCheck(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager)
+    public Service1HealthCheck(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager, IDateTimeService dateTime)
     {
         _logger = logger;
         _config = config;
         _featureManager = featureManager;
+        _dateTime = dateTime;
     }
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
@@ -36,20 +39,39 @@ public class Service1HealthCheck : IHealthCheck
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("feature = {feature}", feature);
 
-        HealthCheckResult result;
+        HealthCheckResult result = HealthCheckResult.Healthy("HEALTHY");
 
         if (feature)
         {
-            //todo - implement robust health check logic
-            //todo - inject configuration and logging dependencies
-
             _logger.LogWarning("Throwing Mock Service Permanent Exception");
             result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
         }
         else
         {
             _logger.LogInformation("Skipping Mock Service Permanent Exception");
-            result = HealthCheckResult.Healthy("HEALTHY");
+
+            _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
+            feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
+            _logger.LogDebug("$feature = {feature}", feature);
+
+            if (feature)
+            {
+                _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
+
+                if (_dateTime.Now.Ticks % 2 != 0) // odd ticks
+                {
+                    _logger.LogWarning("Throwing Mock Service Transient Exception");
+                    result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
+                }
+                else
+                {
+                    _logger.LogInformation("Avoiding Mock Service Exception");
+                }
+            }
+            else
+            {
+                _logger.LogInformation("Skipping Mock Service Exception");
+            }
         }
 
         _logger.LogInformation("Exiting {name}", nameof(Service1HealthCheck));
