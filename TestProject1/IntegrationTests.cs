@@ -16,7 +16,7 @@ using System.Net;
 namespace TestProject1;
 
 [TestClass]
-public class WebApplication1Tests
+public class IntegrationTests
 {
     private readonly string _asterisk = new('*', 80);
     private readonly string _enter = new('>', 80);

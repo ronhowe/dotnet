@@ -15,7 +15,7 @@ using System.Diagnostics;
 namespace TestProject1;
 
 [TestClass]
-public class ClassLibrary1Tests
+public class UnitTests
 {
     [TestInitialize]
     public void TestInitialize()

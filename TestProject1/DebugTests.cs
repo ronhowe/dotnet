@@ -15,7 +15,7 @@ using System.Net;
 namespace TestProject1;
 
 [TestClass]
-public class UnitTest1
+public class DebugTests
 {
     private readonly string _asterisk = new('*', 80);
     private readonly string _enter = new('>', 80);
@@ -30,7 +30,6 @@ public class UnitTest1
     }
 
     [TestMethod]
-    [Ignore]
     public async Task ClientConnectsToRonHoweNet()
     {
         var retryPolicy = Policy
@@ -56,6 +55,91 @@ public class UnitTest1
             Debug.WriteLine(_enter);
 
             return await client.GetAsync("https://ronhowe.net");
+        }).Result;
+
+        Debug.WriteLine(_exit);
+        Debug.WriteLine("Ending HTTP Request");
+        Debug.WriteLine(_exit);
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+        foreach (var header in response.Headers)
+        {
+            Trace.WriteLine($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Debug.WriteLine(await response.Content.ReadAsStringAsync());
+    }
+
+    [TestMethod]
+    public async Task ClientConnectsToAzureAppService000()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Debug.WriteLine(_asterisk);
+                Debug.WriteLine($"RETRY ATTEMPT # {retryCount}");
+                Debug.WriteLine(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Debug.WriteLine(_enter);
+            Debug.WriteLine("Starting HTTP Request");
+            Debug.WriteLine(_enter);
+
+            return await client.GetAsync("https://app-ronhowe-000.azurewebsites.net");
+        }).Result;
+
+        Debug.WriteLine(_exit);
+        Debug.WriteLine("Ending HTTP Request");
+        Debug.WriteLine(_exit);
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+        foreach (var header in response.Headers)
+        {
+            Trace.WriteLine($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Debug.WriteLine(await response.Content.ReadAsStringAsync());
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task ClientConnectsToAzureAppService001()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Debug.WriteLine(_asterisk);
+                Debug.WriteLine($"RETRY ATTEMPT # {retryCount}");
+                Debug.WriteLine(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Debug.WriteLine(_enter);
+            Debug.WriteLine("Starting HTTP Request");
+            Debug.WriteLine(_enter);
+
+            return await client.GetAsync("https://app-ronhowe-001.azurewebsites.net");
         }).Result;
 
         Debug.WriteLine(_exit);
