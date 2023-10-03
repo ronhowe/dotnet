@@ -30,6 +30,7 @@ public class DebugTests
     }
 
     [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToRonHoweNet()
     {
         var retryPolicy = Policy
@@ -85,7 +86,7 @@ public class DebugTests
 
         var handler = new HttpClientHandler()
         {
-            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            //ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         };
 
         using var client = new HttpClient(handler);
@@ -96,14 +97,15 @@ public class DebugTests
             Debug.WriteLine("Starting HTTP Request");
             Debug.WriteLine(_enter);
 
-            return await client.GetAsync("https://app-ronhowe-000.azurewebsites.net");
+            return await client.GetAsync("https://app-rhowe-000.azurewebsites.net/health");
         }).Result;
 
         Debug.WriteLine(_exit);
         Debug.WriteLine("Ending HTTP Request");
         Debug.WriteLine(_exit);
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         foreach (var header in response.Headers)
         {

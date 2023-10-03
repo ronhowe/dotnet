@@ -15,7 +15,7 @@ public class Program
 
         if (args == null || args.Length == 0)
         {
-            host = "https://localhost:444/health";
+            host = "https://app-rhowe-000.azurewebsites.net/health";
         }
         else
         {
