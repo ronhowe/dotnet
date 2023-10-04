@@ -111,9 +111,9 @@ public class UnitTests
     {
         var service = new Service1(
             CreateMockLogger()
-            ,CreateMockConfiguration(false)
-            ,CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
-            ,new MockDateTimeService(true)
+            , CreateMockConfiguration(false)
+            , CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
+            , new MockDateTimeService(true)
         );
 
         Assert.IsFalse(service.Run(false));

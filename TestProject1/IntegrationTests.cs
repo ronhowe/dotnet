@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.Diagnostics;
 using System.Net;
 
@@ -141,7 +140,8 @@ public class IntegrationTests
                 configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
             });
 
-            builder.ConfigureTestServices(services => {
+            builder.ConfigureTestServices(services =>
+            {
                 services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(false));
             });
         });
@@ -163,7 +163,8 @@ public class IntegrationTests
                 configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
             });
 
-            builder.ConfigureTestServices(services => {
+            builder.ConfigureTestServices(services =>
+            {
                 services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(true));
             });
         });
