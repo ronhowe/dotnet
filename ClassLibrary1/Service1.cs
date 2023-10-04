@@ -5,7 +5,6 @@ https://github.com/ronhowe/dotnet
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using System;
 
 namespace ClassLibrary1;
 
