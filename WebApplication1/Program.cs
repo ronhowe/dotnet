@@ -65,9 +65,9 @@ try
     ******************************************************************************/
 
     Log.ForContext("SourceContext", sourceContext).Information("Using Serilog");
-    builder.Host.UseSerilog((hostContext, LoggerConfiguration) =>
+    builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
     {
-        LoggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
+        loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
     });
 
     #endregion logging
