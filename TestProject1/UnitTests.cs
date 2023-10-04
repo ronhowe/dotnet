@@ -10,17 +10,38 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Diagnostics;
+using Serilog;
+using Serilog.Events;
 
 namespace TestProject1;
 
 [TestClass]
 public class UnitTests
 {
+    private readonly string _asterisk = new('*', 80);
+    private readonly string _sourceContext = nameof(IntegrationTests);
+    private readonly string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
+
     [TestInitialize]
     public void TestInitialize()
     {
-        Debug.WriteLine("Initializing Test");
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Console(outputTemplate: _outputTemplate)
+            .CreateLogger();
+
+        Log.ForContext("SourceContext", _sourceContext).Debug("Power-On Self-Test (1 of 5) => Logging Debug OK");
+        Log.ForContext("SourceContext", _sourceContext).Information("Power-On Self-Test (2 of 5) => Logging Information OK");
+        Log.ForContext("SourceContext", _sourceContext).Warning("Power-On Self-Test (3 of 5) => Logging Warning OK");
+        Log.ForContext("SourceContext", _sourceContext).Error("Power-On Self-Test (4 of 5) => Logging Error OK");
+        Log.ForContext("SourceContext", _sourceContext).Fatal("Power-On Self-Test (5 of 5) => Logging Fatal OK");
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Initializing Test");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
     }
 
     [TestMethod]

@@ -10,8 +10,7 @@ using Serilog.Events;
 using WebApplication1;
 
 const string sourceContext = nameof(Program);
-//const string outputTemplate = "{Message} [{Level:u3}] [{MachineName}] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}]{NewLine}{Exception}";
-const string outputTemplate = "{Message}{NewLine}";
+const string outputTemplate = "[{SourceContext}] {Message}{NewLine}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()

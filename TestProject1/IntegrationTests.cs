@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
+using Serilog;
+using Serilog.Events;
 using System.Net;
 
 namespace TestProject1;
@@ -20,13 +21,29 @@ public class IntegrationTests
     private readonly string _asterisk = new('*', 80);
     private readonly string _enter = new('>', 80);
     private readonly string _exit = new('<', 80);
+    private readonly string _sourceContext = nameof(IntegrationTests);
+    private readonly string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
 
     [TestInitialize]
     public void TestInitialize()
     {
-        Debug.WriteLine(_asterisk);
-        Debug.WriteLine("Initializing Test");
-        Debug.WriteLine(_asterisk);
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Console(outputTemplate: _outputTemplate)
+            .CreateLogger();
+
+        Log.ForContext("SourceContext", _sourceContext).Debug("Power-On Self-Test (1 of 5) => Logging Debug OK");
+        Log.ForContext("SourceContext", _sourceContext).Information("Power-On Self-Test (2 of 5) => Logging Information OK");
+        Log.ForContext("SourceContext", _sourceContext).Warning("Power-On Self-Test (3 of 5) => Logging Warning OK");
+        Log.ForContext("SourceContext", _sourceContext).Error("Power-On Self-Test (4 of 5) => Logging Error OK");
+        Log.ForContext("SourceContext", _sourceContext).Fatal("Power-On Self-Test (5 of 5) => Logging Fatal OK");
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Initializing Test");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
     }
 
     [TestMethod]
@@ -34,21 +51,21 @@ public class IntegrationTests
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
 
-        Debug.WriteLine(_asterisk);
-        Debug.WriteLine("Starting Web Application");
-        Debug.WriteLine(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
 
         using var client = application.CreateClient();
 
-        Debug.WriteLine(_enter);
-        Debug.WriteLine("Starting HTTP Request");
-        Debug.WriteLine(_enter);
+        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        Debug.WriteLine(_exit);
-        Debug.WriteLine("Ending HTTP Request");
-        Debug.WriteLine(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
