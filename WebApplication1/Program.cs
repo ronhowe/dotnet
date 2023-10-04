@@ -8,8 +8,6 @@ using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
 using WebApplication1;
-//using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-
 
 const string sourceContext = nameof(Program);
 //const string outputTemplate = "{Message} [{Level:u3}] [{MachineName}] [{Timestamp:HH:mm:ss.fff zzz}] [{SourceContext}]{NewLine}{Exception}";
@@ -67,7 +65,8 @@ try
     Log.ForContext("SourceContext", sourceContext).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
     {
-        loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
+        loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration)
+        .WriteTo.ApplicationInsights(hostContext.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"], TelemetryConverter.Traces);
     });
 
     #endregion logging
