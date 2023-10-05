@@ -64,8 +64,9 @@ try
     Log.ForContext("SourceContext", _sourceContext).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
     {
-        loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration)
-        .WriteTo.ApplicationInsights(hostContext.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"], TelemetryConverter.Traces);
+        loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
+        // not needed with the serilog application insights sink in appsettings
+        //.WriteTo.ApplicationInsights(hostContext.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"], TelemetryConverter.Traces);
     });
 
     #endregion logging

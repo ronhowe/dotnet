@@ -69,6 +69,7 @@ public class LiveTests : TestBase
     }
 
     [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToAzureAppService000()
     {
         var retryPolicy = Policy
@@ -120,7 +121,6 @@ public class LiveTests : TestBase
     }
 
     [TestMethod]
-    [Ignore]
     public async Task ClientConnectsToAzureAppService001()
     {
         var retryPolicy = Policy
@@ -134,7 +134,7 @@ public class LiveTests : TestBase
 
         var handler = new HttpClientHandler()
         {
-            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            //ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         };
 
         using var client = new HttpClient(handler);
@@ -145,7 +145,7 @@ public class LiveTests : TestBase
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
             Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
-            return await client.GetAsync("https://app-ronhowe-001.azurewebsites.net");
+            return await client.GetAsync("https://app-rhowe-001.azurewebsites.net/health");
         }).Result;
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);

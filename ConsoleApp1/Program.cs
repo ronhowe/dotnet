@@ -23,7 +23,7 @@ public class Program
 
         if (args == null || args.Length == 0)
         {
-            host = "https://app-rhowe-000.azurewebsites.net/health";
+            host = "https://app-rhowe-001.azurewebsites.net/health";
         }
         else
         {
