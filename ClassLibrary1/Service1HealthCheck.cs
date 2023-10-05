@@ -64,12 +64,12 @@ public class Service1HealthCheck : IHealthCheck
                 }
                 else
                 {
-                    _logger.LogInformation("Avoiding Mock Service Exception");
+                    _logger.LogInformation("Avoiding Mock Service Transient Exception");
                 }
             }
             else
             {
-                _logger.LogInformation("Skipping Mock Service Exception");
+                _logger.LogInformation("Skipping Mock Service Transient Exception");
             }
         }
 

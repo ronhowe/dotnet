@@ -36,7 +36,7 @@ public class Service1 : IService1
         //_logger.LogDebug("$config = {config}", config);
 
         //help - example of reading boolean from config via ifeaturemanager
-        _logger.LogDebug("Logging Mock Service Exception Toggle Value");
+        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("$feature = {feature}", feature);
 
@@ -49,7 +49,7 @@ public class Service1 : IService1
         }
         else
         {
-            _logger.LogInformation("Skipping Mock Service Exception");
+            _logger.LogInformation("Skipping Mock Service Permanent Exception");
 
             _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
             feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
@@ -66,12 +66,12 @@ public class Service1 : IService1
                 }
                 else
                 {
-                    _logger.LogInformation("Avoiding Mock Service Exception");
+                    _logger.LogInformation("Avoiding Mock Service Transient Exception");
                 }
             }
             else
             {
-                _logger.LogInformation("Skipping Mock Service Exception");
+                _logger.LogInformation("Skipping Mock Service Transient Exception");
             }
         }
 
