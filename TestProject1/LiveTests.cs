@@ -1,0 +1,301 @@
+/*******************************************************************************
+https://github.com/ronhowe/dotnet
+*******************************************************************************/
+
+using ClassLibrary1;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Serilog;
+using Serilog.Events;
+using System.Diagnostics;
+using System.Net;
+
+namespace TestProject1;
+
+[TestClass]
+public class LiveTests
+{
+    private readonly string _asterisk = new('*', 80);
+    private readonly string _enter = new('>', 80);
+    private readonly string _exit = new('<', 80);
+    private readonly string _sourceContext = nameof(LiveTests);
+    private readonly string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Console(outputTemplate: _outputTemplate)
+            .CreateLogger();
+
+        Log.ForContext("SourceContext", _sourceContext).Debug("Power-On Self-Test (1 of 5) => Logging Debug OK");
+        Log.ForContext("SourceContext", _sourceContext).Information("Power-On Self-Test (2 of 5) => Logging Information OK");
+        Log.ForContext("SourceContext", _sourceContext).Warning("Power-On Self-Test (3 of 5) => Logging Warning OK");
+        Log.ForContext("SourceContext", _sourceContext).Error("Power-On Self-Test (4 of 5) => Logging Error OK");
+        Log.ForContext("SourceContext", _sourceContext).Fatal("Power-On Self-Test (5 of 5) => Logging Fatal OK");
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Initializing Test");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+    }
+
+    [TestMethod]
+    public async Task ClientConnectsToRonHoweNet()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+                Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+            Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+
+            return await client.GetAsync("https://ronhowe.net");
+        }).Result;
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        foreach (var header in response.Headers)
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
+    }
+
+    [TestMethod]
+    public async Task ClientConnectsToAzureAppService000()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+                Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            //ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+            Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+
+            return await client.GetAsync("https://app-rhowe-000.azurewebsites.net/health");
+        }).Result;
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        foreach (var header in response.Headers)
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task ClientConnectsToAzureAppService001()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+                Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+            Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+
+            return await client.GetAsync("https://app-ronhowe-001.azurewebsites.net");
+        }).Result;
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        foreach (var header in response.Headers)
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void ClientRetriesFromInternalServiceError()
+    {
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
+
+        var retryPolicy = Policy
+            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+            .OrResult(r => r.StatusCode == HttpStatusCode.InternalServerError)
+            .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
+            {
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+                Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount} AFTER {timeSpan} SECONDS");
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+            });
+
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
+            });
+        });
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+
+        using var client = application.CreateClient();
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+            Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+
+            return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+        }).Result;
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task ClientRetriesFromHttpRequestException()
+    {
+        var retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .RetryAsync(5, (exception, retryCount, context) =>
+            {
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+                Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
+                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+            });
+
+        var handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        using var client = new HttpClient(handler);
+
+        using var response = retryPolicy.ExecuteAsync(async () =>
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+            Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
+            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+
+            return await client.GetAsync("https://localhost:444/health");
+        }).Result;
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        foreach (var header in response.Headers)
+        {
+            Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+        }
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
+    }
+}
