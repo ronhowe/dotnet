@@ -11,7 +11,6 @@ using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Serilog;
 using Serilog.Events;
-using System.Diagnostics;
 using System.Net;
 
 namespace TestProject1;

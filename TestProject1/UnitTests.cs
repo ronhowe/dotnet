@@ -131,10 +131,10 @@ public class UnitTests
     public void Service1ReturnsWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
     {
         var service = new Service1(
-            CreateMockLogger()
-            , CreateMockConfiguration(false)
-            , CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true)
-            , new MockDateTimeService(true)
+            CreateMockLogger(),
+            CreateMockConfiguration(false),
+            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
+            new MockDateTimeService(true)
         );
 
         Assert.IsFalse(service.Run(false));
