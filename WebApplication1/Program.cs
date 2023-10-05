@@ -252,15 +252,6 @@ try
         //todo - implement else condition
     }
 
-    app.Logger.LogInformation("Using HealthCheck");
-    app.UseHealthChecks(Service1Endpoint.HealthCheck);
-
-    //todo - implement authentication
-    //app.UseAuthentication();
-
-    //todo - implement authorization
-    //app.UseAuthorization();
-
     /*
 
                          _
@@ -270,6 +261,15 @@ try
     |_|    \___/  \__,_| \__| \___||___/
 
      */
+
+    app.Logger.LogInformation("Using HealthCheck");
+    app.UseHealthChecks(Service1Endpoint.HealthCheck);
+
+    //todo - implement authentication
+    //app.UseAuthentication();
+
+    //todo - implement authorization
+    //app.UseAuthorization();
 
     app.Logger.LogInformation("Mapping Routes");
     app.MapGet(Service1Endpoint.Service1, (/*[FromRoute]*/ bool input, [FromServices] IService1 service) =>
@@ -284,7 +284,6 @@ try
         }
         */
 
-        app.Logger.LogInformation("Routing Request to IService1");
         return service.Run(input);
     });
     //todo - implement authorization
