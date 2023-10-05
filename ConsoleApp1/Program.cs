@@ -11,6 +11,14 @@ public class Program
 {
     static void Main(string[] args)
     {
+        var background = Console.BackgroundColor;
+
+        Console.CancelKeyPress += (sender, e) =>
+        {
+            Console.BackgroundColor = background;
+            Console.Clear();
+        };
+
         string host;
 
         if (args == null || args.Length == 0)
@@ -51,6 +59,6 @@ public class Program
     {
         Console.BackgroundColor = color;
         Console.Clear();
-        Console.WriteLine($"{DateTime.Now} - {uri} - {message}");
+        Console.WriteLine($"{DateTime.UtcNow} - {uri} - {message}");
     }
 }
