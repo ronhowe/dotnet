@@ -283,7 +283,8 @@ try
             public const string CanWrite = "DataWriterRole";
         }
         */
-        //app.Logger.LogInformation("Routing Request to Service");
+
+        app.Logger.LogInformation("Routing Request to IService1");
         return service.Run(input);
     });
     //todo - implement authorization
