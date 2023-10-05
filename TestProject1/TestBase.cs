@@ -2,7 +2,6 @@
 https://github.com/ronhowe/dotnet
 *******************************************************************************/
 
-using ClassLibrary1;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
 using Serilog.Events;
@@ -28,12 +27,6 @@ namespace TestProject1
                 .Enrich.WithMachineName()
                 .WriteTo.Console(outputTemplate: _outputTemplate)
                 .CreateLogger();
-
-            Log.ForContext("SourceContext", _sourceContext).Debug(PowerOnSelfTest.DebugLoggingOn);
-            Log.ForContext("SourceContext", _sourceContext).Information(PowerOnSelfTest.InformationLoggingOn);
-            Log.ForContext("SourceContext", _sourceContext).Warning(PowerOnSelfTest.WarningLoggingOn);
-            Log.ForContext("SourceContext", _sourceContext).Error(PowerOnSelfTest.ErrorLoggingOn);
-            Log.ForContext("SourceContext", _sourceContext).Fatal(PowerOnSelfTest.FatalLoggingOn);
 
             Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             Log.ForContext("SourceContext", _sourceContext).Debug("Initializing Test");
