@@ -17,8 +17,8 @@ public class RequestLoggingMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        _logger.LogInformation("HTTP Request Started");
+        _logger.LogInformation("================> Incoming HTTP Request");
         await _next(context);
-        _logger.LogInformation("HTTP Request Stopped");
+        _logger.LogInformation("<================ Outgoing HTTP Response");
     }
 }
