@@ -38,9 +38,19 @@ public class Program
 
             try
             {
-                client.GetAsync(uri).Result.StatusCode.Should().Be(HttpStatusCode.OK);
+                var response = client.GetAsync(uri).Result;
+
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
 
                 Refresh("OK", uri, ConsoleColor.DarkGreen);
+
+                foreach (var header in response.Headers)
+                {
+                    if (header.Key == "CustomHeader")
+                    {
+                        Console.WriteLine($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
+                    }
+                }
             }
             catch (Exception e)
             {
