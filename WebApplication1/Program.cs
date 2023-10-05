@@ -9,15 +9,15 @@ using Serilog;
 using Serilog.Events;
 using WebApplication1;
 
-const string sourceContext = nameof(Program);
-const string outputTemplate = "[{SourceContext}] {Message}{NewLine}";
+const string _sourceContext = nameof(Program);
+const string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
-    .WriteTo.Console(outputTemplate: outputTemplate)
+    .WriteTo.Console(outputTemplate: _outputTemplate)
     .CreateLogger();
 
 #region post
@@ -33,19 +33,19 @@ Log.Logger = new LoggerConfiguration()
 
 ******************************************************************************/
 
-Log.ForContext("SourceContext", sourceContext).Debug("Power-On Self-Test (1 of 5) => Logging Debug OK");
-Log.ForContext("SourceContext", sourceContext).Information("Power-On Self-Test (2 of 5) => Logging Information OK");
-Log.ForContext("SourceContext", sourceContext).Warning("Power-On Self-Test (3 of 5) => Logging Warning OK");
-Log.ForContext("SourceContext", sourceContext).Error("Power-On Self-Test (4 of 5) => Logging Error OK");
-Log.ForContext("SourceContext", sourceContext).Fatal("Power-On Self-Test (5 of 5) => Logging Fatal OK");
+Log.ForContext("SourceContext", _sourceContext).Debug(PowerOnSelfTest.DebugLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Information(PowerOnSelfTest.InformationLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Warning(PowerOnSelfTest.WarningLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Error(PowerOnSelfTest.ErrorLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Fatal(PowerOnSelfTest.FatalLoggingOn);
 
 #endregion post
 
-Log.ForContext("SourceContext", sourceContext).Information("Program Running");
+Log.ForContext("SourceContext", _sourceContext).Information("Program Running");
 
 try
 {
-    Log.ForContext("SourceContext", sourceContext).Information("Creating Web Application Builder");
+    Log.ForContext("SourceContext", _sourceContext).Information("Creating Web Application Builder");
     var builder = WebApplication.CreateBuilder(args);
 
     #region logging
@@ -61,7 +61,7 @@ try
 
     ******************************************************************************/
 
-    Log.ForContext("SourceContext", sourceContext).Information("Using Serilog");
+    Log.ForContext("SourceContext", _sourceContext).Information("Using Serilog");
     builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
     {
         loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration)
@@ -86,10 +86,10 @@ try
     //todo - learn what that means
     //link - https://www.youtube.com/watch?v=pYl_jnqlXu8
 
-    Log.ForContext("SourceContext", sourceContext).Information("Adding Application Insights");
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding Application Insights");
     builder.Services.AddApplicationInsightsTelemetry();
 
-    Log.ForContext("SourceContext", sourceContext).Information("Adding Feature Management");
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding Feature Management");
     builder.Services.AddFeatureManagement();
 
     //todo - add authorization
@@ -101,13 +101,13 @@ try
 
     if (builder.Environment.IsProduction())
     {
-        Log.ForContext("SourceContext", sourceContext).Information("Adding Azure App Configuration");
+        Log.ForContext("SourceContext", _sourceContext).Information("Adding Azure App Configuration");
         builder.Services.AddAzureAppConfiguration();
 
-        Log.ForContext("SourceContext", sourceContext).Information("Getting Azure App Configuration Connection String");
+        Log.ForContext("SourceContext", _sourceContext).Information("Getting Azure App Configuration Connection String");
         var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
 
-        Log.ForContext("SourceContext", sourceContext).Information("Configuring Azure App Configuration");
+        Log.ForContext("SourceContext", _sourceContext).Information("Configuring Azure App Configuration");
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
@@ -130,16 +130,16 @@ try
     }
     else
     {
-        Log.ForContext("SourceContext", sourceContext).Information("Skipping Azure App Configuration");
+        Log.ForContext("SourceContext", _sourceContext).Information("Skipping Azure App Configuration");
     }
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    Log.ForContext("SourceContext", sourceContext).Information("Adding {0}", nameof(DateTimeService));
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding {0}", nameof(DateTimeService));
     builder.Services.AddSingleton<IDateTimeService, DateTimeService>();
 
-    Log.ForContext("SourceContext", sourceContext).Information("Adding {0}", nameof(Service1));
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding {0}", nameof(Service1));
     builder.Services.AddSingleton<IService1, Service1>();
 
     #endregion services
@@ -156,14 +156,14 @@ try
 
      ******************************************************************************/
 
-    Log.ForContext("SourceContext", sourceContext).Information("Building Web Application");
+    Log.ForContext("SourceContext", _sourceContext).Information("Building Web Application");
     var app = builder.Build();
 
-    app.Logger.LogDebug("Power-On Self-Test (1 of 5) => Logging Debug OK");
-    app.Logger.LogInformation("Power-On Self-Test (2 of 5) => Logging Information OK");
-    app.Logger.LogWarning("Power-On Self-Test (3 of 5) => Logging Warning OK");
-    app.Logger.LogError("Power-On Self-Test (4 of 5) => Logging Error OK");
-    app.Logger.LogCritical("Power-On Self-Test (5 of 5) => Logging Critical OK");
+    app.Logger.LogDebug(PowerOnSelfTest.DebugLoggingOn);
+    app.Logger.LogInformation(PowerOnSelfTest.InformationLoggingOn);
+    app.Logger.LogWarning(PowerOnSelfTest.WarningLoggingOn);
+    app.Logger.LogError(PowerOnSelfTest.ErrorLoggingOn);
+    app.Logger.LogCritical(PowerOnSelfTest.CriticalLoggingOn);
 
     app.Logger.LogInformation("Web Application Running");
 
