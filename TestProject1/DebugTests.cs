@@ -4,7 +4,6 @@ https://github.com/ronhowe/dotnet
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
-using Serilog.Events;
 
 namespace TestProject1;
 
