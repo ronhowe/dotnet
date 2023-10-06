@@ -57,6 +57,17 @@ public class IntegrationTests : TestBase
     }
 
     [TestMethod]
+    public async Task ApplicationRespondsNotFoundFromInvalidRoute()
+    {
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+        using var client = application.CreateClient();
+        using var response = await client.GetAsync("");
+
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.NotFound);
+    }
+
+    [TestMethod]
     public async Task ApplicationRespondsOKFromTrueInput()
     {
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
