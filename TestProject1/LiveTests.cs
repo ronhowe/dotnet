@@ -68,8 +68,7 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    [TestMethod]
-    [Ignore]
+    //[TestMethod]
     public async Task ClientConnectsToAzureAppService000()
     {
         var retryPolicy = Policy
