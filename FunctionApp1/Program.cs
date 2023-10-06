@@ -1,3 +1,7 @@
+/*******************************************************************************
+https://github.com/ronhowe/dotnet
+*******************************************************************************/
+
 using ClassLibrary1;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -5,40 +9,59 @@ using Microsoft.FeatureManagement;
 using Serilog;
 using Serilog.Events;
 
-const string contextValue = "Program";
-
-//todo - choose a style that is easy to understand in development and production
-//const string outputTemplate = "[{Level}] at [{Timestamp:HH:mm:ss.fff zzz}] on [{MachineName}] in [{SourceContext}] @ {Message}{NewLine}{Exception}";
-const string outputTemplate = "{SourceContext} @ {Message}{NewLine}{Exception}";
+const string _sourceContext = nameof(Program);
+const string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
+//const string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
+    .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
-    .WriteTo.Console(outputTemplate: outputTemplate)
+    .WriteTo.Console(outputTemplate: _outputTemplate)
     .CreateLogger();
 
-Log.ForContext("SourceContext", contextValue).Information("Running Program");
+#region post
+
+/******************************************************************************
+
+                    _
+ _ __    ___   ___ | |_
+| '_ \  / _ \ / __|| __|
+| |_) || (_) |\__ \| |_
+| .__/  \___/ |___/ \__|
+|_|
+
+******************************************************************************/
+
+Log.ForContext("SourceContext", _sourceContext).Debug(PowerOnSelfTest.DebugLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Information(PowerOnSelfTest.InformationLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Warning(PowerOnSelfTest.WarningLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Error(PowerOnSelfTest.ErrorLoggingOn);
+Log.ForContext("SourceContext", _sourceContext).Fatal(PowerOnSelfTest.FatalLoggingOn);
+
+#endregion post
+
+Log.ForContext("SourceContext", _sourceContext).Information("Program Running");
 
 //help - https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide
-Log.ForContext("SourceContext", contextValue).Information("Creating Builder");
+Log.ForContext("SourceContext", _sourceContext).Information("Creating Builder");
 var builder = new HostBuilder().ConfigureFunctionsWorkerDefaults();
 
 builder.ConfigureServices(s =>
 {
-    //todo - i guess this isn't needed as serilog is working
-    //s.AddSingleton<ILogger>(Log.Logger);
-
-    Log.ForContext("SourceContext", contextValue).Information("Adding Feature Management");
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding Feature Management");
     s.AddFeatureManagement();
 
-    Log.ForContext("SourceContext", contextValue).Information("Adding IService");
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding {0}", nameof(DateTimeService));
+    s.AddSingleton<IDateTimeService, DateTimeService>();
+
+    Log.ForContext("SourceContext", _sourceContext).Information("Adding {0}", nameof(Service1));
     s.AddSingleton<IService1, Service1>();
 });
 
-Log.ForContext("SourceContext", contextValue).Information("Building Application");
+Log.ForContext("SourceContext", _sourceContext).Information("Building Application");
 var app = builder.Build();
 
-//app.Logger.LogInformation("Running Application");
+Log.ForContext("SourceContext", _sourceContext).Information("Awaiting Application");
 await app.RunAsync();
