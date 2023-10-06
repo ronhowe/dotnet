@@ -171,8 +171,8 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    [TestMethod]
-    [Ignore]
+    //[TestMethod]
+    //[Ignore]
     public void ClientRetriesFromInternalServiceError()
     {
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
@@ -218,8 +218,8 @@ public class LiveTests : TestBase
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
-    [TestMethod]
-    [Ignore]
+    //[TestMethod]
+    //[Ignore]
     public async Task ClientRetriesFromHttpRequestException()
     {
         var retryPolicy = Policy
