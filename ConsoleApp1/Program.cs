@@ -3,6 +3,7 @@ https://github.com/ronhowe/dotnet
 *******************************************************************************/
 
 using FluentAssertions;
+using System.Diagnostics;
 using System.Net;
 
 namespace ConsoleApp1;
@@ -32,17 +33,21 @@ public class Program
 
         Uri uri = new(host);
 
+        var stopwatch = new Stopwatch();
+
         while (true)
         {
             HttpClient client = new();
 
             try
             {
+                stopwatch.Start();
                 var response = client.GetAsync(uri).Result;
-
+                stopwatch.Stop();
+                
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                Refresh("OK", uri, ConsoleColor.DarkGreen);
+                Refresh("OK", stopwatch.ElapsedMilliseconds, uri, ConsoleColor.DarkGreen);
 
                 foreach (var header in response.Headers)
                 {
@@ -54,7 +59,7 @@ public class Program
             }
             catch (Exception e)
             {
-                Refresh(e.Message, uri, ConsoleColor.DarkRed);
+                Refresh(e.Message, 0, uri, ConsoleColor.DarkRed);
             }
             finally
             {
@@ -65,10 +70,10 @@ public class Program
         }
     }
 
-    private static void Refresh(string message, Uri uri, ConsoleColor color)
+    private static void Refresh(string message, long duration, Uri uri, ConsoleColor color)
     {
         Console.BackgroundColor = color;
         Console.Clear();
-        Console.WriteLine($"{DateTime.UtcNow} - {uri} - {message}");
+        Console.WriteLine($"{DateTime.UtcNow} - {uri} - {message} - {duration} ms");
     }
 }
