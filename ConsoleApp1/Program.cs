@@ -39,11 +39,10 @@ public class Program
         {
             HttpClient client = new();
 
+            stopwatch.Start();
             try
             {
-                stopwatch.Start();
                 var response = client.GetAsync(uri).Result;
-                stopwatch.Stop();
                 
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -59,10 +58,12 @@ public class Program
             }
             catch (Exception e)
             {
-                Refresh(e.Message, 0, uri, ConsoleColor.DarkRed);
+                Refresh(e.Message, stopwatch.ElapsedMilliseconds, uri, ConsoleColor.DarkRed);
             }
             finally
             {
+                stopwatch.Stop();
+                stopwatch.Reset();
                 client.Dispose();
             }
 
