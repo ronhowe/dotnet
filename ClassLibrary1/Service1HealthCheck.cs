@@ -12,14 +12,14 @@ namespace ClassLibrary1;
 public class Service1HealthCheck : IHealthCheck
 {
     private readonly ILogger<Service1> _logger;
-    private readonly IConfiguration _config;
+    private readonly IConfiguration _configuration;
     private readonly IFeatureManager _featureManager;
     private readonly IDateTimeService _dateTime;
 
-    public Service1HealthCheck(ILogger<Service1> logger, IConfiguration config, IFeatureManager featureManager, IDateTimeService dateTime)
+    public Service1HealthCheck(ILogger<Service1> logger, IConfiguration configuration, IFeatureManager featureManager, IDateTimeService dateTime)
     {
         _logger = logger;
-        _config = config;
+        _configuration = configuration;
         _featureManager = featureManager;
         _dateTime = dateTime;
     }
@@ -28,12 +28,6 @@ public class Service1HealthCheck : IHealthCheck
     {
         _logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
 
-        //help - example of reading boolean from config via iconfiguration
-        //_logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
-        //var config = _config.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Value;
-        //_logger.LogDebug("config = {config}", config);
-
-        //help - example of reading boolean from config via ifeaturemanager
         _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
         var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
         _logger.LogDebug("feature = {feature}", feature);
@@ -71,6 +65,55 @@ public class Service1HealthCheck : IHealthCheck
             {
                 _logger.LogInformation("Skipping Mock Service Transient Exception");
             }
+        }
+
+        _logger.LogDebug("Logging Mock Service CPU Throttle Toggle Value");
+        feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1CpuThrottleToggle)).Result;
+        _logger.LogDebug("$feature = {feature}", feature);
+
+        if (feature)
+        {
+            _logger.LogWarning("Throttling CPU");
+
+            int iterations = _configuration.GetValue<int>(nameof(Service1Feature.MockService1CpuThrottleIterations), 1);
+
+            _logger.LogDebug("Logging Mock Service CPU Throttle Iterations Value");
+            _logger.LogDebug("$iterations = {iterations}", iterations);
+
+            if (iterations > 20000)
+            {
+                iterations = 20000;
+            }
+
+            List<int> primes = new();
+
+            bool isPrime = true;
+
+            for (int i = 2; i <= iterations; i++)
+            {
+                for (int j = 2; j <= iterations; j++)
+                {
+                    if (i != j && i % j == 0)
+                    {
+                        isPrime = false;
+                        break;
+                    }
+                }
+
+                if (isPrime)
+                {
+                    _logger.LogDebug("$i = {i}", i);
+                    primes.Add(i);
+                }
+
+                isPrime = true;
+            }
+
+            _logger.LogWarning("Dethrottling CPU");
+        }
+        else
+        {
+            _logger.LogInformation("Skipping Mock Service CPU Throttle");
         }
 
         _logger.LogInformation("Exiting {name}", nameof(Service1HealthCheck));

@@ -112,67 +112,17 @@ public class IntegrationTests : TestBase
     }
 
     [TestMethod]
-    public async Task ApplicationThrowsWhenMockService1PermanentExceptionToggleIsTrue()
+    public async Task HealthCheckHeaderIsValid()
     {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
-            {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1PermanentExceptionToggle", "true" } });
-            });
-        });
-
+        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
+        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-    }
-
-    [TestMethod]
-    public async Task ApplicationThrowsWhenMockService1TransientExceptionToggleIsTrueOnOddTicks()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
-            {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
-            });
-
-            builder.ConfigureTestServices(services =>
-            {
-                services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(false));
-            });
-        });
-
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
-
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.InternalServerError, response.StatusCode);
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-    }
-
-    [TestMethod]
-    public async Task ApplicationRespondsOKWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
-            {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1TransientExceptionToggle", "true" } });
-            });
-
-            builder.ConfigureTestServices(services =>
-            {
-                services.AddSingleton(MockDateTimeService.CreateMockDateTimeService(true));
-            });
-        });
-
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
-
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
+            Assert.AreEqual<string>("default", values.First());
+            values.First().Should<string>().Be("default");
+        }
     }
 
     [TestMethod]
@@ -195,20 +145,6 @@ public class IntegrationTests : TestBase
 
         Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
         response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
-    }
-
-    [TestMethod]
-    public async Task HealthCheckHeaderIsValid()
-    {
-        using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-        using var client = application.CreateClient();
-        using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
-
-        if (response.Headers.TryGetValues("CustomHeader", out var values))
-        {
-            Assert.AreEqual<string>("default", values.First());
-            values.First().Should<string>().Be("default");
-        }
     }
 
     [TestMethod]

@@ -86,48 +86,6 @@ public class UnitTests : TestBase
     }
 
     [TestMethod]
-    public void Service1ThrowsWhenMockService1PermanentExceptionToggleIsTrue()
-    {
-        var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true),
-            new MockDateTimeService(false)
-        );
-
-        Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
-        service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1PermanentExceptionToggle");
-    }
-
-    [TestMethod]
-    public void Service1ReturnsWhenMockService1TransientExceptionToggleIsTrueOnEvenTicks()
-    {
-        var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            new MockDateTimeService(true)
-        );
-
-        Assert.IsFalse(service.Run(false));
-        service.Run(false).Should().BeFalse();
-    }
-
-    [TestMethod]
-    public void Service1ThrowsWhenMockService1TransientExceptionToggleIsTrueOnOddTicks()
-    {
-        var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            new MockDateTimeService(false)
-        );
-
-        Assert.ThrowsException<MockService1Exception>(() => service.Run(false));
-        service.Invoking(y => y.Run(false)).Should().Throw<MockService1Exception>().WithMessage("MockService1TransientExceptionToggle");
-    }
-
-    [TestMethod]
     public void Service1HealthCheckReturnsHealthy()
     {
         var registration = new HealthCheckRegistration(

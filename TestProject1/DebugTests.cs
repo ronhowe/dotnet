@@ -3,7 +3,7 @@ https://github.com/ronhowe/dotnet
 *******************************************************************************/
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Serilog;
+using System.Diagnostics;
 
 namespace TestProject1;
 
@@ -13,7 +13,7 @@ public class DebugTests : TestBase
     [TestMethod]
     public void POST()
     {
-        Log.ForContext("SourceContext", _sourceContext).Debug("POST");
+        Debug.WriteLine("POST");
 
         Assert.IsTrue(true);
     }
