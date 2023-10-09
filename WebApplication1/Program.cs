@@ -2,6 +2,7 @@
 https://github.com/ronhowe/dotnet
 *******************************************************************************/
 
+using Azure.Identity;
 using ClassLibrary1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
@@ -66,8 +67,6 @@ try
     builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
     {
         loggerConfiguration.ReadFrom.Configuration(hostContext.Configuration);
-        // not needed with the serilog application insights sink in appsettings
-        //.WriteTo.ApplicationInsights(hostContext.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"], TelemetryConverter.Traces);
     });
 
     #endregion logging
@@ -113,10 +112,8 @@ try
         builder.Configuration.AddAzureAppConfiguration(options =>
         {
             options
-                //todo - confirm all of these work as expected and/or retire connectionstring
-                .Connect(connectionString)
-                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new ManagedIdentityCredential())
-                //.Connect(new Uri(settings["AppConfig:Endpoint"]), new DefaultAzureCredential(true))
+                //.Connect(connectionString)
+                .Connect(new Uri(builder.Configuration.GetValue<string>("AppConfig:Endpoint")), new DefaultAzureCredential(false))
                 .ConfigureRefresh(refresh =>
                 {
                     refresh.Register("sentinel", refreshAll: true)
