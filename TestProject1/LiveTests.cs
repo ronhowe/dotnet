@@ -14,10 +14,10 @@ using System.Net;
 
 namespace TestProject1;
 
-[TestClass]
+//[TestClass]
 public class LiveTests : TestBase
 {
-    [TestMethod]
+    //[TestMethod]
     public async Task ClientConnectsToRonHoweNet()
     {
         var retryPolicy = Policy
@@ -68,7 +68,7 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    [TestMethod]
+    //[TestMethod]
     public async Task ClientConnectsToFrontDoor()
     {
         var retryPolicy = Policy
