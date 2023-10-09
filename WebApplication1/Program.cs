@@ -11,7 +11,7 @@ using Serilog.Events;
 using WebApplication1;
 
 const string _sourceContext = nameof(Program);
-const string _outputTemplate = "[{SourceContext}] {Message}{NewLine}";
+const string _outputTemplate = "[{Level:u3}] [{SourceContext}] {Message}{NewLine}";
 //const string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
@@ -100,36 +100,56 @@ try
     //link - https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-8.0#dependency-injection-and-health-checks
     builder.Services.AddHealthChecks().AddCheck<Service1HealthCheck>("Sample");
 
+    Log.ForContext("SourceContext", _sourceContext).Information("Getting Azure App Configuration Endpoint");
+    var endpoint = builder.Configuration.GetValue<string>("AppConfig:Endpoint");
+
+    Log.ForContext("SourceContext", _sourceContext).Debug("Logging Azure App Configuration Endpoint");
+    Log.ForContext("SourceContext", _sourceContext).Debug("$endpoint = {endpoint}", endpoint);
+
     if (builder.Environment.IsProduction())
     {
         Log.ForContext("SourceContext", _sourceContext).Information("Adding Azure App Configuration");
         builder.Services.AddAzureAppConfiguration();
 
-        Log.ForContext("SourceContext", _sourceContext).Information("Getting Azure App Configuration Connection String");
-        var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
+        // retired
+        //Log.ForContext("SourceContext", _sourceContext).Information("Getting Azure App Configuration Connection String");
+        //var connectionString = builder.Configuration.GetConnectionString("AzureAppConfiguration");
 
-        Log.ForContext("SourceContext", _sourceContext).Information("Configuring Azure App Configuration");
-        builder.Configuration.AddAzureAppConfiguration(options =>
+        bool result = Uri.TryCreate(endpoint, UriKind.Absolute, out var uri);
+
+        Log.ForContext("SourceContext", _sourceContext).Debug("Logging Azure App Configuration Endpoint");
+        Log.ForContext("SourceContext", _sourceContext).Debug("$uri = {uri}", uri);
+
+        if (result)
         {
-            options
-                //.Connect(connectionString)
-                .Connect(new Uri(builder.Configuration.GetValue<string>("AppConfig:Endpoint")), new DefaultAzureCredential(false))
-                .ConfigureRefresh(refresh =>
-                {
-                    refresh.Register("sentinel", refreshAll: true)
-                    //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
-                    .SetCacheExpiration(new TimeSpan(0, 1, 0));
-                })
-                .UseFeatureFlags(featureFlagOptions =>
-                {
-                    //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
-                    featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 1, 0);
-                });
-        });
+            Log.ForContext("SourceContext", _sourceContext).Information("Configuring Azure App Configuration");
+            builder.Configuration.AddAzureAppConfiguration(options =>
+            {
+                options
+                    // retired
+                    //.Connect(connectionString)
+                    .Connect(uri, new DefaultAzureCredential(false))
+                    .ConfigureRefresh(refresh =>
+                    {
+                        refresh.Register("sentinel", refreshAll: true)
+                        //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                        .SetCacheExpiration(new TimeSpan(0, 1, 0));
+                    })
+                    .UseFeatureFlags(featureFlagOptions =>
+                    {
+                        //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
+                        featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 1, 0);
+                    });
+            });
+        }
+        else
+        {
+            Log.ForContext("SourceContext", _sourceContext).Warning("Skipped Configuring Azure App Configuration");
+        }
     }
     else
     {
-        Log.ForContext("SourceContext", _sourceContext).Information("Skipping Azure App Configuration");
+        Log.ForContext("SourceContext", _sourceContext).Warning("Skipped Adding Azure App Configuration");
     }
 
     builder.Services.AddEndpointsApiExplorer();
@@ -196,7 +216,7 @@ try
     }
     else
     {
-        app.Logger.LogInformation("Skipping Swagger");
+        app.Logger.LogWarning("Skipped Swagger");
     }
 
     if (app.Environment.IsDevelopment())
@@ -218,7 +238,7 @@ try
     }
     else
     {
-        app.Logger.LogInformation("Skipping Azure App Configuration");
+        app.Logger.LogWarning("Skipped Using Azure App Configuration");
     }
 
 
