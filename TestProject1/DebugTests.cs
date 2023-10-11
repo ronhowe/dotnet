@@ -12,6 +12,6 @@ public class DebugTests : TestBase
     [TestMethod]
     public void POST()
     {
-        Console.WriteLine("POST");
+        Console.WriteLine($"POST {DateTime.UtcNow}");
     }
 }
