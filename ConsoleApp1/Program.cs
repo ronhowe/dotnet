@@ -12,38 +12,25 @@ public class Program
 {
     static void Main(string[] args)
     {
-        var background = Console.BackgroundColor;
+        Uri uri = new(args[0]);
 
+        var background = Console.BackgroundColor;
         Console.CancelKeyPress += (sender, e) =>
         {
             Console.BackgroundColor = background;
             Console.Clear();
         };
 
-        string host;
-
-        if (args == null || args.Length == 0)
-        {
-            host = "https://rhowe-fwbuh9b9cxbdhrgs.z01.azurefd.net/health";
-        }
-        else
-        {
-            host = args[0];
-        }
-
-        Uri uri = new(host);
-
-        var stopwatch = new Stopwatch();
+        Stopwatch stopwatch = new();
+        HttpClient client = new();
 
         while (true)
         {
-            HttpClient client = new();
-
             stopwatch.Start();
+
             try
             {
                 var response = client.GetAsync(uri).Result;
-                
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
                 Refresh("OK", stopwatch.ElapsedMilliseconds, uri, ConsoleColor.DarkGreen);
