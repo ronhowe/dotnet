@@ -70,7 +70,7 @@ public class UnitTests : TestBase
     {
         var service = TestMockFactory.CreateServiceWithMockDependencies();
 
-        Assert.IsFalse(service.Run(false));
+        //Assert.IsFalse(service.Run(false));
         service.Run(false).Should().BeFalse();
     }
 
@@ -79,7 +79,7 @@ public class UnitTests : TestBase
     {
         var service = TestMockFactory.CreateServiceWithMockDependencies();
 
-        Assert.IsTrue(service.Run(true));
+        //Assert.IsTrue(service.Run(true));
         service.Run(true).Should().BeTrue();
     }
 
@@ -107,7 +107,7 @@ public class UnitTests : TestBase
 
         var result = service.CheckHealthAsync(context).Result;
 
-        Assert.AreEqual<HealthStatus>(HealthStatus.Healthy, result.Status);
+        //Assert.AreEqual<HealthStatus>(HealthStatus.Healthy, result.Status);
         result.Status.Should<HealthStatus>().Be(HealthStatus.Healthy);
     }
 
@@ -135,7 +135,7 @@ public class UnitTests : TestBase
 
         var result = service.CheckHealthAsync(context).Result;
 
-        Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
+        //Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
         result.Status.Should<HealthStatus>().Be(HealthStatus.Unhealthy);
     }
 
@@ -163,7 +163,7 @@ public class UnitTests : TestBase
 
         var result = service.CheckHealthAsync(context).Result;
 
-        Assert.AreEqual<HealthStatus>(HealthStatus.Healthy, result.Status);
+        //Assert.AreEqual<HealthStatus>(HealthStatus.Healthy, result.Status);
         result.Status.Should<HealthStatus>().Be(HealthStatus.Healthy);
     }
 
@@ -191,7 +191,7 @@ public class UnitTests : TestBase
 
         var result = service.CheckHealthAsync(context).Result;
 
-        Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
+        //Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
         result.Status.Should<HealthStatus>().Be(HealthStatus.Unhealthy);
     }
 }

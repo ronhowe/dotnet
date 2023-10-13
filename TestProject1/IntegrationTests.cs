@@ -38,7 +38,7 @@ public class IntegrationTests : TestBase
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            Assert.AreEqual<string>("default", values.First());
+            //Assert.AreEqual<string>("default", values.First());
             values.First().Should<string>().Be("default");
         }
     }
@@ -50,7 +50,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.Service1);
 
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.BadRequest);
     }
 
@@ -61,7 +61,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync("");
 
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.NotFound);
     }
 
@@ -72,7 +72,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
@@ -83,7 +83,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
-        Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeTrue();
     }
 
@@ -94,7 +94,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
@@ -105,7 +105,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
     }
 
@@ -118,7 +118,7 @@ public class IntegrationTests : TestBase
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            Assert.AreEqual<string>("default", values.First());
+            //Assert.AreEqual<string>("default", values.First());
             values.First().Should<string>().Be("default");
         }
     }
@@ -130,7 +130,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
@@ -141,7 +141,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
+        //Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
         response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
     }
 
@@ -159,7 +159,7 @@ public class IntegrationTests : TestBase
         using var client = application.CreateClient();
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        //Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
     }
 }
