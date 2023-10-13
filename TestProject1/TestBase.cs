@@ -15,8 +15,8 @@ namespace TestProject1
         internal readonly string _enter = new('>', 80);
         internal readonly string _exit = new('<', 80);
         internal readonly string _outputTemplate = "[{Level:u3}] [{SourceContext}] {Message}{NewLine}";
-        //internal readonly string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
         internal readonly string _sourceContext = nameof(TestBase);
+        //internal readonly string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
         [TestInitialize]
         public void TestInitialize()

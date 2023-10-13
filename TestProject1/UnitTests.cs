@@ -4,10 +4,8 @@ https://github.com/ronhowe/dotnet
 
 using ClassLibrary1;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -23,9 +21,9 @@ public class UnitTests : TestBase
 
         var service = new Service1(
             mockLogger.Object,
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            new MockDateTimeService(true)
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            TestMockFactory.CreateMockDateTimeService(true)
         );
 
         service.Run(false);
@@ -40,9 +38,9 @@ public class UnitTests : TestBase
 
         var service = new Service1(
             mockLogger.Object,
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            new MockDateTimeService(true)
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            TestMockFactory.CreateMockDateTimeService(true)
         );
 
         service.Run(false);
@@ -57,9 +55,9 @@ public class UnitTests : TestBase
 
         var service = new Service1(
             mockLogger.Object,
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            new MockDateTimeService(true)
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
+            TestMockFactory.CreateMockDateTimeService(true)
         );
 
         service.Run(false);
@@ -70,7 +68,7 @@ public class UnitTests : TestBase
     [TestMethod]
     public void Service1ReturnsFalseFromFalseInput()
     {
-        var service = CreateServiceWithMockDependencies();
+        var service = TestMockFactory.CreateServiceWithMockDependencies();
 
         Assert.IsFalse(service.Run(false));
         service.Run(false).Should().BeFalse();
@@ -79,7 +77,7 @@ public class UnitTests : TestBase
     [TestMethod]
     public void Service1ReturnsTrueFromTrueInput()
     {
-        var service = CreateServiceWithMockDependencies();
+        var service = TestMockFactory.CreateServiceWithMockDependencies();
 
         Assert.IsTrue(service.Run(true));
         service.Run(true).Should().BeTrue();
@@ -90,7 +88,7 @@ public class UnitTests : TestBase
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
-            instance: CreateMockHealthCheck(),
+            instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
             tags: new[] { "tags" }
         );
@@ -101,10 +99,10 @@ public class UnitTests : TestBase
         };
 
         var service = new Service1HealthCheck(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(string.Empty, false),
-            new MockDateTimeService(false)
+            TestMockFactory.CreateMockLogger(),
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(string.Empty, false),
+            TestMockFactory.CreateMockDateTimeService(false)
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -118,7 +116,7 @@ public class UnitTests : TestBase
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
-            instance: CreateMockHealthCheck(),
+            instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
             tags: new[] { "tags" }
         );
@@ -129,10 +127,10 @@ public class UnitTests : TestBase
         };
 
         var service = new Service1HealthCheck(
-            CreateMockLogger(),
-            CreateMockConfiguration(true),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true),
-            new MockDateTimeService(true)
+            TestMockFactory.CreateMockLogger(),
+            TestMockFactory.CreateMockConfiguration(true),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), true),
+            TestMockFactory.CreateMockDateTimeService(true)
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -146,7 +144,7 @@ public class UnitTests : TestBase
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
-            instance: CreateMockHealthCheck(),
+            instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
             tags: new[] { "tags" }
         );
@@ -157,10 +155,10 @@ public class UnitTests : TestBase
         };
 
         var service = new Service1HealthCheck(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            new MockDateTimeService(true) // even ticks
+            TestMockFactory.CreateMockLogger(),
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
+            TestMockFactory.CreateMockDateTimeService(true) // even ticks
         );
 
         var result = service.CheckHealthAsync(context).Result;
@@ -174,7 +172,7 @@ public class UnitTests : TestBase
     {
         var registration = new HealthCheckRegistration(
             name: "MockHealthCheck",
-            instance: CreateMockHealthCheck(),
+            instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
             tags: new[] { "tags" }
         );
@@ -185,118 +183,15 @@ public class UnitTests : TestBase
         };
 
         var service = new Service1HealthCheck(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
-            new MockDateTimeService(false) // odd ticks
+            TestMockFactory.CreateMockLogger(),
+            TestMockFactory.CreateMockConfiguration(false),
+            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1TransientExceptionToggle), true),
+            TestMockFactory.CreateMockDateTimeService(false) // odd ticks
         );
 
         var result = service.CheckHealthAsync(context).Result;
 
         Assert.AreEqual<HealthStatus>(HealthStatus.Unhealthy, result.Status);
         result.Status.Should<HealthStatus>().Be(HealthStatus.Unhealthy);
-    }
-
-    #region Mocks
-    private static IConfiguration CreateMockConfiguration(bool value)
-    {
-        //link - https://adamstorr.azurewebsites.net/blog/mocking-ilogger-with-moq
-        var mockConfigurationSection = new Mock<IConfigurationSection>();
-        mockConfigurationSection.Setup(x => x.Value).Returns(value.ToString());
-
-        var mockConfiguration = new Mock<IConfiguration>();
-        mockConfiguration.Setup(x => x.GetSection(nameof(Service1Feature.MockService1PermanentExceptionToggle))).Returns(mockConfigurationSection.Object);
-        mockConfiguration.Setup(x => x.GetSection(nameof(Service1Feature.MockService1TransientExceptionToggle))).Returns(mockConfigurationSection.Object);
-
-        return mockConfiguration.Object;
-    }
-
-    //private static IDateTimeService CreateMockDateTimeService(bool even)
-    //{
-    //    long ticks = even ? (DateTime.UtcNow.Ticks / 2) * 2 : ((DateTime.UtcNow.Ticks / 2) * 2) + 1;
-    //    DateTime dateTime = new(ticks);
-
-    //    var mockDateTimeService = new Mock<IDateTimeService>();
-    //    mockDateTimeService.Setup(x => x.Now).Returns(dateTime);
-
-    //    return mockDateTimeService.Object;
-    //}
-
-    private static IHealthCheck CreateMockHealthCheck()
-    {
-        var mockHealthCheck = new Mock<IHealthCheck>();
-
-        return mockHealthCheck.Object;
-    }
-
-    private static IFeatureManager CreateMockFeatureManager(string name, bool value)
-    {
-        var mockFeatureManager = new Mock<IFeatureManager>();
-        mockFeatureManager.Setup(x => x.IsEnabledAsync(name).Result).Returns(value);
-
-        return mockFeatureManager.Object;
-    }
-
-    private static ILogger<Service1> CreateMockLogger()
-    {
-        var mockLogger = new Mock<ILogger<Service1>>();
-
-        return mockLogger.Object;
-    }
-
-    private static Service1 CreateServiceWithMockDependencies()
-    {
-        var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(string.Empty, false),
-            new MockDateTimeService(false)
-        );
-
-        return service;
-    }
-    #endregion Mocks
-}
-
-//todo - refactor
-//todo - remove pragmas, i have no idea what it means =)
-internal static class TestHelpers
-{
-    public static Mock<ILogger<T>> VerifyLogDebug<T>(this Mock<ILogger<T>> logger, string expectedMessage)
-    {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-        Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-        logger.Verify(
-            x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Debug),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => state(v, t)),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)));
-#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-
-        return logger;
-    }
-
-    public static Mock<ILogger<T>> VerifyLogInformation<T>(this Mock<ILogger<T>> logger, string expectedMessage)
-    {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-        Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-        logger.Verify(
-            x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => state(v, t)),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)));
-#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-
-        return logger;
     }
 }
