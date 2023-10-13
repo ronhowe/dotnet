@@ -226,7 +226,7 @@ try
     }
     else
     {
-        app.Logger.LogInformation("Using Swagger UI");
+        app.Logger.LogInformation("Skipped Using Swagger UI");
         app.UseSwaggerUI();
     }
 
