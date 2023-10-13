@@ -18,27 +18,19 @@ public class IntegrationTests : TestBase
     [TestMethod]
     public async Task ApplicationHeaderIsValid()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
-
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
-        Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
-
         using var client = application.CreateClient();
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
-        Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+        WriteBeginningHttpRequestToLogger();
 
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
-        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        WriteEndingHttpRequestToLogger();
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            //Assert.AreEqual<string>("default", values.First());
             values.First().Should<string>().Be("default");
         }
     }
@@ -46,79 +38,122 @@ public class IntegrationTests : TestBase
     [TestMethod]
     public async Task ApplicationThrowsFromNullInput()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync(Service1Endpoint.Service1);
 
-        //Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.BadRequest);
     }
 
     [TestMethod]
     public async Task ApplicationRespondsNotFoundFromInvalidRoute()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync("");
 
-        //Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.NotFound);
     }
 
     [TestMethod]
     public async Task ApplicationRespondsOKFromTrueInput()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
-        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
     public async Task ApplicationReturnsTrueFromTrueInput()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
+
+        WriteBeginningHttpRequestToLogger();
+
         using var client = application.CreateClient();
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.TrueString}");
 
-        //Assert.IsTrue(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+
+        WriteEndingHttpRequestToLogger();
+
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeTrue();
     }
 
     [TestMethod]
     public async Task ApplicationRespondsOKFromFalseInput()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
     public async Task ApplicationReturnsFalseFromFalseInput()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
 
-        //Assert.IsFalse(Boolean.Parse(response.Content.ReadAsStringAsync().Result));
+        WriteEndingHttpRequestToLogger();
+
         Boolean.Parse(response.Content.ReadAsStringAsync().Result).Should().BeFalse();
     }
 
     [TestMethod]
     public async Task HealthCheckHeaderIsValid()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
+
+        WriteEndingHttpRequestToLogger();
 
         if (response.Headers.TryGetValues("CustomHeader", out var values))
         {
-            //Assert.AreEqual<string>("default", values.First());
             values.First().Should<string>().Be("default");
         }
     }
@@ -126,28 +161,42 @@ public class IntegrationTests : TestBase
     [TestMethod]
     public async Task HealthCheckRespondsOK()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
     [TestMethod]
     public async Task HealthCheckReturnsHealthy()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => { });
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        //Assert.AreEqual<string>("Healthy", response.Content.ReadAsStringAsync().Result);
+        WriteEndingHttpRequestToLogger();
+
         response.Content.ReadAsStringAsync().Result.Should<string>().Be("Healthy");
     }
 
     [TestMethod]
     public async Task HealthCheckThrowsMockServiceException()
     {
+        WriteStartingWebApplicationToLogger();
+
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
@@ -155,11 +204,35 @@ public class IntegrationTests : TestBase
                 configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1PermanentExceptionToggle", "true" } });
             });
         });
-
         using var client = application.CreateClient();
+
+        WriteBeginningHttpRequestToLogger();
+
         using var response = await client.GetAsync(Service1Endpoint.HealthCheck);
 
-        //Assert.AreEqual<HttpStatusCode>(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        WriteEndingHttpRequestToLogger();
+
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+    }
+
+    private void WriteStartingWebApplicationToLogger()
+    {
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
+    }
+
+    private void WriteBeginningHttpRequestToLogger()
+    {
+        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Beginning HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
+    }
+
+    private void WriteEndingHttpRequestToLogger()
+    {
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
+        Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
+        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
     }
 }

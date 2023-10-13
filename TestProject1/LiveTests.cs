@@ -6,7 +6,6 @@ using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Serilog;
@@ -49,7 +48,6 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
@@ -100,7 +98,6 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
@@ -151,7 +148,6 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
@@ -202,7 +198,6 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual<HttpStatusCode>(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
@@ -264,7 +259,6 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
@@ -301,7 +295,7 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
