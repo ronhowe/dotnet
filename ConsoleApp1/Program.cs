@@ -22,10 +22,11 @@ public class Program
         };
 
         Stopwatch stopwatch = new();
-        HttpClient client = new();
 
         while (true)
         {
+            HttpClient client = new();
+
             stopwatch.Start();
 
             try
