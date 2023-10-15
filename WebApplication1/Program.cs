@@ -131,7 +131,7 @@ try
                     .Connect(uri, new DefaultAzureCredential(false))
                     .ConfigureRefresh(refresh =>
                     {
-                        refresh.Register("sentinel", refreshAll: true)
+                        refresh.Register("Sentinel", refreshAll: true)
                         //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
                         .SetCacheExpiration(new TimeSpan(0, 1, 0));
                     })
