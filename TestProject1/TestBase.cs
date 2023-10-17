@@ -16,6 +16,7 @@ namespace TestProject1
         internal readonly string _exit = new('<', 80);
         internal readonly string _outputTemplate = "[{Level:u3}] [{SourceContext}] {Message}{NewLine}";
         internal readonly string _sourceContext = nameof(TestBase);
+        // this is an example with more robust data included in a differently formatted log entry
         //internal readonly string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
         [TestInitialize]
