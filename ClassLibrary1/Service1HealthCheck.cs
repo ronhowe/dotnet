@@ -80,11 +80,6 @@ public class Service1HealthCheck : IHealthCheck
             _logger.LogDebug("Logging Mock Service CPU Throttle Iterations Value");
             _logger.LogDebug("$iterations = {iterations}", iterations);
 
-            if (iterations > 20000)
-            {
-                iterations = 20000;
-            }
-
             List<int> primes = new();
 
             bool isPrime = true;
