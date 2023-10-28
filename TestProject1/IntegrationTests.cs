@@ -201,7 +201,7 @@ public class IntegrationTests : TestBase
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
-                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "MockService1PermanentExceptionToggle", "true" } });
+                configBuilder.AddInMemoryCollection(new Dictionary<string, string?> { { "FeatureManagement:MockService1PermanentExceptionToggle", "true" } });
             });
         });
         using var client = application.CreateClient();
