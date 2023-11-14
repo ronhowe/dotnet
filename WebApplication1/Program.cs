@@ -336,7 +336,7 @@ static void AddCustomHeader(HttpContext context, WebApplication app)
     app.Logger.LogDebug("Logging Custom Header");
     app.Logger.LogDebug("$headerKey = {headerKey} ; $headerValue = {headerValue}", headerKey, headerValue);
 
-    context.Response.Headers.Add(headerKey, headerValue);
+    context.Response.Headers.Append(headerKey, headerValue);
 
 }
 
