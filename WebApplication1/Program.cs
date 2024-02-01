@@ -11,7 +11,7 @@ using Serilog.Events;
 using WebApplication1;
 
 const string _sourceContext = nameof(Program);
-const string _outputTemplate = "[{Level:u3}] [{SourceContext}] {Message}{NewLine}";
+const string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{SourceContext}] {Message}{NewLine}";
 // this is an example with more robust data included in a differently formatted log entry
 //const string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
@@ -41,7 +41,7 @@ Log.ForContext("SourceContext", _sourceContext).Information(PowerOnSelfTest.Info
 Log.ForContext("SourceContext", _sourceContext).Warning(PowerOnSelfTest.WarningLoggingOn);
 Log.ForContext("SourceContext", _sourceContext).Error(PowerOnSelfTest.ErrorLoggingOn);
 Log.ForContext("SourceContext", _sourceContext).Fatal(PowerOnSelfTest.FatalLoggingOn);
-
+ 
 #endregion post
 
 Log.ForContext("SourceContext", _sourceContext).Information("Program Running");
@@ -50,6 +50,18 @@ try
 {
     Log.ForContext("SourceContext", _sourceContext).Information("Creating Web Application Builder");
     var builder = WebApplication.CreateBuilder(args);
+
+    var environmentName = builder.Environment.EnvironmentName;
+    Log.ForContext("SourceContext", _sourceContext).Debug("Logging Environment Name");
+    Log.ForContext("SourceContext", _sourceContext).Debug("environmentName = {environmentName}", environmentName);
+
+    string? azureTenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
+    Log.ForContext("SourceContext", _sourceContext).Debug("Logging Azure Tenant ID");
+    Log.ForContext("SourceContext", _sourceContext).Debug("$azureTenantId = {azureTenantId}", azureTenantId);
+
+    string? azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+    Log.ForContext("SourceContext", _sourceContext).Debug("Logging Azure Client ID");
+    Log.ForContext("SourceContext", _sourceContext).Debug("$azureClientId = {azureClientId}", azureClientId);
 
     #region logging
 
