@@ -20,10 +20,7 @@ public class UnitTests : TestBase
         var mockLogger = new Mock<ILogger<Service1>>();
 
         var service = new Service1(
-            mockLogger.Object,
-            TestMockFactory.CreateMockConfiguration(false),
-            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            TestMockFactory.CreateMockDateTimeService(true)
+            mockLogger.Object
         );
 
         service.Run(false);
@@ -37,10 +34,7 @@ public class UnitTests : TestBase
         var mockLogger = new Mock<ILogger<Service1>>();
 
         var service = new Service1(
-            mockLogger.Object,
-            TestMockFactory.CreateMockConfiguration(false),
-            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            TestMockFactory.CreateMockDateTimeService(true)
+            mockLogger.Object
         );
 
         service.Run(false);
@@ -54,10 +48,7 @@ public class UnitTests : TestBase
         var mockLogger = new Mock<ILogger<Service1>>();
 
         var service = new Service1(
-            mockLogger.Object,
-            TestMockFactory.CreateMockConfiguration(false),
-            TestMockFactory.CreateMockFeatureManager(nameof(Service1Feature.MockService1PermanentExceptionToggle), false),
-            TestMockFactory.CreateMockDateTimeService(true)
+            mockLogger.Object
         );
 
         service.Run(false);
@@ -81,6 +72,8 @@ public class UnitTests : TestBase
         service.Run(true).Should().BeTrue();
     }
 
+    private static readonly string[] tags = ["tags"];
+
     [TestMethod]
     public void Service1HealthCheckReturnsHealthy()
     {
@@ -88,8 +81,8 @@ public class UnitTests : TestBase
             name: "MockHealthCheck",
             instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
-            tags: new[] { "tags" }
-        );
+            tags: tags
+            );
 
         var context = new HealthCheckContext
         {
@@ -115,7 +108,7 @@ public class UnitTests : TestBase
             name: "MockHealthCheck",
             instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
-            tags: new[] { "tags" }
+            tags: tags
         );
 
         var context = new HealthCheckContext
@@ -142,7 +135,7 @@ public class UnitTests : TestBase
             name: "MockHealthCheck",
             instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
-            tags: new[] { "tags" }
+            tags: tags
         );
 
         var context = new HealthCheckContext
@@ -169,7 +162,7 @@ public class UnitTests : TestBase
             name: "MockHealthCheck",
             instance: TestMockFactory.CreateMockHealthCheck(),
             failureStatus: null,
-            tags: new[] { "tags" }
+            tags: tags
         );
 
         var context = new HealthCheckContext

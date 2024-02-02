@@ -63,10 +63,7 @@ internal static class TestMockFactory
     internal static Service1 CreateServiceWithMockDependencies()
     {
         var service = new Service1(
-            CreateMockLogger(),
-            CreateMockConfiguration(false),
-            CreateMockFeatureManager(string.Empty, false),
-            CreateMockDateTimeService(false)
+            CreateMockLogger()
         );
 
         return service;

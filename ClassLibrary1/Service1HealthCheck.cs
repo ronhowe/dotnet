@@ -9,78 +9,71 @@ using Microsoft.FeatureManagement;
 
 namespace ClassLibrary1;
 
-public class Service1HealthCheck : IHealthCheck
+public class Service1HealthCheck(ILogger<Service1> logger, IConfiguration configuration, IFeatureManager featureManager, IDateTimeService dateTime) : IHealthCheck
 {
-    private readonly ILogger<Service1> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly IFeatureManager _featureManager;
-    private readonly IDateTimeService _dateTime;
-
-    public Service1HealthCheck(ILogger<Service1> logger, IConfiguration configuration, IFeatureManager featureManager, IDateTimeService dateTime)
-    {
-        _logger = logger;
-        _configuration = configuration;
-        _featureManager = featureManager;
-        _dateTime = dateTime;
-    }
-
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
-
-        _logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
-        var feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
-        _logger.LogDebug("feature = {feature}", feature);
+        logger.LogInformation("Entering {name}", nameof(Service1HealthCheck));
 
         HealthCheckResult result = HealthCheckResult.Healthy("HEALTHY");
 
+        logger.LogDebug("Logging Mock Service Permanent Exception Toggle Value");
+        var feature = featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1PermanentExceptionToggle)).Result;
+        logger.LogDebug("feature = {feature}", feature);
+
         if (feature)
         {
-            _logger.LogWarning("Throwing Mock Service Permanent Exception");
-            result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
+            logger.LogWarning("Throwing Mock Service Permanent Exception");
+            return Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY"));
         }
         else
         {
-            _logger.LogInformation("Skipping Mock Service Permanent Exception");
-
-            _logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
-            feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
-            _logger.LogDebug("$feature = {feature}", feature);
-
-            if (feature)
-            {
-                _logger.LogInformation("Considering Throwing Mock Service Transient Exception");
-
-                if (_dateTime.UtcNow.Ticks % 2 != 0) // odd ticks
-                {
-                    _logger.LogWarning("Throwing Mock Service Transient Exception");
-                    result = new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY");
-                }
-                else
-                {
-                    _logger.LogInformation("Avoiding Mock Service Transient Exception");
-                }
-            }
-            else
-            {
-                _logger.LogInformation("Skipping Mock Service Transient Exception");
-            }
+            logger.LogInformation("Skipping Mock Service Permanent Exception");
         }
 
-        _logger.LogDebug("Logging Mock Service CPU Throttle Toggle Value");
-        feature = _featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1CpuThrottleToggle)).Result;
-        _logger.LogDebug("$feature = {feature}", feature);
+        logger.LogDebug("Logging Mock Service Transient Exception Toggle Value");
+        feature = featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1TransientExceptionToggle)).Result;
+        logger.LogDebug("$feature = {feature}", feature);
+
+        if (feature && (dateTime.UtcNow.Ticks % 2 != 0)) // odd ticks
+        {
+            logger.LogWarning("Throwing Mock Service Transient Exception");
+            return Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus, "UNHEALTHY"));
+        }
+        else
+        {
+            logger.LogInformation("Skipping Mock Service Transient Exception");
+        }
+
+        logger.LogDebug("Logging Mock Service CPU Throttle Toggle Value");
+        feature = featureManager.IsEnabledAsync(nameof(Service1Feature.MockService1CpuThrottleToggle)).Result;
+        logger.LogDebug("$feature = {feature}", feature);
 
         if (feature)
         {
-            _logger.LogWarning("Throttling CPU");
+            logger.LogWarning("Throttling CPU");
 
-            int iterations = _configuration.GetValue<int>(nameof(Service1Feature.MockService1CpuThrottleIterations), 1);
+            int iterations = configuration.GetValue<int>(nameof(Service1Feature.MockService1CpuThrottleIterations), 1);
 
-            _logger.LogDebug("Logging Mock Service CPU Throttle Iterations Value");
-            _logger.LogDebug("$iterations = {iterations}", iterations);
+            logger.LogDebug("Logging Mock Service CPU Throttle Iterations Value");
+            logger.LogDebug("$iterations = {iterations}", iterations);
 
-            List<int> primes = new();
+            ThrottleCpuWithPrimeNumberMath(iterations);
+
+            logger.LogWarning("Dethrottling CPU");
+        }
+        else
+        {
+            logger.LogInformation("Skipping Mock Service CPU Throttle");
+        }
+
+        logger.LogInformation("Exiting {name}", nameof(Service1HealthCheck));
+
+        return Task.FromResult(result);
+
+        static void ThrottleCpuWithPrimeNumberMath(int iterations)
+        {
+            List<int> primes = [];
 
             bool isPrime = true;
 
@@ -97,22 +90,11 @@ public class Service1HealthCheck : IHealthCheck
 
                 if (isPrime)
                 {
-                    _logger.LogDebug("$i = {i}", i);
                     primes.Add(i);
                 }
 
                 isPrime = true;
             }
-
-            _logger.LogWarning("Dethrottling CPU");
         }
-        else
-        {
-            _logger.LogInformation("Skipping Mock Service CPU Throttle");
-        }
-
-        _logger.LogInformation("Exiting {name}", nameof(Service1HealthCheck));
-
-        return Task.FromResult(result);
     }
 }
