@@ -11,9 +11,9 @@ using Serilog.Events;
 using WebApplication1;
 
 const string _sourceContext = nameof(Program);
-const string _outputTemplate = "[{Timestamp:yyyy-mm-dd @ HH:mm:ss.fff}] [{Level:u3}] [{SourceContext}] {Message}{NewLine}";
+const string _outputTemplate = "[{Timestamp:yyyy-MM-dd @ HH:mm:ss.fff}] [{Level:u3}] [{SourceContext}] {Message}{NewLine}";
 // this is an example with more robust data included in a differently formatted log entry
-//const string _outputTemplate = "[{Timestamp:yyyy-mm-dd @ HH:mm:ss.fff}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
+//const string _outputTemplate = "[{Timestamp:yyyy-MM-dd @ HH:mm:ss.fff}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()

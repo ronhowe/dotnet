@@ -14,7 +14,7 @@ namespace TestProject1
         internal readonly string _asterisk = new('*', 80);
         internal readonly string _enter = new('>', 80);
         internal readonly string _exit = new('<', 80);
-        internal readonly string _outputTemplate = "[{Timestamp:yyyy-mm-dd @ HH:mm:ss.fff}] [{Level:u3}] [{SourceContext}] {Message}{NewLine}";
+        internal readonly string _outputTemplate = "[{Timestamp:yyyy-MM-dd @ HH:mm:ss.fff}] [{Level:u3}] [{SourceContext}] {Message}{NewLine}";
         // this is an example with more robust data included in a differently formatted log entry
         //internal readonly string _outputTemplate = "[{Timestamp:HH:mm:ss.fff zzz}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
         internal readonly string _sourceContext = nameof(TestBase);
