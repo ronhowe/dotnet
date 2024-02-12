@@ -23,9 +23,7 @@ public class LiveTests : TestBase
             .Handle<HttpRequestException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         var handler = new HttpClientHandler()
@@ -37,31 +35,23 @@ public class LiveTests : TestBase
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync("https://ronhowe.net");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         foreach (var header in response.Headers)
         {
             Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
         }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
@@ -73,9 +63,7 @@ public class LiveTests : TestBase
             .Handle<HttpRequestException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         var handler = new HttpClientHandler()
@@ -87,31 +75,23 @@ public class LiveTests : TestBase
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync("https://rhowe-fwbuh9b9cxbdhrgs.z01.azurefd.net/health");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         foreach (var header in response.Headers)
         {
             Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
         }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
@@ -123,9 +103,7 @@ public class LiveTests : TestBase
             .Handle<HttpRequestException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         var handler = new HttpClientHandler()
@@ -137,31 +115,23 @@ public class LiveTests : TestBase
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync("https://app-rhowe-000.azurewebsites.net/health");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         foreach (var header in response.Headers)
         {
             Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
         }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
@@ -173,9 +143,7 @@ public class LiveTests : TestBase
             .Handle<HttpRequestException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         var handler = new HttpClientHandler()
@@ -187,31 +155,23 @@ public class LiveTests : TestBase
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync("https://app-rhowe-001.azurewebsites.net/health");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         foreach (var header in response.Headers)
         {
             Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
         }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
@@ -227,9 +187,7 @@ public class LiveTests : TestBase
             .OrResult(r => r.StatusCode == HttpStatusCode.InternalServerError)
             .WaitAndRetryAsync(delay, (response, timeSpan, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount} AFTER {timeSpan} SECONDS");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -240,24 +198,18 @@ public class LiveTests : TestBase
             });
         });
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
         Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
 
         using var client = application.CreateClient();
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync($"{Service1Endpoint.Service1}?input={Boolean.FalseString}");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
@@ -270,9 +222,7 @@ public class LiveTests : TestBase
             .Handle<HttpRequestException>()
             .RetryAsync(5, (exception, retryCount, context) =>
             {
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
                 Log.ForContext("SourceContext", _sourceContext).Debug($"RETRY ATTEMPT # {retryCount}");
-                Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
             });
 
         var handler = new HttpClientHandler()
@@ -284,31 +234,23 @@ public class LiveTests : TestBase
 
         using var response = retryPolicy.ExecuteAsync(async () =>
         {
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
             Log.ForContext("SourceContext", _sourceContext).Debug("Starting HTTP Request");
-            Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
 
             return await client.GetAsync("https://localhost:444/health");
         }).Result;
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Headers");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         foreach (var header in response.Headers)
         {
             Log.ForContext("SourceContext", _sourceContext).Debug($"{header.Key} = {header.Value.FirstOrDefault<string>()}");
         }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Logging Content");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
 
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }

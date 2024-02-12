@@ -8,8 +8,8 @@ public class RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggi
 {
     public async Task Invoke(HttpContext context)
     {
-        logger.LogInformation("================> Incoming HTTP Request");
+        logger.LogInformation("Incoming HTTP Request");
         await next(context);
-        logger.LogInformation("<================ Outgoing HTTP Response");
+        logger.LogInformation("Outgoing HTTP Response");
     }
 }

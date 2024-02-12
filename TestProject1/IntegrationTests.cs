@@ -217,22 +217,16 @@ public class IntegrationTests : TestBase
 
     private void WriteStartingWebApplicationToLogger()
     {
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
         Log.ForContext("SourceContext", _sourceContext).Debug("Starting Web Application");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_asterisk);
     }
 
     private void WriteBeginningHttpRequestToLogger()
     {
-        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
         Log.ForContext("SourceContext", _sourceContext).Debug("Beginning HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_enter);
     }
 
     private void WriteEndingHttpRequestToLogger()
     {
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
         Log.ForContext("SourceContext", _sourceContext).Debug("Ending HTTP Request");
-        Log.ForContext("SourceContext", _sourceContext).Debug(_exit);
     }
 }
