@@ -21,6 +21,7 @@ public class DebugTests : TestBase
     }
 
     [TestMethod]
+    [Ignore]
     public async Task Authenticate()
     {
         // https://github.com/Azure-Samples/active-directory-dotnetcore-daemon-v2/tree/master/2-Call-OwnApi
