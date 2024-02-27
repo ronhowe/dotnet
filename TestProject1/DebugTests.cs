@@ -5,9 +5,9 @@ https://github.com/ronhowe
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace TestProject1;
 
@@ -18,16 +18,16 @@ public class DebugTests : TestBase
     public async Task POST()
     {
         await Task.Run(() => Console.WriteLine($"POST {DateTime.UtcNow}"));
+        //await AuthenticationMethod1();
+        //await AuthenticationMethod2();
     }
 
     [TestMethod]
     [Ignore]
-    public async Task Authenticate()
+    public async Task AuthenticationMethod1()
     {
         // https://github.com/Azure-Samples/active-directory-dotnetcore-daemon-v2/tree/master/2-Call-OwnApi
         // https://learn.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#managed-identity-support
-
-        Log.ForContext("SourceContext", _sourceContext).Debug("ConfidentialClientApplicationBuilder Test");
 
         try
         {
@@ -49,14 +49,16 @@ public class DebugTests : TestBase
 
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var token = handler.ReadJwtToken(result.AccessToken);
+                var handler = new JsonWebTokenHandler();
 
                 Console.WriteLine("Claims in Bearer Token:");
 
-                foreach (var claim in token.Claims)
+                if (handler.ReadToken(result.AccessToken) is JsonWebToken token && token.Claims.Any())
                 {
-                    Console.WriteLine($"{claim.Type}: {claim.Value}");
+                    foreach (var claim in token.Claims)
+                    {
+                        Console.WriteLine($"{claim.Type}: {claim.Value}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -68,9 +70,12 @@ public class DebugTests : TestBase
         {
             Console.WriteLine(ex);
         }
+    }
 
-        Log.ForContext("SourceContext", _sourceContext).Debug("DefaultAzureCredential Test");
-
+    [TestMethod]
+    [Ignore]
+    public async Task AuthenticationMethod2()
+    {
         try
         {
             var tokenCredential = new DefaultAzureCredential();
@@ -82,14 +87,16 @@ public class DebugTests : TestBase
 
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var token = handler.ReadJwtToken(accessToken.Token);
+                var handler = new JsonWebTokenHandler();
 
                 Console.WriteLine("Claims in Bearer Token:");
 
-                foreach (var claim in token.Claims)
+                if (handler.ReadToken(accessToken.Token) is JsonWebToken token && token.Claims.Any())
                 {
-                    Console.WriteLine($"{claim.Type}: {claim.Value}");
+                    foreach (var claim in token.Claims)
+                    {
+                        Console.WriteLine($"{claim.Type}: {claim.Value}");
+                    }
                 }
             }
             catch (Exception ex)
