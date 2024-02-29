@@ -6,6 +6,7 @@ using ClassLibrary1;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Serilog;
@@ -13,10 +14,11 @@ using System.Net;
 
 namespace TestProject1;
 
-//[TestClass]
+[TestClass]
 public class LiveTests : TestBase
 {
-    //[TestMethod]
+    [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToRonHoweNet()
     {
         var retryPolicy = Policy
@@ -56,7 +58,8 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    //[TestMethod]
+    [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToFrontDoor()
     {
         var retryPolicy = Policy
@@ -96,7 +99,8 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    //[TestMethod]
+    [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToAzureAppService000()
     {
         var retryPolicy = Policy
@@ -136,7 +140,8 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    //[TestMethod]
+    [TestMethod]
+    [Ignore]
     public async Task ClientConnectsToAzureAppService001()
     {
         var retryPolicy = Policy
@@ -176,8 +181,8 @@ public class LiveTests : TestBase
         Log.ForContext("SourceContext", _sourceContext).Debug(await response.Content.ReadAsStringAsync());
     }
 
-    //[TestMethod]
-    //[Ignore]
+    [TestMethod]
+    [Ignore]
     public void ClientRetriesFromInternalServiceError()
     {
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
@@ -214,8 +219,8 @@ public class LiveTests : TestBase
         response.StatusCode.Should<HttpStatusCode>().Be(HttpStatusCode.OK);
     }
 
-    //[TestMethod]
-    //[Ignore]
+    [TestMethod]
+    [Ignore]
     public async Task ClientRetriesFromHttpRequestException()
     {
         var retryPolicy = Policy
