@@ -24,7 +24,7 @@ public class DebugTests : TestBase
 
     [TestMethod]
     [Ignore]
-    public async Task AuthenticationMethod1()
+    public async Task AuthenticationWithConfidentialClientApplication()
     {
         // https://github.com/Azure-Samples/active-directory-dotnetcore-daemon-v2/tree/master/2-Call-OwnApi
         // https://learn.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#managed-identity-support
@@ -74,7 +74,7 @@ public class DebugTests : TestBase
 
     [TestMethod]
     [Ignore]
-    public async Task AuthenticationMethod2()
+    public async Task AuthenticationWithDefaultAzureCredential()
     {
         try
         {
