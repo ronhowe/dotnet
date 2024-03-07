@@ -6,7 +6,6 @@ using Azure.Core;
 using Azure.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-
 try
 {
     var tokenCredential = new DefaultAzureCredential();
