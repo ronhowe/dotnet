@@ -18,8 +18,6 @@ public class DebugTests : TestBase
     public async Task POST()
     {
         await Task.Run(() => Console.WriteLine($"POST {DateTime.UtcNow}"));
-        //await AuthenticationMethod1();
-        //await AuthenticationMethod2();
     }
 
     [TestMethod]
