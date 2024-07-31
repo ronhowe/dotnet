@@ -7,6 +7,7 @@
     <UserSecretsId>6c48ea6c-ca89-49a7-b750-4a51be52f8e4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ApplicationInsightsResourceId>/subscriptions/17ef6ed9-23d0-4229-9fe5-7387c6dee637/resourceGroups/rg-ronhowe-000/providers/microsoft.insights/components/ai-ronhowe-000</ApplicationInsightsResourceId>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
