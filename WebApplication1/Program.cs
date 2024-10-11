@@ -144,12 +144,12 @@ try
                     {
                         refresh.Register("Sentinel", refreshAll: true)
                         //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
-                        .SetCacheExpiration(new TimeSpan(0, 1, 0));
+                        .SetRefreshInterval(new TimeSpan(0, 1, 0));
                     })
                     .UseFeatureFlags(featureFlagOptions =>
                     {
                         //help - https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-best-practices#reduce-requests-made-to-app-configuration
-                        featureFlagOptions.CacheExpirationInterval = new TimeSpan(0, 1, 0);
+                        featureFlagOptions.SetRefreshInterval(new TimeSpan(0, 1, 0));
                     });
             });
         }
