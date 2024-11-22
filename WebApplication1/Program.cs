@@ -313,7 +313,7 @@ try
             public const string CanWrite = "DataWriterRole";
         }
         */
-
+        app.Logger.LogInformation("Entering ClassLibrary Service");
         return service.Run(input);
     });
     //todo - implement authorization

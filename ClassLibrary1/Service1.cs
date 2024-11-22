@@ -15,8 +15,8 @@ public class Service1(ILogger<Service1> logger) : IService1
         logger.LogDebug("Logging Input Parameter(s) and Value(s)");
         logger.LogDebug("$input = {input}", input);
 
-        // very important business logic
-        bool result = input;
+        logger.LogDebug("Running Very Important Business Logic =)");
+        bool result = input; // very important business logic =)
 
         logger.LogInformation("Exiting {name}", nameof(Service1));
 
