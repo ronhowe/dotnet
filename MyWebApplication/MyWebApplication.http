@@ -1,0 +1,6 @@
+@MyWebApplication_HostAddress = https://localhost:444
+
+GET {{MyWebApplication_HostAddress}}/healthcheck
+Accept: application/json
+
+###
