@@ -52,7 +52,7 @@ public sealed class MyIntegrationTests : TestBase
         {
             { "ConnectionStrings:MyAzureStorage", "UseDevelopmentStorage=true;" },
             { "ConnectionStrings:MyDatabase", "Server=localhost;Database=MyDatabase;Integrated Security=True;Application Name=MyTestProject;Encrypt=False;Connect Timeout=1;Command Timeout=0;" },
-            { "FeatureManagement:MyFeature", "true" },
+            { "FeatureManagement:MyFeature", "false" },
             { "MyConfiguration", "MyTestProject" },
             { "MyHeader", "MyHeader" },
             { "MySecret", "MyTestProject" }

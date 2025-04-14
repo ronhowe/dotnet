@@ -13,9 +13,6 @@
       <NamedTestSelector>
         <TestName>MyTestProject.MyLiveTests.LiveSiteTests (3013128310621939563)</TestName>
       </NamedTestSelector>
-      <FixtureTestSelector>
-        <FixtureName>MyTestProject.MyIntegrationTests</FixtureName>
-      </FixtureTestSelector>
     </IgnoredTests>
   </Settings>
 </ProjectConfiguration>
