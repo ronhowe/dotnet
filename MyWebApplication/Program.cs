@@ -17,7 +17,6 @@ const string _myHeaderKey = "MyHeader";
 const string _outputTemplate = "[{UtcTimestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level:u3}] [{MachineName}] [{SourceContext}] {Message}{NewLine}{Exception}";
 const string _sourceContext = nameof(Program);
 
-
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
