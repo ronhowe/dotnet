@@ -28,7 +28,7 @@ public sealed class MyIntegrationTests : TestBase
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public async Task DebugHostTests(bool value)
+    public async Task MyDebugHostTests(bool value)
     {
         Debug.WriteLine($"Creating Service Collection");
         ServiceCollection _serviceCollection = new();
@@ -110,7 +110,7 @@ public sealed class MyIntegrationTests : TestBase
     [DataRow(false, "Development", "2")]
     [DataRow(true, "Development", "1")]
     [DataRow(true, "Development", "2")]
-    public async Task WebHostTests(bool value, string environmentName, string version)
+    public async Task MyWebHostTests(bool value, string environmentName, string version)
     {
         Debug.WriteLine($"Building Web Host");
         using WebApplicationFactory<Program> _application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
