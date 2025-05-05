@@ -35,7 +35,8 @@ public sealed class MyDebugTests : TestBase
         ps.AddScript("$InformationPreference = 'Continue';");
         ps.AddScript("$VerbosePreference = 'Continue';");
         ps.AddScript("$WarningPreference = 'Continue';");
-        ps.AddScript(@"D:\repos\ronhowe\powershell\runbook\Debug-AzureAutomationRunbook.ps1");
+        ps.AddScript("Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process;");
+        ps.AddScript(@"D:\repos\ronhowe\powershell\script\Debug-AzureAutomationRunbook.ps1");
 
         var results = ps.Invoke();
 
