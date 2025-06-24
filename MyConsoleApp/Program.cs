@@ -2,7 +2,7 @@
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
-using FluentAssertions;
+using Shouldly;
 using System.Diagnostics;
 using System.Net;
 
@@ -66,7 +66,7 @@ public class Program
             try
             {
                 var response = client.GetAsync(uri).Result;
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
                 Refresh("OK", stopwatch.ElapsedMilliseconds, uri, ConsoleColor.DarkGreen);
 
