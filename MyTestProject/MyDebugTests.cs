@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Management.Automation;
+using System.Security.Cryptography;
 
 namespace MyTestProject;
 

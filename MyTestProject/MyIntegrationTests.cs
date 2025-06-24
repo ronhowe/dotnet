@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MyClassLibrary;
 using Serilog;
+using Shouldly;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -89,7 +89,7 @@ public sealed class MyIntegrationTests : TestBase
             bool _result = await _myService.MyMethodAsync(value);
 
             Debug.WriteLine($"Asserting Result Is {value}");
-            _result.Should().Be(value);
+            _result.ShouldBe(value);
         }
         else
         {
@@ -151,7 +151,7 @@ public sealed class MyIntegrationTests : TestBase
         using HttpResponseMessage _response = await _client.GetAsync($"/v{version}/{nameof(MyService)}?input={value}");
 
         Debug.WriteLine($"Asserting HTTP Status Code Is {HttpStatusCode.OK}");
-        _response.StatusCode.Should().Be(HttpStatusCode.OK);
+        _response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         foreach (KeyValuePair<string, IEnumerable<string>> header in _response.Headers)
         {
@@ -161,16 +161,16 @@ public sealed class MyIntegrationTests : TestBase
         Debug.WriteLine($"Asserting Header");
         if (_response.Headers.TryGetValues("MyHeader", out var values))
         {
-            values.First().Should<string>().Be($"MyHeader ({environmentName})");
+            values.First().ShouldBe($"MyHeader ({environmentName})");
         }
 
         Debug.WriteLine($"Asserting API Supported Versions Header");
         if (_response.Headers.TryGetValues("api-supported-versions", out var values2))
         {
-            values2.First().Should<string>().Be("1, 2");
+            values2.First().ShouldBe("1, 2");
         }
 
         Debug.WriteLine($"Asserting Result Is {value}");
-        Boolean.Parse(_response.Content.ReadAsStringAsync().Result).Should().Be(value);
+        Boolean.Parse(_response.Content.ReadAsStringAsync().Result).ShouldBe(value);
     }
 }

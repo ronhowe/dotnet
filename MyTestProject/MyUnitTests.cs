@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MyClassLibrary;
+using Shouldly;
 using System.Diagnostics;
 
 namespace MyTestProject;
@@ -47,7 +47,7 @@ public sealed class MyUnitTests : TestBase
         bool result = await myService.MyMethodAsync(value);
 
         Debug.WriteLine($"Asserting Result Is {value}");
-        result.Should().Be(value);
+        result.ShouldBe(value);
 
         Debug.WriteLine($"Asserting Log Message Exists For Enter");
         mockLogger.VerifyLogMessage($"Entering {nameof(MyService)}", LogLevel.Information);

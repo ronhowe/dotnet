@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Polly;
 using Polly.Retry;
+using Shouldly;
 using System.Diagnostics;
 using System.Net;
 
@@ -47,7 +47,7 @@ public sealed class MyLiveTests : TestBase
         }).Result;
 
         Debug.WriteLine($"Asserting HTTP Status Code Is {httpStatusCode}");
-        response.StatusCode.Should().Be(httpStatusCode);
+        response.StatusCode.ShouldBe(httpStatusCode);
 
         Debug.WriteLine($"Logging Headers");
         foreach (var header in response.Headers)
@@ -56,9 +56,9 @@ public sealed class MyLiveTests : TestBase
         }
 
         Debug.WriteLine($"Asserting MyHeader Contains {headerValue}");
-        response.Headers.Should().Contain(header => header.Key == "MyHeader" && header.Value.Contains(headerValue));
+        response.Headers.Any(h => h.Key == "MyHeader" && h.Value.Contains(headerValue)).ShouldBeTrue();
 
         Debug.WriteLine($"Asserting Health Check Is Healthy");
-        (response.Content.ReadAsStringAsync().Result).Should().Be("Healthy");
+        (response.Content.ReadAsStringAsync().Result).ShouldBe("Healthy");
     }
 }
