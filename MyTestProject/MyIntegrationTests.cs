@@ -25,7 +25,6 @@ public sealed class MyIntegrationTests : TestBase
 {
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
     public async Task MyDebugHostTests(bool value)
@@ -100,7 +99,6 @@ public sealed class MyIntegrationTests : TestBase
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    [DataTestMethod]
     // TODO: Production fails unless runtime security context has Azure.Identity based permissions.
     //[DataRow(false, "Production", "1")]
     //[DataRow(false, "Production", "2")]

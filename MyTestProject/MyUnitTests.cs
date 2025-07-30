@@ -14,7 +14,6 @@ public sealed class MyUnitTests : TestBase
 {
     [TestMethod]
     [TestCategory("UnitTest")]
-    [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
     public async Task MyServiceTests(bool value)

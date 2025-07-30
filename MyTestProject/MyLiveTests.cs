@@ -12,7 +12,6 @@ public sealed class MyLiveTests : TestBase
 {
     [TestMethod]
     [TestCategory("LiveTest")]
-    [DataTestMethod]
     [DataRow("https://localhost:443/healthcheck", "MyHeader (Production)", HttpStatusCode.OK)]
     [DataRow("https://lab-web-00:443/healthcheck", "MyHeader (Production)", HttpStatusCode.OK)]
     [DataRow("https://app-ronhowe-0.azurewebsites.net:443/healthcheck", "MyHeader (Production)", HttpStatusCode.OK)]
