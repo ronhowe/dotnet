@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MyClassLibrary;
 using Serilog;
 using Shouldly;
@@ -129,6 +128,9 @@ public sealed class MyIntegrationTests : TestBase
             BaseAddress = new Uri("https://localhost:5001")
         });
 
+        Debug.WriteLine($"Generating 5 Second Cancellation Token Source");
+        using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
         Debug.WriteLine($"Generating Bearer Token");
         JwtSecurityTokenHandler _tokenHandler = new();
         byte[] key = Encoding.UTF8.GetBytes($"/{new string('*', 4096 / 8)}");
@@ -146,7 +148,7 @@ public sealed class MyIntegrationTests : TestBase
 
         Debug.WriteLine($"Sending GET Request With {value}");
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenString);
-        using HttpResponseMessage _response = await _client.GetAsync($"/v{version}/{nameof(MyService)}?input={value}");
+        using HttpResponseMessage _response = await _client.GetAsync($"/v{version}/{nameof(MyService)}?input={value}", cts.Token);
 
         Debug.WriteLine($"Asserting HTTP Status Code Is {HttpStatusCode.OK}");
         _response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -169,6 +171,6 @@ public sealed class MyIntegrationTests : TestBase
         }
 
         Debug.WriteLine($"Asserting Result Is {value}");
-        Boolean.Parse(_response.Content.ReadAsStringAsync().Result).ShouldBe(value);
+        Boolean.Parse(_response.Content.ReadAsStringAsync(cts.Token).Result).ShouldBe(value);
     }
 }
