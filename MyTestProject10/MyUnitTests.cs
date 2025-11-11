@@ -17,8 +17,9 @@ public sealed class MyUnitTests : TestBase
     [DataRow(true)]
     public async Task MyServiceTests(bool value)
     {
-        Debug.WriteLine($"Mocking {nameof(ILogger<MyService>)}");
+        Debug.WriteLine($"Mocking {nameof(ILogger<>)}");
         Mock<ILogger<MyService>> mockLogger = new();
+        mockLogger.Setup(l => l.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
         Debug.WriteLine($"Mocking {nameof(IConfiguration)}");
         Mock<IConfiguration> mockConfiguration = new();
