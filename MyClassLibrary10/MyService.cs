@@ -8,64 +8,124 @@ public class MyService(ILogger<MyService> logger, IConfiguration configuration, 
 {
     public async Task<bool> MyMethodAsync(bool myInput)
     {
-        logger.LogInformation("Entering {name}", nameof(MyService));
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Entering {name}", nameof(MyService));
+        }
 
-        logger.LogDebug("myInput = {myInput}", myInput);
+        if (logger.IsEnabled(LogLevel.Debug))
+        {
+            logger.LogDebug("myInput = {myInput}", myInput);
+        }
 
         string? _myConfiguration;
         try
         {
-            logger.LogInformation("Configuring MyConfiguration");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Configuring MyConfiguration");
+            }
+
             _myConfiguration = configuration["MyConfiguration"];
-            logger.LogDebug("_myConfiguration = {_myConfiguration}", _myConfiguration);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("_myConfiguration = {_myConfiguration}", _myConfiguration);
+            }
         }
         catch (Exception ex)
         {
-            logger.LogError("Error Configuring MyConfiguration Because {message}", ex.Message);
+            if (logger.IsEnabled(LogLevel.Error))
+            {
+                logger.LogError("Error Configuring MyConfiguration Because {message}", ex.Message);
+            }
+
             throw;
         }
 
         string? _mySecret;
+
         try
         {
-            logger.LogInformation("Configuring MySecret");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Configuring MySecret");
+            }
+
             _mySecret = configuration["MySecret"];
-            logger.LogDebug("_mySecret = {_mySecret}", _mySecret);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("_mySecret = {_mySecret}", _mySecret);
+            }
         }
         catch (Exception ex)
         {
-            logger.LogError("Error Getting MySecret Because {message}", ex.Message);
+            if (logger.IsEnabled(LogLevel.Error))
+            {
+                logger.LogError("Error Getting MySecret Because {message}", ex.Message);
+            }
+
             throw;
         }
 
         bool? _myFeature;
+
         try
         {
-            logger.LogInformation("Configuring MyFeature");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Configuring MyFeature");
+            }
+
             _myFeature = featureManager.IsEnabledAsync("MyFeature").Result;
-            logger.LogDebug("_myFeature = {_myFeature}", _myFeature);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("_myFeature = {_myFeature}", _myFeature);
+            }
         }
         catch (Exception ex)
         {
-            logger.LogError("Error Getting MyFeature Because {message}", ex.Message);
+            if (logger.IsEnabled(LogLevel.Error))
+            {
+                logger.LogError("Error Getting MyFeature Because {message}", ex.Message);
+            }
+
             throw;
         }
 
         if ((bool)_myFeature)
         {
-            logger.LogInformation("Saving Enabled");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Saving Enabled");
+            }
 
-            logger.LogInformation("Saving Input To Repository");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Saving Input To Repository");
+            }
+
             await repository.SaveAsync(myInput);
         }
         else
         {
-            logger.LogInformation("Saving Disabled");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Saving Disabled");
+            }
         }
 
-        logger.LogInformation("Returning {result}", myInput);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Returning {result}", myInput);
+        }
 
-        logger.LogInformation("Exiting {name}", nameof(MyService));
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Exiting {name}", nameof(MyService));
+        }
 
         return await Task.FromResult(myInput);
     }

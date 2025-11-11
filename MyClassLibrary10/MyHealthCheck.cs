@@ -29,7 +29,6 @@ public class MyHealthCheck(ILogger<MyService> logger, IMyService myService) : IH
         {
             if (logger.IsEnabled(LogLevel.Error))
             {
-
                 logger.LogError("Error Calling MyService.MyMethod(false) Because {message}", ex.Message);
             }
 
