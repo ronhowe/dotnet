@@ -3,5 +3,10 @@
     <HiddenComponentWarnings>
       <Value>AspNetTestHostCompatibility</Value>
     </HiddenComponentWarnings>
+    <IgnoredTests>
+      <FixtureTestSelector>
+        <FixtureName>MyTestProject10.MyLiveTests</FixtureName>
+      </FixtureTestSelector>
+    </IgnoredTests>
   </Settings>
 </ProjectConfiguration>
