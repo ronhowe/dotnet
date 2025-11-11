@@ -5,7 +5,7 @@
     </HiddenComponentWarnings>
     <IgnoredTests>
       <FixtureTestSelector>
-        <FixtureName>MyTestProject.MyLiveTests</FixtureName>
+        <FixtureName>MyTestProject10.MyLiveTests</FixtureName>
       </FixtureTestSelector>
     </IgnoredTests>
   </Settings>
