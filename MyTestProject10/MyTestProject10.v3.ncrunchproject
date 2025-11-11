@@ -1,9 +1,3 @@
 ﻿<ProjectConfiguration>
-  <Settings>
-    <IgnoredTests>
-      <NamedTestSelector>
-        <TestName>MyTestProject10.MyDebugTests.MyDebugTest</TestName>
-      </NamedTestSelector>
-    </IgnoredTests>
-  </Settings>
+  <Settings />
 </ProjectConfiguration>
