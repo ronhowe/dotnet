@@ -10,6 +10,7 @@ namespace MyTestProject;
 [TestClass]
 public sealed class MyLiveTests : TestBase
 {
+    [Ignore]
     [TestMethod]
     [TestCategory("LiveTest")]
     [DataRow("https://localhost:443/healthcheck", "MyHeader (Production)", HttpStatusCode.OK)]
