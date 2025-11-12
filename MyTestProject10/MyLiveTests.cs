@@ -42,7 +42,7 @@ public sealed class MyLiveTests : TestBase
         using HttpResponseMessage response = retryPolicy.ExecuteAsync(async () =>
         {
             Debug.WriteLine($"Sending HTTP GET Request");
-            return await client.GetAsync(new Uri(uriString));
+            return await client.GetAsync(new Uri(uriString), TestContext.CancellationToken);
         }).Result;
 
         Debug.WriteLine($"Asserting HTTP Status Code Is {httpStatusCode}");
@@ -58,6 +58,8 @@ public sealed class MyLiveTests : TestBase
         response.Headers.Any(h => h.Key == "MyHeader" && h.Value.Contains(headerValue)).ShouldBeTrue();
 
         Debug.WriteLine($"Asserting Health Check Is Healthy");
-        (response.Content.ReadAsStringAsync().Result).ShouldBe("Healthy");
+        (response.Content.ReadAsStringAsync(TestContext.CancellationToken).Result).ShouldBe("Healthy");
     }
+
+    public TestContext TestContext { get; set; }
 }

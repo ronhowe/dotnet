@@ -119,8 +119,11 @@ try
     _app.Logger.LogWarning("POST (4 of 6) => Warning Logging ON");
     _app.Logger.LogError("POST (5 of 6) => Error Logging ON");
     _app.Logger.LogCritical("POST (6 of 6) => Critical Logging ON");
-    _app.Logger.LogInformation("{now} (LOCAL)", DateTime.Now);
-    _app.Logger.LogInformation("{utcNow} (UTC)", DateTime.UtcNow);
+    if (_app.Logger.IsEnabled(LogLevel.Information))
+    {
+        _app.Logger.LogInformation("{now} (LOCAL)", DateTime.Now);
+        _app.Logger.LogInformation("{utcNow} (UTC)", DateTime.UtcNow);
+    }
 
     // NOTE: Order matters. (e.g. Swagger before Authentication)
 
@@ -147,8 +150,10 @@ try
     {
         _app.Logger.LogInformation("Configuring Header");
         string? _myHeaderValue = _app.Configuration.GetSection(_myHeaderKey).Value;
-        _app.Logger.LogDebug("_myHeaderValue = {_myHeaderValue}", _myHeaderValue);
-
+        if (_app.Logger.IsEnabled(LogLevel.Debug))
+        {
+            _app.Logger.LogDebug("_myHeaderValue = {_myHeaderValue}", _myHeaderValue);
+        }
         _app.Logger.LogInformation("Appending Header");
         context.Response.Headers.Append(_myHeaderKey, _myHeaderValue);
 
@@ -165,7 +170,10 @@ try
     _app.Use(async (context, next) =>
     {
         _app.Logger.LogInformation("Selecting Claims From Context");
-        _app.Logger.LogDebug("_claims = {@_claims}", context.User.Claims.Select(c => new { c.Type, c.Value }).ToList());
+        if (_app.Logger.IsEnabled(LogLevel.Debug))
+        {
+            _app.Logger.LogDebug("_claims = {@_claims}", context.User.Claims.Select(c => new { c.Type, c.Value }).ToList());
+        }
         await next.Invoke();
     });
 
@@ -181,11 +189,17 @@ try
     // TODO: Use better {tokens} for better discoverability.
 
     const int _version1 = 1;
-    _app.Logger.LogInformation("Mapping Version {version} GET Requests To {name}", _version1, nameof(MyService));
+    if (_app.Logger.IsEnabled(LogLevel.Information))
+    {
+        _app.Logger.LogInformation("Mapping Version {version} GET Requests To {name}", _version1, nameof(MyService));
+    }
     _app.MapGet($"/v{{version:apiVersion}}/{{nameof(MyService)}}", (bool input, [FromServices] IMyService myService, HttpContext context) =>
     {
         var apiVersion = context.GetRequestedApiVersion();
-        _app.Logger.LogInformation("Calling Version {apiVersion} Of {name} With {input}", apiVersion, nameof(MyService), input);
+        if (_app.Logger.IsEnabled(LogLevel.Information))
+        {
+            _app.Logger.LogInformation("Calling Version {apiVersion} Of {name} With {input}", apiVersion, nameof(MyService), input);
+        }
         return myService.MyMethodAsync(input);
     })
         .WithApiVersionSet(_versionSet)
@@ -193,12 +207,18 @@ try
         .RequireAuthorization(_myClaimPolicy);
 
     const int _version2 = 2;
-    _app.Logger.LogInformation("Mapping Version {version} GET Requests To {name}", _version2, nameof(MyService));
+    if (_app.Logger.IsEnabled(LogLevel.Information))
+    {
+        _app.Logger.LogInformation("Mapping Version {version} GET Requests To {name}", _version2, nameof(MyService));
+    }
     _app.MapGet($"/v{{version:apiVersion}}/{{nameof(MyService)}}", (bool input, [FromServices] IMyService myService, HttpContext context) =>
     {
         ApiVersion? _apiVersion = context.GetRequestedApiVersion();
 
-        _app.Logger.LogInformation("Calling Version {_apiVersion} Of {name} With {input}", _apiVersion, nameof(MyService), input);
+        if (_app.Logger.IsEnabled(LogLevel.Information))
+        {
+            _app.Logger.LogInformation("Calling Version {_apiVersion} Of {name} With {input}", _apiVersion, nameof(MyService), input);
+        }
         return myService.MyMethodAsync(input);
     })
         .WithApiVersionSet(_versionSet)
