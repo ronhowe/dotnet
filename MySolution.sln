@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		MySolution.slnLaunch = MySolution.slnLaunch
 		MySolution.v3.ncrunchsolution = MySolution.v3.ncrunchsolution
+		MyTestPlan.jmx = MyTestPlan.jmx
 		README.md = README.md
 	EndProjectSection
 EndProject
