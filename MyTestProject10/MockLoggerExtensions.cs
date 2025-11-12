@@ -11,6 +11,7 @@ internal static class MockLoggerExtensions
 
         Func<object, Type, bool> state = (v, t) => v?.ToString()?.CompareTo(expectedMessage) == 0;
 
+#pragma warning disable CA1873 // Avoid potentially expensive logging
         logger.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == expectedLogLevel),
@@ -18,6 +19,7 @@ internal static class MockLoggerExtensions
                 It.Is<It.IsAnyType>((v, t) => state(v, t)),
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
+#pragma warning restore CA1873 // Avoid potentially expensive logging
 
         return logger;
     }
