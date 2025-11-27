@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWebApplication10", "MyWeb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyConsoleApp10", "MyConsoleApp10\MyConsoleApp10.csproj", "{C2710BE0-A07A-473E-8E86-9D55D322ADF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWinUIApp10", "MyWinUIApp10\MyWinUIApp10.csproj", "{42C0E44A-B844-46B5-9734-034375DC9553}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,12 +43,6 @@ Global
 		{C2710BE0-A07A-473E-8E86-9D55D322ADF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2710BE0-A07A-473E-8E86-9D55D322ADF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2710BE0-A07A-473E-8E86-9D55D322ADF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Debug|Any CPU.Build.0 = Debug|x64
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Debug|Any CPU.Deploy.0 = Debug|x64
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Release|Any CPU.ActiveCfg = Release|x64
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Release|Any CPU.Build.0 = Release|x64
-		{42C0E44A-B844-46B5-9734-034375DC9553}.Release|Any CPU.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
